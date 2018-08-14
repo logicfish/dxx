@@ -1,9 +1,20 @@
 {
-	"name": "dxx",
-	"authors": [
-		"Mark"
-	],
-	"description": "D language utility library and modular application framework",
-	"copyright": "Copyright © 2018, Mark",
-	"license": "MIT"
+    "name": "dxx",
+    "authors": [
+        "Mark"
+    ],
+    "description": "D language utility library and modular application framework",
+    "copyright": "Copyright © 2018, Mark",
+    "license": "MIT",
+    "targetType": "executable",
+    "targetPath": "bin",
+    "stringImportPaths" : [ "resources" ],
+    "dependencies" : {
+        "gen-package-version": "~>1.0.4",
+        "ctini" : "~>0.2.1",
+        "standardpaths": "~>0.8.1"
+    },
+    "preGenerateCommands": [
+        "dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
+    ]
 }
