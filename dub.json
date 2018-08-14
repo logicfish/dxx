@@ -1,0 +1,9 @@
+{
+	"name": "dxx",
+	"authors": [
+		"Mark"
+	],
+	"description": "D language utility library and modular application framework",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT"
+}
