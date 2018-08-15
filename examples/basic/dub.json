@@ -1,0 +1,12 @@
+{
+	"name": "basic",
+	"authors": [
+		"Mark"
+	],
+	"description": "DXX basic example",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT",
+	"dependencies" : {
+		"dxx" : { "path" : "../../"}
+	}
+}

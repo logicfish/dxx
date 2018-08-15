@@ -13,9 +13,7 @@ private import std.stdio;
 private import core.thread;
 private import core.sync.mutex;
 
-private import dxx.log;
-private import dxx.config;
-private import dxx.messages;
+private import dxx.app;
 
 mixin __Text;
 

@@ -6,7 +6,7 @@
     "description": "D language utility library and modular application framework",
     "copyright": "Copyright © 2018, Mark",
     "license": "MIT",
-    "targetType": "executable",
+    "targetType": "library",
     "targetPath": "bin",
     "stringImportPaths" : [ "resources" ],
     "dependencies" : {

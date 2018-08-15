@@ -1,4 +1,4 @@
-#!rdmd -I"scriptlike-0.10.2/scriptlike/src"
+#!rdmd -I"scriptlike-0.10.2/scriptlike/src;source"
 
 module dxx.sys.tools.tag;
 
@@ -6,9 +6,10 @@ private import std.stdio;
 private import std.path;
 private import std.getopt;
 private import scriptlike;
+
 private import dxx.sys.appcmd;
 
-enum projectPath = "noxworkspace/nox";
+enum projectPath = ".";
 
 void main(string[] args)
 {
@@ -26,7 +27,7 @@ void main(string[] args)
         string versionString = args[1];
         tryRun(_git ~ " tag -a " ~ versionString ~ " -m 'Version " ~ versionString ~"'");
         tryRun(_git ~ " push --tags");
-        tryRun(_rdmd ~ " -Iscriptlike-0.10.2/scriptlike/src " ~ dmdopt ~ " ./configure.d");
+        tryRun(_rdmd ~ " -Iscriptlike-0.10.2/scriptlike/src " ~ dmdopt ~ " ./bootstrap.d");
     }
 }
 

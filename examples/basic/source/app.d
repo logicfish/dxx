@@ -1,6 +1,7 @@
-import std.stdio;
+module app;
 
-import dxx;
+import std.stdio;
+import dxx.app;
 
 void main()
 {
