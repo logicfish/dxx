@@ -1,0 +1,53 @@
+{
+	"excludedSourceFiles": [
+		"src/scriptlike/packageVersion.d"
+	],
+	"authors": [
+		"Nick Sabalausky",
+		"Jesse Phillips"
+	],
+	"description": "Utility library to help you write script-like programs.",
+	"importPaths": [
+		"src/"
+	],
+	"name": "scriptlike",
+	"version": "0.10.2",
+	"license": "zlib/libpng",
+	"sourcePaths": [
+		"src/"
+	],
+	"configurations": [
+		{
+			"targetPath": "bin",
+			"name": "library",
+			"targetType": "library",
+			"importPaths": [
+				"src"
+			]
+		},
+		{
+			"targetPath": "bin",
+			"name": "unittest",
+			"targetType": "executable",
+			"targetName": "scriptlike_unittest",
+			"versions": [
+				"unittest_scriptlike_d"
+			]
+		},
+		{
+			"excludedSourceFiles": [
+				"src/*"
+			],
+			"targetPath": "deleteme",
+			"importPaths": [
+				"dummy"
+			],
+			"targetType": "library",
+			"name": "no-build",
+			"sourcePaths": [
+				"dummy"
+			]
+		}
+	],
+	"homepage": "https://github.com/abscissa/scriptlike"
+}
