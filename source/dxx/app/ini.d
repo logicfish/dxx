@@ -1,4 +1,4 @@
-module dxx.ini;
+module dxx.app.ini;
 
 private import ctini.ctini;
 

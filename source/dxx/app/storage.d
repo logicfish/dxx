@@ -9,9 +9,9 @@ private import std.file;
 
 mixin __Text;
 
-auto outputConfigFile(string fn)
+auto outputConfigFile(alias app)(string fn)
 {
-    string configDir = writablePath(StandardPath.config, buildPath(DXXConfig.app.organizationName, DXXConfig.app.applicationName), FolderFlag.create);
+    string configDir = writablePath(StandardPath.config, buildPath(app.organizationName, app.applicationName), FolderFlag.create);
     if (!configDir.length) {
         enum msg = DXXConfig.messages.MSG_CONFIG_DIR;
         throw new Exception(MsgText!msg());
@@ -21,9 +21,9 @@ auto outputConfigFile(string fn)
     return File(configFile, "w"); 
 }
 
-auto inputConfigFile(string fn)
+auto inputConfigFile(alias app)(string fn)
 {
-    string[] configDirs = standardPaths(StandardPath.config, buildPath(DXXConfig.app.organizationName, DXXConfig.app.applicationName));
+    string[] configDirs = standardPaths(StandardPath.config, buildPath(app.organizationName, app.applicationName));
 
     foreach(configDir; configDirs) {
         string configFile = buildPath(configDir, fn);
@@ -36,8 +36,8 @@ auto inputConfigFile(string fn)
 }
 
 unittest {
-    auto confOut = outputConfigFile("tests.conf");
+    auto confOut = outputConfigFile!(DXXConfig.app)("tests.conf");
     confOut.write("[tests]");
-    auto confIn = inputConfigFile("tests.conf");
+    auto confIn = inputConfigFile!(DXXConfig.app)("tests.conf");
     
 }

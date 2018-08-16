@@ -52,15 +52,15 @@ final class AppConfig {
                 DXXConfig.app.configFile);
         try {
             sharedLog.info("Loading default config file.");
-            f = inputConfigFile(configFile);
+            f = inputConfigFile!(DXXConfig.app)(configFile);
         } catch(Exception e) {
             // Create the default config file.
             sharedLog.info("Creating default config file.");
-            auto of = outputConfigFile(DXXConfig.app.configFile);
+            auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
             of.write(import(DXXConfig.app.configDefaults));
             of.flush;
             of.close;
-            f = inputConfigFile(DXXConfig.app.configFile);
+            f = inputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
         }
         auto properties = readInjectorProperties(&f);
 
