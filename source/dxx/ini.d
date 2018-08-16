@@ -43,11 +43,6 @@ void iterateTupleTreeV(alias Tuples,alias Func,string fqn=null)() {
 auto iterateSections(alias fields,alias Func)() {
     static void __f(bool isSection,string k,alias v,string fqn)() {
         static if (isSection) {
-            //static if(fqn !is null) {
-            //    Func!(fqn~"."~k,v)();
-            //} else {
-            //    Func!(k,v)();
-            //}
             Func!(fqn,k,v)();
         }
     }
@@ -56,11 +51,6 @@ auto iterateSections(alias fields,alias Func)() {
 auto iterateValues(alias fields,alias Func)() {
     static void __f(bool isSection,string k,alias v,string fqn)() {
         static if (!isSection) {
-            //static if(fqn !is null) {
-            //    Func!(fqn~"."~k,v)();
-            //} else {
-            //    Func!(k,v)();
-            //}
             Func!(fqn,k,v)();
         }
     }
@@ -68,16 +58,8 @@ auto iterateValues(alias fields,alias Func)() {
 }
 auto iterateValuesF(alias fields,Func)(Func f) {
     void __f(string k,string v,string fqn) {
-        /*if (!isSection) {
-            if(fqn !is null) {
-                f(fqn~"."~k,v);
-            } else {
-                f(k,v);
-            }
-        }*/
         f(fqn,k,v);
     }
-    //void delegate (string,string) _f = &__f;
     iterateTupleTreeF!(fields)(&__f);
 }
 
@@ -98,7 +80,6 @@ unittest {
                     writeln(" -- [" ~ k ~ "]");
                 }
             } else {
-                //writeln("  // " ~ typeid(v).to!string ~ " " ~ fqn ~ "." ~ k ~ " = " ~ v.to!string);
                 writeln(typeid(v).to!string ~ " " ~ k ~ " = " ~ v.to!string~";");
             }
         }
