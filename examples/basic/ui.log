@@ -1,0 +1,312 @@
+DlangUI log file
+2018-08-16 17:28:20.690 I  Log level changed to Trace
+2018-08-16 17:28:20.690 I  Logger is initialized
+2018-08-16 17:28:20.690 D  myWinMain()
+2018-08-16 17:28:20.690 I  Current executable: C:\Users\Mark\AppData\Local\dub\packages\dlangide-0.8.12\dlangide\bin\
+2018-08-16 17:28:20.690 I  Command line: dub.json
+2018-08-16 17:28:20.690 I  Command line params: ["C:\\Users\\Mark\\AppData\\Local\\dub\\packages\\dlangide-0.8.12\\dlangide\\bin\\dlangide.exe", "dub.json"]
+2018-08-16 17:28:20.690 V  Creating platform
+2018-08-16 17:28:20.690 V  Registering window class
+2018-08-16 17:28:20.691 V  Initializing font manager
+2018-08-16 17:28:20.691 V  Trying to init FreeType font manager
+2018-08-16 17:28:20.691 V  Creating FreeTypeFontManager
+2018-08-16 17:28:20.691 V  DerelictFT: Loading FreeType library
+2018-08-16 17:28:20.691 V  DerelictFT: Missing symbols callback is registered
+2018-08-16 17:28:20.694 V  DerelictFT: Loaded
+2018-08-16 17:28:20.694 V  Initializing FreeType library
+2018-08-16 17:28:20.694 I  Windows directory: C:\WINDOWS
+2018-08-16 17:28:20.694 I  Fonts directory: C:\WINDOWS\Fonts\
+2018-08-16 17:28:20.694 V  Registering fonts
+2018-08-16 17:28:20.698 D  Font file C:\WINDOWS\Fonts\arialni.ttf not found
+2018-08-16 17:28:20.698 D  Font file C:\WINDOWS\Fonts\arialn.ttf not found
+2018-08-16 17:28:20.698 D  Font file C:\WINDOWS\Fonts\arialnb.ttf not found
+2018-08-16 17:28:20.698 D  Font file C:\WINDOWS\Fonts\arialnbi.ttf not found
+2018-08-16 17:28:20.698 D  Font file C:\WINDOWS\Fonts\arialni.ttf not found
+2018-08-16 17:28:20.725 D  Font file C:\WINDOWS\Fonts\CENTURY.TTF not found
+2018-08-16 17:28:20.750 D  Font file C:\WINDOWS\Fonts\frank.ttf not found
+2018-08-16 17:28:20.764 D  Font file C:\WINDOWS\Fonts\GARA.TTF not found
+2018-08-16 17:28:20.764 D  Font file C:\WINDOWS\Fonts\GARABD.TTF not found
+2018-08-16 17:28:20.764 D  Font file C:\WINDOWS\Fonts\GARAIT.TTF not found
+2018-08-16 17:28:20.769 D  Font file C:\WINDOWS\Fonts\kaiu.ttf not found
+2018-08-16 17:28:20.774 D  Font file C:\WINDOWS\Fonts\meiryo.ttc not found
+2018-08-16 17:28:20.774 D  Font file C:\WINDOWS\Fonts\meiryob.ttc not found
+2018-08-16 17:28:20.812 D  initResourceManagers()
+2018-08-16 17:28:20.813 I  Creating ImageCache
+2018-08-16 17:28:20.813 I  Creating DrawableCache
+2018-08-16 17:28:20.813 D  Calling initSharedResourceManagers()
+2018-08-16 17:28:20.813 D  Calling initStandardEditorActions()
+2018-08-16 17:28:20.813 D  Calling registerStandardWidgets()
+2018-08-16 17:28:20.813 D  Registering standard widgets for DML
+2018-08-16 17:28:20.813 D  initResourceManagers() -- finished
+2018-08-16 17:28:20.813 D  Creating default theme
+2018-08-16 17:28:20.813 D  Loading Derelict GL
+2018-08-16 17:28:20.814 D  Derelict GL - loaded
+2018-08-16 17:28:20.814 I  Entering UIAppMain: ["C:\\Users\\Mark\\AppData\\Local\\dub\\packages\\dlangide-0.8.12\\dlangide\\bin\\dlangide.exe", "dub.json"]
+2018-08-16 17:28:20.815 V  uiTheme setting new theme ide_theme_default
+2018-08-16 17:28:20.818 I  Applying loaded theme ide_theme_default
+2018-08-16 17:28:20.818 D  DrawableCache.clear()
+2018-08-16 17:28:20.818 D  Platform.createWindow is called
+2018-08-16 17:28:20.818 V  Platform.createWindow : setDefaultLanguageAndThemeIfNecessary
+2018-08-16 17:28:20.818 V  setDefaultLanguageAndThemeIfNecessary : setting UI language
+2018-08-16 17:28:20.818 V  Loading language file
+2018-08-16 17:28:20.818 D  Loading string resources from file @embedded@/std_en.ini
+2018-08-16 17:28:20.818 D  Loading string resources from file @embedded@/en.ini
+2018-08-16 17:28:20.819 V  Calling onThemeChanged
+2018-08-16 17:28:20.819 D  DrawableCache.clear()
+2018-08-16 17:28:20.819 V  Platform.createWindow : new Win32Window
+2018-08-16 17:28:20.819 D  Screen dimensions: Rect(0, 0, 1280, 1024)
+2018-08-16 17:28:20.823 D  Window onCreate
+2018-08-16 17:28:20.823 V  created window, adding to map
+2018-08-16 17:28:21.047 V  Reloading DerelictGL3
+2018-08-16 17:28:21.048 V  Reloading DerelictGL
+2018-08-16 17:28:21.048 D  glSupport not initialized: trying to create
+2018-08-16 17:28:21.048 V  Compiling solid fill program
+2018-08-16 17:28:21.048 D  compileShader: glslVersion = 4.50, type: GL_VERTEX_SHADER
+2018-08-16 17:28:21.048 D  compileShader: glslVersion = 4.50, type: GL_FRAGMENT_SHADER
+2018-08-16 17:28:21.049 D  Program linked successfully
+2018-08-16 17:28:21.049 V  Program is initialized successfully
+2018-08-16 17:28:21.049 V  Compiling texture program
+2018-08-16 17:28:21.049 D  compileShader: glslVersion = 4.50, type: GL_VERTEX_SHADER
+2018-08-16 17:28:21.049 D  compileShader: glslVersion = 4.50, type: GL_FRAGMENT_SHADER
+2018-08-16 17:28:21.050 D  Program linked successfully
+2018-08-16 17:28:21.050 V  Program is initialized successfully
+2018-08-16 17:28:21.050 D  Shaders compiled successfully
+2018-08-16 17:28:21.050 V  OpenGL is initialized ok
+2018-08-16 17:28:21.055 D  Loading image from file @embedded@/dlangui-logo1.png
+2018-08-16 17:28:21.062 D  Loading image from file @embedded@/list_item_selected.9.png
+2018-08-16 17:28:21.062 D  Loading image from file @embedded@/list_item_focused.9.png
+2018-08-16 17:28:21.062 D  Loading image from file @embedded@/list_item_hovered.9.png
+2018-08-16 17:28:21.063 D  loaded .xml drawable from @embedded@/list_item_background.xml
+2018-08-16 17:28:21.066 D  Searching for compiler path: dmd
+2018-08-16 17:28:21.115 D  compiler output:
+C:\Users\Mark\AppData\Roaming\.dlangide\tmp_dummy_file_to_get_import_paths.d(1): Error: module `module_that_does_not_exist` is in file 'module_that_does_not_exist.d' which cannot be read
+import path[0] = C:\d\dmd2\windows\bin\..\..\src\phobos
+import path[1] = C:\d\dmd2\windows\bin\..\..\src\druntime\import
+
+2018-08-16 17:28:21.115 D  import path found: `C:\d\dmd2\src\phobos`
+2018-08-16 17:28:21.115 D  import path found: `C:\d\dmd2\src\druntime\import`
+2018-08-16 17:28:21.115 D  dmd imports:["C:\\d\\dmd2\\src\\phobos", "C:\\d\\dmd2\\src\\druntime\\import"]
+2018-08-16 17:28:21.116 D  Shortcut actions loaded
+2018-08-16 17:28:21.117 V  uiTheme setting new theme ide_theme_dark
+2018-08-16 17:28:21.123 I  Applying loaded theme ide_theme_dark
+2018-08-16 17:28:21.123 D  DrawableCache.clear()
+2018-08-16 17:28:21.123 D  updating theme after UI font change
+2018-08-16 17:28:21.123 D  DrawableCache.clear()
+2018-08-16 17:28:21.124 D  Reading project from file C:\msys64\home\Mark\src\dxx\examples\basic\dub.json
+2018-08-16 17:28:21.124 D    project name: basic
+2018-08-16 17:28:21.124 D    project description: DXX basic example
+2018-08-16 17:28:21.124 D      added project folder C:\msys64\home\Mark\src\dxx\examples\basic\source
+2018-08-16 17:28:21.124 D      added project file C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d
+2018-08-16 17:28:21.125 I  Project source paths: ["C:\\msys64\\home\\Mark\\src\\dxx\\examples\\basic\\source"]
+2018-08-16 17:28:21.125 D  dependency pegged ~master : NOT FOUND
+2018-08-16 17:28:21.125 D  dependency xdgpaths 0.2.5 : NOT FOUND
+2018-08-16 17:28:21.125 D  dependency isfreedesktop 0.1.1 : NOT FOUND
+2018-08-16 17:28:21.126 D  dependency gen-package-version 1.0.5 : NOT FOUND
+2018-08-16 17:28:21.126 D  dependency scriptlike 0.9.7 : NOT FOUND
+2018-08-16 17:28:21.126 D  dependency ctini 0.2.1 : NOT FOUND
+2018-08-16 17:28:21.126 D  dependency standardpaths 0.8.1 : NOT FOUND
+2018-08-16 17:28:21.126 D  dependency dxx  : NOT FOUND
+2018-08-16 17:28:21.126 I  Project configurations: [ProjectConfiguration("default", Default)]
+2018-08-16 17:28:21.126 D      added project file C:\msys64\home\Mark\src\dxx\examples\basic\dub.json
+2018-08-16 17:28:21.127 D  Starting DCD tasks thread
+2018-08-16 17:28:21.128 D  Searching for compiler path: default
+2018-08-16 17:28:21.185 D  compiler output:
+C:\Users\Mark\AppData\Roaming\.dlangide\tmp_dummy_file_to_get_import_paths.d(1): Error: module `module_that_does_not_exist` is in file 'module_that_does_not_exist.d' which cannot be read
+import path[0] = C:\d\dmd2\windows\bin\..\..\src\phobos
+import path[1] = C:\d\dmd2\windows\bin\..\..\src\druntime\import
+
+2018-08-16 17:28:21.185 D  import path found: `C:\d\dmd2\src\phobos`
+2018-08-16 17:28:21.186 D  import path found: `C:\d\dmd2\src\druntime\import`
+2018-08-16 17:28:21.186 D  Execute DCD task; current dir=C:\msys64\home\Mark\src\dxx\examples\basic
+2018-08-16 17:28:21.186 D  workspace name: basic
+2018-08-16 17:28:21.186 D  workspace description: DXX basic example
+2018-08-16 17:28:21.186 D  addProject C:\msys64\home\Mark\src\dxx\examples\basic\dub.json
+2018-08-16 17:28:21.188 D  Loading image from file @embedded@/list_item_selected_dark.9.png
+2018-08-16 17:28:21.188 D  Loading image from file @embedded@/list_item_focused_dark.9.png
+2018-08-16 17:28:21.189 D  Loading image from file @embedded@/list_item_hovered_dark.9.png
+2018-08-16 17:28:21.189 D  loaded .xml drawable from @embedded@/list_item_background_dark.xml
+2018-08-16 17:28:21.189 D  Reading project from file C:\msys64\home\Mark\src\dxx\examples\basic\dub.json
+2018-08-16 17:28:21.189 D    project name: basic
+2018-08-16 17:28:21.189 D    project description: DXX basic example
+2018-08-16 17:28:21.189 D      added project folder C:\msys64\home\Mark\src\dxx\examples\basic\source
+2018-08-16 17:28:21.190 D      added project file C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d
+2018-08-16 17:28:21.190 I  Project source paths: ["C:\\msys64\\home\\Mark\\src\\dxx\\examples\\basic\\source"]
+2018-08-16 17:28:21.191 D  dependency pegged ~master : NOT FOUND
+2018-08-16 17:28:21.191 D  dependency xdgpaths 0.2.5 : NOT FOUND
+2018-08-16 17:28:21.191 D  dependency isfreedesktop 0.1.1 : NOT FOUND
+2018-08-16 17:28:21.192 D  dependency gen-package-version 1.0.5 : NOT FOUND
+2018-08-16 17:28:21.192 D  dependency scriptlike 0.9.7 : NOT FOUND
+2018-08-16 17:28:21.192 D  dependency ctini 0.2.1 : NOT FOUND
+2018-08-16 17:28:21.192 D  dependency standardpaths 0.8.1 : NOT FOUND
+2018-08-16 17:28:21.192 D  dependency dxx  : NOT FOUND
+2018-08-16 17:28:21.192 I  Project configurations: [ProjectConfiguration("default", Default)]
+2018-08-16 17:28:21.192 D      added project file C:\msys64\home\Mark\src\dxx\examples\basic\dub.json
+2018-08-16 17:28:21.195 D  workspace name: basic
+2018-08-16 17:28:21.195 D  workspace description: DXX basic example
+2018-08-16 17:28:21.198 D  stored Expanded state true for C:\msys64\home\Mark\src\dxx\examples\basic\dub.json
+2018-08-16 17:28:21.198 D  openSourceFile C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d
+2018-08-16 17:28:21.198 D  trying to open source file C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d
+2018-08-16 17:28:21.198 D  file C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d is opened ok
+2018-08-16 17:28:21.199 D  Loading image from file @embedded@/dock_window_background_focused_dark.9.png
+2018-08-16 17:28:21.199 D  Loading image from file @embedded@/dock_window_background_normal_dark.9.png
+2018-08-16 17:28:21.199 D  loaded .xml drawable from @embedded@/dock_window_background_dark.xml
+2018-08-16 17:28:21.218 D  windowCaption basic - DLangIDE
+2018-08-16 17:28:21.219 D  Loading image from file @embedded@/main_menu_item_background_selected_dark.9.png
+2018-08-16 17:28:21.219 D  Loading image from file @embedded@/main_menu_item_background_hover_dark.9.png
+2018-08-16 17:28:21.219 D  loaded .xml drawable from @embedded@/main_menu_item_background_dark.xml
+2018-08-16 17:28:21.220 D  Loading image from file @embedded@/toolbar_host_background_dark.9.png
+2018-08-16 17:28:21.220 D  Loading image from file @embedded@/toolbar_background_dark.9.png
+2018-08-16 17:28:21.221 D  Loading image from file @embedded@/document-open.png
+2018-08-16 17:28:21.221 D  Loading image from file @embedded@/toolbar_button_hover_dark.9.png
+2018-08-16 17:28:21.221 D  Loading image from file @embedded@/toolbar_button_pressed_dark.9.png
+2018-08-16 17:28:21.221 D  loaded .xml drawable from @embedded@/toolbar_button_background_dark.xml
+2018-08-16 17:28:21.221 D  Loading image from file @embedded@/document-save.png
+2018-08-16 17:28:21.221 D  Loading image from file @embedded@/toolbar_separator_dark.png
+2018-08-16 17:28:21.221 D  Loading image from file @embedded@/debug-run.png
+2018-08-16 17:28:21.222 D  Loading image from file @embedded@/toolbar_control_disabled_dark.9.png
+2018-08-16 17:28:21.222 D  Loading image from file @embedded@/toolbar_control_normal_dark.9.png
+2018-08-16 17:28:21.222 D  loaded .xml drawable from @embedded@/toolbar_control_background_dark.xml
+2018-08-16 17:28:21.222 D  Loading image from file @embedded@/scrollbar_btn_down_dark.png
+2018-08-16 17:28:21.222 D  Loading image from file @embedded@/btn_pressed_dark.9.png
+2018-08-16 17:28:21.222 D  Loading image from file @embedded@/btn_hover_dark.9.png
+2018-08-16 17:28:21.223 D  loaded .xml drawable from @embedded@/btn_background_transparent_dark.xml
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/run-build.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/run-rdmd.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-copy.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-paste.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-cut.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-undo.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-redo.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-indent.png
+2018-08-16 17:28:21.223 D  Loading image from file @embedded@/edit-unindent.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/debug-stop.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/debug-pause.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/debug-restart.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/debug-step-into.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/debug-step-over.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/debug-step-out.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/dock_window_caption_background_focused_dark.9.png
+2018-08-16 17:28:21.224 D  Loading image from file @embedded@/dock_window_caption_background_normal_dark.9.png
+2018-08-16 17:28:21.224 D  loaded .xml drawable from @embedded@/dock_window_caption_background_dark.xml
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_more_dark.png
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_btn_dark_up_focused_selected_dark.9.png
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_btn_dark_up_focused_hover_dark.9.png
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_btn_dark_up_focused_dark.9.png
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_btn_dark_up_selected_dark.9.png
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_btn_dark_up_hover_dark.9.png
+2018-08-16 17:28:21.225 D  Loading image from file @embedded@/tab_btn_dark_up_normal_dark.9.png
+2018-08-16 17:28:21.225 D  loaded .xml drawable from @embedded@/tab_btn_dark_up_dark.xml
+2018-08-16 17:28:21.226 D  Loading image from file @embedded@/close_dark.png
+2018-08-16 17:28:21.227 D  Loading image from file @embedded@/scrollbar_btn_left_dark.png
+2018-08-16 17:28:21.227 D  Loading image from file @embedded@/scrollbar_btn_background_pressed_dark.9.png
+2018-08-16 17:28:21.227 D  Loading image from file @embedded@/scrollbar_btn_background_normal_dark.9.png
+2018-08-16 17:28:21.227 D  Loading image from file @embedded@/scrollbar_btn_background_hover_dark.9.png
+2018-08-16 17:28:21.228 D  loaded .xml drawable from @embedded@/scrollbar_btn_transparent_background_dark.xml
+2018-08-16 17:28:21.228 D  Loading image from file @embedded@/scrollbar_btn_right_dark.png
+2018-08-16 17:28:21.228 D  Loading image from file @embedded@/scrollbar_indicator_horizontal.png
+2018-08-16 17:28:21.228 D  Loading image from file @embedded@/scrollbar_btn_background_disabled_dark.9.png
+2018-08-16 17:28:21.228 D  loaded .xml drawable from @embedded@/scrollbar_btn_background_dark.xml
+2018-08-16 17:28:21.228 D  Loading image from file @embedded@/scrollbar_btn_up_dark.png
+2018-08-16 17:28:21.228 D  Loading image from file @embedded@/scrollbar_indicator_vertical.png
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/dock_window_caption_background_focused_down_dark.9.png
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/dock_window_caption_background_normal_down_dark.9.png
+2018-08-16 17:28:21.229 D  loaded .xml drawable from @embedded@/dock_window_caption_background_down_dark.xml
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/tab_btn_dark_down_focused_selected_dark.9.png
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/tab_btn_dark_down_focused_dark.9.png
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/tab_btn_dark_down_selected_dark.9.png
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/tab_btn_dark_down_hover_dark.9.png
+2018-08-16 17:28:21.229 D  Loading image from file @embedded@/tab_btn_dark_down_normal_dark.9.png
+2018-08-16 17:28:21.229 D  loaded .xml drawable from @embedded@/tab_btn_dark_down_dark.xml
+2018-08-16 17:28:21.244 D  onResize 1184x934
+2018-08-16 17:28:21.244 D  Loading image from file @embedded@/toolbar_button_null.9.png
+2018-08-16 17:28:21.244 D  resize: measure took 0 ms
+2018-08-16 17:28:21.245 D  Loading image from file @embedded@/project-development.png
+2018-08-16 17:28:21.245 D  Loading image from file @embedded@/arrow_right_down_black_dark.png
+2018-08-16 17:28:21.245 D  Loading image from file @embedded@/project-d.png
+2018-08-16 17:28:21.247 D  Loading image from file @embedded@/arrow_right_hollow_dark.png
+2018-08-16 17:28:21.247 D  Loading image from file @embedded@/folder.png
+2018-08-16 17:28:21.247 D  Loading image from file @embedded@/text-json.png
+2018-08-16 17:28:21.247 D  resize: layout took 3 ms
+2018-08-16 17:28:21.258 D  onResize 1044x794
+2018-08-16 17:28:21.258 D  resize: measure took 0 ms
+2018-08-16 17:28:21.259 D  resize: layout took 1 ms
+2018-08-16 17:28:21.265 V  created glyph cache page 1024x1024
+2018-08-16 17:28:21.269 V  created image cache page 1024x1024
+2018-08-16 17:28:21.273 D  updateTexture - new texture id=1
+2018-08-16 17:28:21.273 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:28:21.274 D  updateTexture - new texture id=2
+2018-08-16 17:28:21.275 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:28:22.956 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:28:22.958 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:28:25.386 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:28:25.561 D  DCD task execution finished
+2018-08-16 17:28:25.561 D  Execute DCD task; current dir=C:\msys64\home\Mark\src\dxx\examples\basic
+2018-08-16 17:28:25.561 D  DCD task execution finished
+2018-08-16 17:28:25.561 D  Execute DCD task; current dir=C:\msys64\home\Mark\src\dxx\examples\basic
+2018-08-16 17:28:25.561 D  DCD task execution finished
+2018-08-16 17:28:25.602 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:28:26.987 D  onTreeExpandedStateChange expanded=true fn=C:\msys64\home\Mark\src\dxx\examples\basic\source
+2018-08-16 17:28:26.987 D  stored Expanded state true for C:\msys64\home\Mark\src\dxx\examples\basic\source
+2018-08-16 17:28:26.987 D  Loading image from file @embedded@/text-d.png
+2018-08-16 17:28:26.988 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:28:27.714 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:28:27.857 D  onSourceFileSelected C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d activate=false
+2018-08-16 17:28:29.697 D  onSourceFileSelected C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d activate=true
+2018-08-16 17:28:29.697 D  openSourceFile C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d
+2018-08-16 17:28:54.418 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:45:48.465 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:48.704 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=true
+2018-08-16 17:45:48.705 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:49.497 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:49.689 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:50.289 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:50.497 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:51.164 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:52.161 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:53.689 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:58.304 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:45:58.529 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:46:24.257 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:46:43.609 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:46:55.450 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=false
+2018-08-16 17:46:57.156 D  onHoverTimeout 9:50
+2018-08-16 17:46:57.157 D  Execute DCD task; current dir=C:\msys64\home\Mark\src\dxx\examples\basic
+2018-08-16 17:46:57.160 D  DCD task execution finished
+2018-08-16 17:47:03.295 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=true
+2018-08-16 17:58:09.007 D  build: base directory is C:\msys64\home\Mark\src\dxx\examples\basic
+2018-08-16 17:58:09.110 D  ExternalProcess.run C:\D\dmd2\windows\bin\dub.exe ["build", "--build-mode=allAtOnce", "--build=debug"]
+2018-08-16 17:58:09.110 I  Trying to run program C:\D\dmd2\windows\bin\dub.exe with args ["build", "--build-mode=allAtOnce", "--build=debug"]
+2018-08-16 17:58:09.117 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:09.118 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:58:09.548 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:10.136 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:58:10.314 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:11.216 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:12.945 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:14.476 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:14.584 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:14.695 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:16.774 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:22.008 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:22.111 D  onCompilerLogIssueClick project= file=C:\Users\Mark\AppData\Local\dub\packages\scriptlike-0.9.7\scriptlike\src\scriptlike\path\extras.d line=24 column=0
+2018-08-16 17:58:22.111 D  openSourceFile C:\Users\Mark\AppData\Local\dub\packages\scriptlike-0.9.7\scriptlike\src\scriptlike\path\extras.d
+2018-08-16 17:58:22.111 D  trying to open source file C:\Users\Mark\AppData\Local\dub\packages\scriptlike-0.9.7\scriptlike\src\scriptlike\path\extras.d
+2018-08-16 17:58:22.111 D  file C:\Users\Mark\AppData\Local\dub\packages\scriptlike-0.9.7\scriptlike\src\scriptlike\path\extras.d is opened ok
+2018-08-16 17:58:22.111 D  Cancelling getDocComments()
+2018-08-16 17:58:22.112 D  found source file
+2018-08-16 17:58:22.114 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:22.115 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:58:26.271 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:58:26.808 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:58:27.189 D  Loading image from file @embedded@/tooltip_background_dark.9.png
+2018-08-16 17:58:27.191 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 17:58:27.192 D  updateTexture for cache page - setting image 1024x1024 tx=2
+2018-08-16 17:58:29.422 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=false
+2018-08-16 17:59:38.055 D  onCompilerLogIssueClick project=basic file=source\app.d line=8 column=0
+2018-08-16 17:59:38.055 D  openSourceFile C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d
+2018-08-16 17:59:38.055 D  found source file
+2018-08-16 20:17:53.570 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=true
+2018-08-16 20:17:55.939 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=false
+2018-08-16 20:17:57.826 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=true
+2018-08-16 20:17:58.258 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=false
+2018-08-16 20:18:58.830 D  updateTexture for cache page - setting image 1024x1024 tx=1

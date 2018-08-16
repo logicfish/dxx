@@ -1,0 +1,12 @@
+{
+	"name": "loader",
+	"authors": [
+		"Mark"
+	],
+	"description": "DXX loader example",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT",
+	"dependencies": {
+		"dxx" : { "path" : "../../"}
+	}
+}

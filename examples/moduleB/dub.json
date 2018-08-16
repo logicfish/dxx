@@ -1,0 +1,12 @@
+{
+	"name": "moduleb",
+	"authors": [
+		"Mark"
+	],
+	"dependencies": {
+		"dxx" : { "path" : "../../"}
+	},
+	"description": "DXX example module B",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT"
+}

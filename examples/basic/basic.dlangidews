@@ -1,0 +1,7 @@
+{
+    "name": "basic",
+    "description": "DXX basic example",
+    "projects": {
+        "basic": "dub.json"
+    }
+}

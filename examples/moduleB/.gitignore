@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+moduleb.so
+moduleb.dylib
+moduleb.dll
+moduleb.a
+moduleb.lib
+moduleb-test-*
+*.exe
+*.o
+*.obj
+*.lst
