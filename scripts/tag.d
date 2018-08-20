@@ -1,5 +1,8 @@
-#!rdmd -I"scriptlike-0.10.2/scriptlike/src;source"
-
+#!/usr/bin/env dub
+/+ dub.sdl:
+	name "tag"
+	dependency "scriptlike" version="~>0.10.2"
++/
 module dxx.sys.tools.tag;
 
 private import std.stdio;
@@ -7,7 +10,7 @@ private import std.path;
 private import std.getopt;
 private import scriptlike;
 
-private import dxx.sys.appcmd;
+private import scripts.appcmd;
 
 enum projectPath = ".";
 

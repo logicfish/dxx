@@ -310,3 +310,24 @@ import path[1] = C:\d\dmd2\windows\bin\..\..\src\druntime\import
 2018-08-16 20:17:57.826 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=true
 2018-08-16 20:17:58.258 D  onModifiedStateChange C:\msys64\home\Mark\src\dxx\examples\basic\source\app.d modified=false
 2018-08-16 20:18:58.830 D  updateTexture for cache page - setting image 1024x1024 tx=1
+2018-08-16 20:45:40.817 D  workspace name: basic
+2018-08-16 20:45:40.817 D  workspace description: DXX basic example
+2018-08-16 20:45:40.819 D  Window.close()
+2018-08-16 20:45:40.821 D  workspace name: basic
+2018-08-16 20:45:40.821 D  workspace description: DXX basic example
+2018-08-16 20:45:40.823 D  WM_CLOSE: canClose is false
+2018-08-16 20:45:40.823 D  WM_CLOSE: canClose is false
+2018-08-16 20:45:40.823 D  Window destructor
+2018-08-16 20:45:40.847 D  Window onDestroy
+2018-08-16 20:45:40.848 V  destroyed window, removing from map
+2018-08-16 20:45:40.897 E  Cannot find window in map by HWND
+2018-08-16 20:45:40.903 D  Destroying window
+2018-08-16 20:45:40.905 I  onWindowClose()
+2018-08-16 20:45:40.909 D  Exiting DCD tasks thread
+2018-08-16 20:45:40.909 D  DCD: destroying module cache
+2018-08-16 20:45:41.729 I  UIAppMain returned 0
+2018-08-16 20:45:41.729 I  Destroying DrawableCache
+2018-08-16 20:45:41.729 I  Destroying ImageCache
+2018-08-16 20:45:41.813 D  Destroying font manager
+2018-08-16 20:45:41.813 D  Exiting main
+2018-08-16 20:45:41.813 D  Calling GC.collect
