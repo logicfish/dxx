@@ -2,6 +2,7 @@
 /+ dub.sdl:
 	name "tag"
 	dependency "scriptlike" version="~>0.10.2"
+	dependency "dxx" version="~master"
 +/
 module dxx.sys.tools.tag;
 
@@ -10,7 +11,7 @@ private import std.path;
 private import std.getopt;
 private import scriptlike;
 
-private import scripts.appcmd;
+private import dxx.sys.appcmd;
 
 enum projectPath = ".";
 

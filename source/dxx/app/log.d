@@ -5,11 +5,6 @@ private import std.experimental.logger;
 private import dxx.app;
 
 class MsgLog {
-    //static Logger _log;
-
-    //static this() {
-    //    _log = resolveInjector!Logger;
-    //}
 
     static void trace(alias m,Args...)(Args a) {
         trace(MsgText!m)(a);

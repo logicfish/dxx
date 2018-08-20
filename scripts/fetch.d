@@ -1,11 +1,14 @@
-#!rdmd -I"scriptlike-0.10.2/scriptlike/src;source"
-
-module tools.fetch;
+#!/usr/bin/env dub
+/+ dub.sdl:
+	name "fetch"
+	dependency "scriptlike" version="~>0.10.2"
+	dependency "dxx" version="~master"
++/
+module fetch;
 
 private import std.stdio;
 private import std.path;
 private import std.getopt;
-private import std.array;
 private import scriptlike;
 
 private import dxx.sys.appcmd;

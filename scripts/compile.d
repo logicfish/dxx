@@ -1,6 +1,10 @@
-#!rdmd -I"scriptlike-0.10.2/scriptlike/src;source"
-
-module tools.compile;
+#!/usr/bin/env dub
+/+ dub.sdl:
+	name "compile"
+	dependency "scriptlike" version="~>0.10.2"
+	dependency "dxx" version="~master"
++/
+module compile;
 
 private import std.stdio;
 private import std.path;
@@ -8,7 +12,6 @@ private import std.getopt;
 private import std.experimental.logger;
 
 private import scriptlike;
-
 private import dxx.sys.appcmd;
 
 enum projectPath = ".";
