@@ -1,0 +1,25 @@
+{
+	"name": "tool",
+	"authors": [
+		"Mark"
+	],
+	"description": "DXX Tools",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT",
+    "stringImportPaths" : [ "resources" ],
+	"dependencies": {
+		"dxx": { "path" : ".." }
+	},
+    "targetPath": "bin",
+    "configurations" : [
+        { 
+            "name": "dxx-default",
+            "targetType": "executable"
+        },
+        { 
+            "name": "dxx-gui", 
+            "targetType": "executable",
+            "versions" : [ "DXX_Gui" ] 
+        }
+    ]
+}

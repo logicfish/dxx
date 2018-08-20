@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+tools.so
+tools.dylib
+tools.dll
+tools.a
+tools.lib
+tools-test-*
+*.exe
+*.o
+*.obj
+*.lst

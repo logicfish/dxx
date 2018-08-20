@@ -10,11 +10,16 @@
     "targetPath": "bin",
     "stringImportPaths" : [ "resources" ],
     "dependencies" : {
-        "gen-package-version": "~>1.0.4",
         "ctini" : "~>0.2.1",
-        "standardpaths": "~>0.8.1"
+        "standardpaths": "~>0.8.1",
+        "semver" : "~>0.3.2",
+        "scriptlike": "~>0.10.2",
+        "aedi": "~>0.5.0"
     },
     "preGenerateCommands": [
         "dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
+    ],
+    "subPackages" : [
+        "tool"
     ]
 }

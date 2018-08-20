@@ -1,0 +1,7 @@
+{
+    "name": "tool",
+    "description": "DXX Tools",
+    "projects": {
+        "tool": "dub.json"
+    }
+}

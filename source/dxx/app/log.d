@@ -5,17 +5,18 @@ private import std.experimental.logger;
 private import dxx.app;
 
 class MsgLog {
-    static Logger _log;
+    //static Logger _log;
 
-    static this() {
-        _log = resolveInjector!Logger;
-    }
+    //static this() {
+    //    _log = resolveInjector!Logger;
+    //}
 
     static void trace(alias m,Args...)(Args a) {
         trace(MsgText!m)(a);
     }
 
     static void trace(M)(M m) {
+        auto _log = resolveInjector!Logger;
         _log.trace(m);
     }
 
@@ -24,6 +25,7 @@ class MsgLog {
     }
 
     static void log(M)(M m) {
+        auto _log = resolveInjector!Logger;
         _log.log(m);
     }
 
@@ -32,6 +34,7 @@ class MsgLog {
     }
 
     static void warn(M)(M m) {
+        auto _log = resolveInjector!Logger;
         _log.warn(m);
     }
 
@@ -40,6 +43,7 @@ class MsgLog {
     }
 
     static void error(M)(M m) {
+        auto _log = resolveInjector!Logger;
         _log.error(m);
     }
 
@@ -48,6 +52,7 @@ class MsgLog {
     }
 
     static void info(M)(M m) {
+        auto _log = resolveInjector!Logger;
         _log.info(m);
     }
     static void fatal(alias m,Args...)(Args a) {
@@ -55,6 +60,7 @@ class MsgLog {
     }
 
     static void fatal(M)(M m) {
+        auto _log = resolveInjector!Logger;
         _log.fatal(m);
     }
 };

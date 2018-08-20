@@ -14,6 +14,10 @@ private import std.file : getcwd,thisExePath;
 
 private import dxx.app;
 
+// cant use MsgLog here because it needs the injector.
+
+//mixin __Text;
+
 // Compile-time config
 enum DXXConfig = IniConfig!("dxx.ini");
 
@@ -43,19 +47,23 @@ final class AppConfig {
         properties[DXXConfig.keys.compilerVersionMinor] = Constants.compilerVersionMinor.to!string;
         properties[DXXConfig.keys.currentDir] = getcwd;
         properties[DXXConfig.keys.appDir] = thisExePath;
+        //properties[DXXConfig.keys.applicationName] = 
     }
 
     shared static this() {
         sharedLog.info("Config initialising.");
+        //MsgLog.info(DXXConfig.messages.MSG_CONFIG_INIT);
         File f;
         auto configFile = environment.get(DXXConfig.envKeys.configFile,
                 DXXConfig.app.configFile);
         try {
             sharedLog.info("Loading default config file.");
+            //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
         } catch(Exception e) {
             // Create the default config file.
             sharedLog.info("Creating default config file.");
+            //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
             auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
             of.write(import(DXXConfig.app.configDefaults));
             of.flush;
@@ -117,14 +125,11 @@ final class AppConfig {
         }
 
         setRuntimeDefaults(properties);
-
-        //iterate
         registerInjectorProperties(properties);
 
         if(_appconfig is null) {
             _appconfig = new AppConfig;
         }
-        inject(_appconfig);
     }
     auto static get(string s) {
         return _appconfig.lookup(s);

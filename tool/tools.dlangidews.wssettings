@@ -1,0 +1,25 @@
+{
+    "startupProject": "tools",
+    "breakpoints": [
+    ],
+    "bookmarks": [
+    ],
+    "files": [
+        {
+            "file": "C:\\msys64\\home\\Mark\\src\\dxx\\tools\\dub.json",
+            "column": 1,
+            "row": 14
+        },
+        {
+            "file": "C:\\msys64\\home\\Mark\\src\\dxx\\tools\\source\\dxx\\main.d",
+            "column": 5,
+            "row": 24
+        }
+    ],
+    "expandedItems": [
+        "C:\\msys64\\home\\Mark\\src\\dxx\\tools\\dub.json",
+        "C:\\msys64\\home\\Mark\\src\\dxx\\tools\\source",
+        "C:\\msys64\\home\\Mark\\src\\dxx\\tools\\source\\dxx"
+    ],
+    "selectedWorkspaceItem": "C:\\msys64\\home\\Mark\\src\\dxx\\tools\\source\\dxx\\main.d"
+}

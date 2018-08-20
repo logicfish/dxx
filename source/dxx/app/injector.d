@@ -13,82 +13,48 @@ static string[string] readInjectorProperties(File* f) {
 static void registerInjectorProperties(string[string] properties) {
 }
 
-static T inject(T)(T t) {
-//    DefaultInjector._DEFAULT_CONTAINER.autowire(t);
-    return t;
+static auto resolveInjector(alias T)() {
+    return DefaultInjector._DEFAULT_CONTAINER.locate!T;
 }
 
-static auto resolveInjector(alias T)() {
-//    return DefaultInjector._DEFAULT_CONTAINER.resolve!T;
-    return null;
+static auto newInjector(alias T)(ConfigurableContainer c = DefaultInjector._DEFAULT_CONTAINER) {
+    return new ContextInjector!T(c);
 }
 
 abstract class DefaultInjector {
 
-    static void inject(T)(T t) {
-        //DefaultInjector._DEFAULT_CONTAINER.autowire(t);
-        //Annotations.process(t);
-    }
+        static __gshared ConfigurableContainer _DEFAULT_CONTAINER;
 
-    //static auto newInjector(T...)(shared(DependencyContainer) c = DefaultInjector._DEFAULT_CONTAINER) {
-    //    return new Injector!T(c);
-    //}
-    static auto newInjector(T...)() {
-        return new ContextInjector!T();
-    }
-
-    static auto resolveInjector(alias T)() {
-//        return DefaultInjector._DEFAULT_CONTAINER.resolve!T;
-        return null;
-    }
-
-    static void registerInjectorProperties(string[string] properties) {
-//       DefaultInjector._DEFAULT_CONTAINER.registerProperdProperties(properties);
-    }
-
-//        static __gshared shared(DependencyContainer) _DEFAULT_CONTAINER;
-//
-//        @property
-//        shared(DependencyContainer) container;
+        @property
+        ConfigurableContainer container;
 
         shared static this() {
-           debug {
-            sharedLog.info("Creating shared container.");
-          }
-//          _DEFAULT_CONTAINER = new shared(DependencyContainer)();
-//          _DEFAULT_CONTAINER.setPersistentRegistrationOptions(RegistrationOption.doNotAddConcreteTypeRegistration);
-//          _DEFAULT_CONTAINER.setPersistentResolveOptions(ResolveOption.registerBeforeResolving);
+            debug {
+                sharedLog.info("Creating shared container.");
+            }
+            _DEFAULT_CONTAINER = singleton(); 
+            scope(exit) _DEFAULT_CONTAINER.terminate();
         }
-//        this(shared(DependencyContainer) c = _DEFAULT_CONTAINER) {
-//          container = c;
-//          wire(this);
-//        }
-        void wire(T)(T t) {
-//            container.autowire(t);
-    //        Annotations.process(t);
+        this(ConfigurableContainer c = _DEFAULT_CONTAINER) {
+            container = c;
         }
         void registerProperties(string[string] properties) {
-//           container.registerProperdProperties(properties);
         }
         auto resolve(alias T)() {
-//            return container.resolve!T;
+            return container.locate!T;
         }
         void register(T...)() {
-//            container.register!T;
+            container.register!T;
         }
 }
 
 
-final class ContextInjector(C ...) : DefaultInjector {
-    shared static this() {
-        static foreach(cls;C) {
-            debug { sharedLog.info("Register context: ",typeid(cls)); }
-            //_DEFAULT_CONTAINER.registerContext!cls;
-        }
+final class ContextInjector(alias C ) : DefaultInjector {
+    this(ConfigurableContainer c = _DEFAULT_CONTAINER) {
+        super(c);
+        c.scan!C;
+        c.instantiate();
     }
-    //this(shared(DependencyContainer) c = _DEFAULT_CONTAINER) {
-    //  super(c);
-    //}
 }
 
 abstract class Module {
@@ -101,10 +67,11 @@ abstract class Module {
             APP_MODULE = this;
         }
     }
+    //abstract void registerAppDependencies(DefaultInjector injector);
     
 }
 
-class AppModule(C ...) {
+class AppModule(alias C ) : Module {
     this() {
         injector = newInjector!C;
     }
