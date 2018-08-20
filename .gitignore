@@ -28,3 +28,7 @@ source/dxx/packageVersion.d
 *.dlangidews
 *.wssettings
 *.settings
+*.log
+.reggae
+
+compile_commands.json
