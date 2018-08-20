@@ -6,7 +6,7 @@ import dxx.app;
 class Example {
 };
 
-class BasicAppContext : ApplicationDefaultContext {
+class BasicModule : AppModule!(app) {
     //override void registerAppDependencies(DefaultInjector injector) {
       //injector.register!(DObjectImpl,DObject);
       //DCoreModelImpl.registerPackage(injector);
@@ -17,5 +17,5 @@ class BasicAppContext : ApplicationDefaultContext {
 
 void main()
 {
-	writeln("Edit source/app.d to start your project.");
+	MsgLog.info("Edit source/app.d to start your project.");
 }

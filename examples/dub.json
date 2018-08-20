@@ -7,6 +7,9 @@
 	"copyright": "Copyright © 2018, Mark",
 	"license": "MIT",
 	"dependencies" : {
-		"dxx" : { "path" : "../../"}
-	}
+		"dxx" : { "path" : "../"}
+	},
+    "subPackages" : [
+        "basic"
+    ]
 }

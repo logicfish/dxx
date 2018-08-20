@@ -3,6 +3,7 @@
 	"versions": {
 		"aedi": "0.5.0",
 		"ctini": "0.2.1",
+		"dxx": {"path":".."},
 		"isfreedesktop": "0.1.1",
 		"pegged": "~master",
 		"scriptlike": "0.10.2",

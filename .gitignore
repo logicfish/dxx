@@ -24,3 +24,7 @@ docs/
 *.lst
 
 source/dxx/packageVersion.d
+
+*.dlangidews
+*.wssettings
+*.settings

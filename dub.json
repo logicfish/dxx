@@ -20,6 +20,7 @@
         "dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
     ],
     "subPackages" : [
-        "tool"
+        "tool",
+        "examples/basic"
     ]
 }

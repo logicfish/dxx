@@ -68,7 +68,10 @@ abstract class Module {
         }
     }
     //abstract void registerAppDependencies(DefaultInjector injector);
-    
+    @component
+    public Logger getLogger() {
+        return sharedLog;
+    }
 }
 
 class AppModule(alias C ) : Module {
