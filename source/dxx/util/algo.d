@@ -1,4 +1,4 @@
-module dxx.algo;
+module dxx.util.algo;
 
 
 import std.traits,

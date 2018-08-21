@@ -1,4 +1,4 @@
-module dxx.app.storage;
+module dxx.util.storage;
 
 private import dxx.app;
 

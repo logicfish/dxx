@@ -12,6 +12,8 @@ private import std.compiler;
 private import std.process : environment;
 private import std.file : getcwd,thisExePath;
 
+private import dxx;
+private import dxx.util;
 private import dxx.app;
 
 // cant use MsgLog here because it needs the injector.

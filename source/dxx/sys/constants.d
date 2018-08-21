@@ -1,4 +1,4 @@
-module dxx.constants;
+module dxx.sys.constants;
 
 import std.compiler;
 import core.cpuid;

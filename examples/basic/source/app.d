@@ -1,21 +1,18 @@
 module app;
 
-import std.stdio;
-import dxx.app;
+private import aermicioi.aedi;
+private import std.stdio;
+private import dxx.app;
 
 class Example {
 };
 
-class BasicModule : AppModule!(app) {
-    //override void registerAppDependencies(DefaultInjector injector) {
-      //injector.register!(DObjectImpl,DObject);
-      //DCoreModelImpl.registerPackage(injector);
-      //injector.register!Example;
-    //}
+@component
+class BasicModule : RuntimeModule {
 
 };
 
-void main()
-{
+void main() {
+    auto m = new BasicModule;
 	MsgLog.info("Edit source/app.d to start your project.");
 }

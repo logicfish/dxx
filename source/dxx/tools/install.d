@@ -4,8 +4,9 @@ private import dxx.tools;
 
 // Install
 
-class InstallTool : Tool {
-    override int run(string[] args) {
+class InstallTool : ToolBase {
+    int run(string[] args) {
+        MsgLog.info("InstallTool run()");
         return Tool.OK;
     }
     

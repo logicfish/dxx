@@ -15,8 +15,7 @@ private import dxx.sys.appcmd;
 
 enum projectPath = ".";
 
-void main(string[] args)
-{
+void main(string[] args) {
     bool show = false;
 
     getopt(args,"s","Show tag",&show);

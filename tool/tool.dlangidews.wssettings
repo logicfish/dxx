@@ -5,5 +5,16 @@
     "bookmarks": [
     ],
     "files": [
-    ]
+        {
+            "file": "C:\\msys64\\home\\Mark\\src\\dxx\\tool\\source\\dxx\\tool.d",
+            "column": 2,
+            "row": 0
+        }
+    ],
+    "expandedItems": [
+        "C:\\msys64\\home\\Mark\\src\\dxx\\tool\\dub.json",
+        "C:\\msys64\\home\\Mark\\src\\dxx\\tool\\source\\dxx",
+        "C:\\msys64\\home\\Mark\\src\\dxx\\tool\\source"
+    ],
+    "selectedWorkspaceItem": "C:\\msys64\\home\\Mark\\src\\dxx\\tool\\source\\dxx\\tool.d"
 }

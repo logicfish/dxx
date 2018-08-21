@@ -4,10 +4,10 @@ private import dxx.tools;
 
 // Initialise empty project
 
-class InitTool : Tool {
+class InitTool : ToolBase {
     int run(string[] args) {
+        MsgLog.info("InitTool run()");
         return Tool.OK;
     }
-    
 };
 

@@ -2,13 +2,20 @@
 	"fileVersion": 1,
 	"versions": {
 		"aedi": "0.5.0",
+		"aedi-property-reader": "0.2.0",
 		"ctini": "0.2.1",
-		"dxx": {"path":"../../"},
+		"dyaml": "0.6.5",
 		"isfreedesktop": "0.1.1",
+		"libinputvisitor": "1.2.2",
 		"pegged": "~master",
+		"proper-d": "0.0.2",
 		"scriptlike": "0.10.2",
+		"sdlang-d": "0.10.4",
 		"semver": "0.3.2",
 		"standardpaths": "0.8.1",
+		"taggedalgebraic": "0.10.11",
+		"tinyendian": "0.1.2",
+		"unit-threaded": "0.7.51",
 		"xdgpaths": "0.2.5"
 	}
 }

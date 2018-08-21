@@ -1,6 +1,6 @@
 module dxx.tools.tool;
 
-import dxx.tools;
+private import dxx.tools;
 
 struct ToolOptions {
     string organisation;
@@ -13,9 +13,16 @@ struct ToolOptions {
     string desc;
 }
 
-interface Tool {
+interface Tool : WorkflowElement {
     enum OK = 0;
     int run(string[] args);
+}
+
+abstract class ToolBase : WorkflowElementBase, Tool {
+    int status = OK;
+    override void processElement(WorkflowJob job) {
+        status = run(job.workflow.args);
+    }
 }
 
 
