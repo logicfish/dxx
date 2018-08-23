@@ -30,5 +30,7 @@ class InitTool : ToolBase {
         MsgLog.info("InitTool run()");
         return Tool.OK;
     }
+    //void initWorkflow(Workflow wf) {
+    //}
 };
 

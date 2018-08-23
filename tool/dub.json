@@ -13,14 +13,19 @@
     "targetPath": "bin",
     "configurations" : [
         { 
-            "name": "dxx-default",
+            "name": "dxx-console",
             "targetType": "executable",
-            "targetName": "dxx"
+            "targetName": "dxx",
+            "mainSourceFile": "source/dxx/tool.d",
+            "excludedSourceFiles" : [ "source/dxx/gui.d" ],
+            "versions" : [ "DXX_Console" ]
         },
         { 
             "name": "dxx-gui", 
             "targetType": "executable",
             "targetName": "dxx-g",
+            "mainSourceFile": "source/dxx/gui.d",
+            "excludedSourceFiles": [ "source/dxx/tool.d" ],
             "versions" : [ "DXX_Gui" ] 
         }
     ]

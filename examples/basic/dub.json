@@ -10,6 +10,7 @@
 	"targetPath": "bin",
 	"targetType": "executable",
 	"targetName": "dxx-basic",
+    "mainSourceFile": "source/app.d",
 	"dependencies" : {
 		"dxx" : { "path" : "../../"}
 	}
