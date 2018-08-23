@@ -1,6 +1,8 @@
 module dxx.app.job;
 
-interface Job {
+private import dxx.util;
+
+interface Job : NotificationSource {
     enum Status {
         NOT_STARTED,
         STARTED,
@@ -8,6 +10,11 @@ interface Job {
         TERMINATED,
         THROWN_EXCEPTION
     }
+    struct JobStatusEvent {
+      Job job;
+      Status status;
+    }
+
     @property
     Status status();
 
@@ -15,13 +22,13 @@ interface Job {
     bool terminated();
 
     @property
-    Exception getThrownException();
-    
+    Exception thrownException();
+
     void execute();
     void join();
 }
 
-abstract class JobBase : Job {
+abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
     Exception _thrownException;
     bool _terminated = false;
@@ -30,20 +37,25 @@ abstract class JobBase : Job {
         return _status;
     }
     @property
+    void status(Status s) {
+      _status = s;
+      (cast(shared)this).send!JobStatusEvent(JobStatusEvent(this,s));
+    }
+    @property
     bool terminated() {
         return _terminated;
     }
     @property
-    Exception getThrownException() {
+    Exception thrownException() {
         return _thrownException;
     }
     void execute() {
-        _status = Status.STARTED;
+        status(Status.STARTED);
         try {
             executeJob();
-            _status = Status.TERMINATED;
+            status = Status.TERMINATED;
         } catch(Exception e) {
-            _status = Status.THROWN_EXCEPTION;
+            status = Status.THROWN_EXCEPTION;
             _thrownException = e;
         } finally {
             _terminated = true;

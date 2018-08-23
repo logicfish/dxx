@@ -6,6 +6,10 @@
 	"description": "DXX basic example",
 	"copyright": "Copyright © 2018, Mark",
 	"license": "MIT",
+	"stringImportPaths" : [ "resources" ],
+	"targetPath": "bin",
+	"targetType": "executable",
+	"targetName": "dxx-basic",
 	"dependencies" : {
 		"dxx" : { "path" : "../../"}
 	}

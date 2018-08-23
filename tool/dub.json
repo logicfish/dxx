@@ -14,11 +14,13 @@
     "configurations" : [
         { 
             "name": "dxx-default",
-            "targetType": "executable"
+            "targetType": "executable",
+            "targetName": "dxx"
         },
         { 
             "name": "dxx-gui", 
             "targetType": "executable",
+            "targetName": "dxx-g",
             "versions" : [ "DXX_Gui" ] 
         }
     ]

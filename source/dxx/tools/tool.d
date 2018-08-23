@@ -24,5 +24,3 @@ abstract class ToolBase : WorkflowElementBase, Tool {
         status = run(job.workflow.args);
     }
 }
-
-

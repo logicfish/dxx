@@ -67,3 +67,43 @@ final class WorkflowRunner {
     }
 }
 
+unittest {
+    class TestElement : WorkflowElementBase {
+        bool _done = false;
+        override void processElement(WorkflowJob job) {
+            _done = true;
+        }
+    }
+    string[] arg = [ "arg0","arg1","arg2" ];
+    
+    auto elem = new TestElement;
+    WorkflowElement[] e = [ elem ];
+    auto wf = new DefaultWorkflow(e,arg);
+    auto r = new WorkflowRunner;
+    auto j = r.createJob(wf);
+    j.execute();
+    assert(j.terminated);
+    assert(j.status == Job.Status.TERMINATED);
+    assert(elem._done);
+    
+}
+
+unittest {
+    class TestElementException : WorkflowElementBase {
+        override void processElement(WorkflowJob job) {
+            throw new Exception("workflow unittest");
+        }
+    }
+    string[] arg = [ "arg0","arg1","arg2" ];
+    
+    auto elem = new TestElementException;
+    WorkflowElement[] e = [ elem ];
+    auto wf = new DefaultWorkflow(e,arg);
+    auto r = new WorkflowRunner;
+    auto j = r.createJob(wf);
+    j.execute();
+    assert(j.terminated);
+    assert(j.status == Job.Status.THROWN_EXCEPTION);
+    assert(j.thrownException !is null);
+}
+

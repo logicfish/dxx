@@ -46,14 +46,18 @@ int main(string[] args) {
         return 0;
     }
     if(args.length < 2) {
+        defaultGetoptPrinter(ToolConfig.tools.applicationName,
+            rslt.options);
         return -1;
     }
     string cmd = args[1];
     MsgLog.info("cmd = "~cmd);
 
-    auto tool = resolveInjector!Tool("tool.cmd."~cmd);
-    if(tool is null) {
-        MsgLog.fatal("Tool %s not found.");
+    Tool tool;
+    try {
+        tool = resolveInjector!Tool("tool.cmd."~cmd);
+    } catch(Exception e) {
+        MsgLog.fatal(MsgText!(ToolConfig.toolsMessages.ERR_TOOL_NOT_FOUND)(cmd));
         return -1;
     }
     MsgLog.trace("tool "~typeid(typeof(tool)).to!string);
