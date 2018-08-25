@@ -22,61 +22,88 @@ SOFTWARE.
 module dxx.app.log;
 
 private import std.experimental.logger;
+private import std.conv;
 
-private import dxx.util;
+private import dxx.util.notify;
 
-class MsgLog {
-
-    //static void trace(alias m,Args...)(Args a) {
-    //    trace(MsgText!m)(a);
-    //}
-
-    static void trace(M)(M m) {
-        auto _log = resolveInjector!Logger;
-        _log.trace(m);
+final class MsgLog : SyncNotificationSource,NotificationListener {
+    struct LogNotification {
+        LogLevel logLevel;
+        int line;
+        string file;
+        string funcName;
+        string prettyFuncName;
+        string moduleName;
+        string msg;
+    }
+    __gshared shared(MsgLog) _MSGLOG;
+    
+    shared static this() {
+        sharedLog.info("MsgLog static this");
+        if(_MSGLOG is null) {
+            _MSGLOG = new MsgLog;
+            _MSGLOG.addNotificationListener(_MSGLOG);
+        }
     }
 
-    //static void log(alias m,Args...)(Args a) {
-    //    log(MsgText!m)(a);
-    //}
-
-    static void log(M)(M m) {
-        auto _log = resolveInjector!Logger;
-        _log.log(m);
+    override synchronized void handleNotification(void* p) {
+        debug(Notify) {
+            sharedLog.info("MsgLog handleNotification");
+        }
+        //LogNotification* n = cast(LogNotification*)p;
+        //if(n !is null) {
+        //}
     }
 
-    //static void warn(alias m,Args...)(Args a) {
-    //    warn(MsgText!m)(a);
-    //}
-
-    static void warn(M)(M m) {
-        auto _log = resolveInjector!Logger;
-        _log.warn(m);
+    static void addLogNotificationListener(T)(T t) {
+        _MSGLOG.addNotificationListener(t);
+    }
+    static void removeLogNotificationListener(T)(T t) {
+        _MSGLOG.removeNotificationListener(t);
+    }
+    static void sendLogNotification(LogNotification n) {
+        _MSGLOG.send!(LogNotification)(&n);
     }
 
-    //static void error(alias m,Args...)(Args a) {
-    //    error(MsgText!m)(a);
-    //}
-
-    static void error(M)(M m) {
-        auto _log = resolveInjector!Logger;
-        _log.error(m);
+    static void trace(int line = __LINE__, string file = __FILE__,
+            string funcName = __FUNCTION__,
+            string prettyFuncName = __PRETTY_FUNCTION__,
+            string moduleName = __MODULE__, A...)(
+                lazy A args) {
+        sendLogNotification(LogNotification(LogLevel.trace,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+        sharedLog.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+    }
+    static void warn(int line = __LINE__, string file = __FILE__,
+            string funcName = __FUNCTION__,
+            string prettyFuncName = __PRETTY_FUNCTION__,
+            string moduleName = __MODULE__, A...)(
+                lazy A args) {
+        sendLogNotification(LogNotification(LogLevel.warn,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+        sharedLog.warn!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+    }
+    static void error(int line = __LINE__, string file = __FILE__,
+            string funcName = __FUNCTION__,
+            string prettyFuncName = __PRETTY_FUNCTION__,
+            string moduleName = __MODULE__, A...)(
+                lazy A args) {
+        sendLogNotification(LogNotification(LogLevel.error,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+        sharedLog.error!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+    }
+    static void info(int line = __LINE__, string file = __FILE__,
+            string funcName = __FUNCTION__,
+            string prettyFuncName = __PRETTY_FUNCTION__,
+            string moduleName = __MODULE__, A...)(
+                lazy A args) {
+        sendLogNotification(LogNotification(LogLevel.info,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+        sharedLog.info!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+    }
+    static void fatal(int line = __LINE__, string file = __FILE__,
+            string funcName = __FUNCTION__,
+            string prettyFuncName = __PRETTY_FUNCTION__,
+            string moduleName = __MODULE__, A...)(
+                lazy A args) {
+        sendLogNotification(LogNotification(LogLevel.fatal,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+        sharedLog.fatal!(line,file,funcName,prettyFuncName,moduleName,A)(args);
     }
 
-    //static void info(alias m,Args...)(Args a) {
-    //    info(MsgText!m)(a);
-    //}
-
-    static void info(M)(M m) {
-        auto _log = resolveInjector!Logger;
-        _log.info(m);
-    }
-    //static void fatal(alias m,Args...)(Args a) {
-    //    fatal(MsgText!m)(a);
-    //}
-
-    static void fatal(M)(M m) {
-        auto _log = resolveInjector!Logger;
-        _log.fatal(m);
-    }
 };

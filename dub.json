@@ -15,7 +15,8 @@
         "semver" : "~>0.3.2",
         "scriptlike": "~>0.10.2",
         "aedi": "~>0.5.0",
-        "aedi-property-reader": "~>0.2.0"
+        "aedi-property-reader": "~>0.2.0",
+        "pegged": "~master"
     },
     "preGenerateCommands": [
         "dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"

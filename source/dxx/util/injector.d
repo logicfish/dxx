@@ -23,15 +23,16 @@ module dxx.util.injector;
 
 private import aermicioi.aedi;
 
-private import std.stdio;
+private import std.variant;
 private import std.experimental.logger;
+private import std.stdio;
 
-static string[string] readInjectorProperties(File* f) {
-    string[string] res;
+static Variant[string] readInjectorProperties(File* f) {
+    Variant[string] res;
     return res;
 }
-
-static void registerInjectorProperties(string[string] properties) {
+//
+static void registerInjectorProperties(Variant[string] properties) {
 }
 
 static auto resolveInjector(alias T,Arg...)(Arg arg) {

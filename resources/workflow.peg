@@ -1,0 +1,12 @@
+WorkflowGrammar :
+    WorkflowDoc <- WorkflowHeader WorkflowDefinition*
+
+    WorkflowHeader <- "options" "{" WorkflowOption* "}"
+
+    WorkflowOption <- identifier ("." identifier)? = .* ";"
+
+    WorkflowDefinition <- "workflow" identifier "{" WorkflowHeader? WorkflowElement* "}"
+
+    WorkflowElement <- identifier ("." identifier)? "{" WorkflowSetting* "}"
+
+    WorkflowSetting <- WorkflowOption | WorkflowElement

@@ -150,10 +150,15 @@ unittest {
 	assert(b == 257);
 }
 
-template Reduce(alias Func,alias Param,args...) {
-	static if (args.length > 1)
-		alias Reduce = Apply!(Func,args[0],Reduce!(Func,args[1..$]));
-	else
-		alias Reduce = Apply!(Func,args[0],Param);
+//template Reduce(alias Func,alias Param,args...) {
+ //static if (args.length > 1)
+ //	alias Reduce = Apply!(Func,args[0],Reduce!(Func,args[1..$]));
+ //else
+ //	alias Reduce = Apply!(Func,args[0],Param);
+//}
+//
+template removeElement(T,alias V) {
+  auto ref removeElement(ref T t) { return t.remove(a => a is V); }
 }
+
 

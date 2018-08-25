@@ -37,13 +37,13 @@ interface Job : NotificationSource {
     }
 
     @property
-    Status status();
+    Status status() const;
 
     @property
-    bool terminated();
+    bool terminated() const;
 
     @property
-    Exception thrownException();
+    ref inout(Exception) thrownException() inout;
 
     void execute();
     void join();
@@ -54,20 +54,21 @@ abstract class JobBase : SyncNotificationSource, Job {
     Exception _thrownException;
     bool _terminated = false;
     @property
-    Status status() {
+    Status status() const {
         return _status;
     }
     @property
     void status(Status s) {
       _status = s;
-      (cast(shared)this).send!JobStatusEvent(JobStatusEvent(this,s));
+      auto e = JobStatusEvent(this,s);
+      (cast(shared)this).send!JobStatusEvent(&e);
     }
     @property
-    bool terminated() {
+    bool terminated() const {
         return _terminated;
     }
     @property
-    Exception thrownException() {
+    ref inout(Exception) thrownException() inout {
         return _thrownException;
     }
     void execute() {

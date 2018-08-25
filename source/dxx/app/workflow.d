@@ -38,9 +38,10 @@ abstract class WorkflowElementBase : WorkflowElement {
 
 interface Workflow {
     @property
-    WorkflowElement[] workflowElements();
+    ref inout (WorkflowElement[]) workflowElements() inout;
+    
     @property
-    string[] args();
+    ref inout (string[]) args() inout;
 }
 
 abstract class WorkflowBase : Workflow {
@@ -48,11 +49,11 @@ abstract class WorkflowBase : Workflow {
     string[] _args;
     
     @property
-    WorkflowElement[] workflowElements() {
+    ref inout (WorkflowElement[]) workflowElements() inout {
         return _workflowElements;
     }
     @property
-    string[] args() {
+    ref inout (string[]) args() inout {
         return _args;
     }
     this(WorkflowElement[] elements,string[] args) {

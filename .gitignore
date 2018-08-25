@@ -32,3 +32,5 @@ source/dxx/packageVersion.d
 .reggae
 
 compile_commands.json
+
+./source/dxx/packageVersion.d

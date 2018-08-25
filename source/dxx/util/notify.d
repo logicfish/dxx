@@ -24,9 +24,10 @@ module dxx.util.notify;
 private import std.algorithm;
 private import std.parallelism;
 
-class NotificationListener {
-  synchronized void handleNotification(T)(T t) {
-  }
+private import std.experimental.logger;
+
+interface NotificationListener {
+  synchronized void handleNotification(void* t);
 };
 
 interface NotificationSource {
@@ -38,21 +39,49 @@ interface NotificationSource {
 Synchronized notification handler.
 ++/
 
-//template removeElement(alias T,alias V) {
-//  auto ref removeElement(ref V v) { return v.remove(a => a is T); }
-//}
-
 class SyncNotificationSource : NotificationSource {
   NotificationListener[] notificationListeners;
-  synchronized void send(T)(T t) {
-    notificationListeners.parallel.each!(x=>x.handleNotification!T(t));
+  synchronized void send(T)(T* t) {
+    debug(Notify) {
+        sharedLog.info("SyncNotificationSource : send ",typeid(T)," ",notificationListeners.length);
+    }
+    //notificationListeners.parallel.each!(x=>x.handleNotification(cast(void*)t));
+    notificationListeners.each!(x=>x.handleNotification(cast(void*)&t));
+    //foreach(l;notificationListeners) {
+    //    l.handleNotification(cast(void*)&t);
+    //}
   }
   override shared void addNotificationListener(shared(NotificationListener) n) {
+    debug(Notify) {
+        sharedLog.info("SyncNotificationSource : addNotificationListener ",notificationListeners.length);
+    }
     notificationListeners ~= n;
   }
   override shared void removeNotificationListener(shared(NotificationListener) n) {
-  //notificationListeners.remove(notificationListeners.countUntil(n));
-    notificationListeners.remove!(a => a is n);
-    //notificationListeners.removeElement!n;
+    debug(Notify) {
+        sharedLog.info("SyncNotificationSource : removeNotificationListener",notificationListeners.length);
+    }
+    notificationListeners = notificationListeners.remove(notificationListeners.countUntil(n));
+    //notificationListeners.remove!(a => a is n);
   }
+}
+
+unittest {
+    shared(bool) done = false;
+    class TestNotificationListener : NotificationListener {
+        override synchronized void handleNotification(void* t) {
+            done = true;
+        }
+    }
+    auto n = new shared(SyncNotificationSource);
+    shared(NotificationListener) l = new shared(TestNotificationListener);
+    n.addNotificationListener(l);
+    string s = "";
+    n.send!string(&s);
+    assert(done is true);
+
+    done = false;
+    n.removeNotificationListener(l);
+    n.send!string(&s);
+    assert(done is false);
 }

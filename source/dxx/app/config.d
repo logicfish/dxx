@@ -32,6 +32,7 @@ private import std.traits;
 private import std.compiler;
 private import std.process : environment;
 private import std.file : getcwd,thisExePath;
+private import std.variant;
 
 private import dxx;
 private import dxx.util;
@@ -61,7 +62,7 @@ final class AppConfig {
     //@Autowire
     //ValueInjector!bool boolValues;
 
-    static void setRuntimeDefaults(ref string[string] properties) {
+    static void setRuntimeDefaults(ref Variant[string] properties) {
         properties[DXXConfig.keys.packageVersion] = packageVersion;
         properties[DXXConfig.keys.packageTimestamp] = packageTimestamp;
         properties[DXXConfig.keys.packageTimestampISO] = packageTimestampISO;
@@ -74,18 +75,18 @@ final class AppConfig {
     }
 
     shared static this() {
-        sharedLog.info("Config initialising.");
+        //sharedLog.info("Config initialising.");
         //MsgLog.info(DXXConfig.messages.MSG_CONFIG_INIT);
         File f;
         auto configFile = environment.get(DXXConfig.envKeys.configFile,
                 DXXConfig.app.configFile);
         try {
-            sharedLog.info("Loading default config file.");
+            //sharedLog.info("Loading default config file.");
             //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
         } catch(Exception e) {
             // Create the default config file.
-            sharedLog.info("Creating default config file.");
+            //sharedLog.info("Creating default config file.");
             //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
             auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
             of.write(import(DXXConfig.app.configDefaults));
