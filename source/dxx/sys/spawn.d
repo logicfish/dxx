@@ -34,7 +34,7 @@ private import std.stdio;
 private import core.thread;
 private import core.sync.mutex;
 
-private import dxx.app;
+private import dxx.util;
 
 mixin __Text;
 

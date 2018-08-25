@@ -21,6 +21,7 @@ SOFTWARE.
 **/
 module dxx.tools.install;
 
+private import dxx.util;
 private import dxx.tools;
 
 // Install

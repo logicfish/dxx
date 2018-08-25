@@ -21,6 +21,7 @@ SOFTWARE.
 **/
 module dxx.tools.init;
 
+private import dxx.util;
 private import dxx.tools;
 
 // Initialise empty project

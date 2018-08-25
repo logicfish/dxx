@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 **/
-module dxx.app.config;
+module dxx.util.config;
 
 private import ctini.ctini;
 
@@ -35,32 +35,14 @@ private import std.file : getcwd,thisExePath;
 private import std.variant;
 
 private import dxx;
-private import dxx.util;
-private import dxx.app;
-
-// cant use MsgLog here because it needs the injector.
-
-//mixin __Text;
+private import dxx.util.storage;
 
 // Compile-time config
 enum DXXConfig = IniConfig!("dxx.ini");
 
 // Runtime config
-
 final class AppConfig {
     static __gshared AppConfig _appconfig;
-
-    //@Autowire
-    //ValueInjector!string stringValues;
-
-    //@Autowire
-    //ValueInjector!int intValues;
-
-    //@Autowire
-    //ValueInjector!float floatValues;
-
-    //@Autowire
-    //ValueInjector!bool boolValues;
 
     static void setRuntimeDefaults(ref Variant[string] properties) {
         properties[DXXConfig.keys.packageVersion] = packageVersion;

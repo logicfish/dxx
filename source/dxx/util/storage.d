@@ -21,7 +21,7 @@ SOFTWARE.
 **/
 module dxx.util.storage;
 
-private import dxx.app;
+private import dxx.util;
 
 private import standardpaths;
 private import std.stdio;

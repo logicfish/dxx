@@ -19,12 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 **/
-module dxx.app.log;
+module dxx.util.log;
 
 private import std.experimental.logger;
 private import std.conv;
 
-private import dxx.util.notify;
+private import dxx.util;
 
 final class MsgLog : SyncNotificationSource,NotificationListener {
     struct LogNotification {
@@ -39,7 +39,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
     __gshared shared(MsgLog) _MSGLOG;
     
     shared static this() {
-        sharedLog.info("MsgLog static this");
+        sharedLog.trace("MsgLog static this");
         if(_MSGLOG is null) {
             _MSGLOG = new MsgLog;
             _MSGLOG.addNotificationListener(_MSGLOG);
@@ -48,12 +48,16 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
 
     override synchronized void handleNotification(void* p) {
         debug(Notify) {
-            sharedLog.info("MsgLog handleNotification");
+            sharedLog.trace("MsgLog handleNotification");
         }
         //LogNotification* n = cast(LogNotification*)p;
         //if(n !is null) {
         //}
     }
+
+    
+    alias logger = resolveInjector!Logger;        
+    
 
     static void addLogNotificationListener(T)(T t) {
         _MSGLOG.addNotificationListener(t);
@@ -71,7 +75,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         sendLogNotification(LogNotification(LogLevel.trace,line,file,funcName,prettyFuncName,moduleName,args.to!string));
-        sharedLog.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+        logger.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);
     }
     static void warn(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
@@ -79,7 +83,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         sendLogNotification(LogNotification(LogLevel.warn,line,file,funcName,prettyFuncName,moduleName,args.to!string));
-        sharedLog.warn!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+        logger.warn!(line,file,funcName,prettyFuncName,moduleName,A)(args);
     }
     static void error(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
@@ -87,7 +91,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         sendLogNotification(LogNotification(LogLevel.error,line,file,funcName,prettyFuncName,moduleName,args.to!string));
-        sharedLog.error!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+        logger.error!(line,file,funcName,prettyFuncName,moduleName,A)(args);
     }
     static void info(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
@@ -95,7 +99,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         sendLogNotification(LogNotification(LogLevel.info,line,file,funcName,prettyFuncName,moduleName,args.to!string));
-        sharedLog.info!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+        logger.info!(line,file,funcName,prettyFuncName,moduleName,A)(args);
     }
     static void fatal(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
@@ -103,7 +107,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         sendLogNotification(LogNotification(LogLevel.fatal,line,file,funcName,prettyFuncName,moduleName,args.to!string));
-        sharedLog.fatal!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+        logger.fatal!(line,file,funcName,prettyFuncName,moduleName,A)(args);
     }
 
 };

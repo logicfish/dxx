@@ -19,12 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 **/
-module dxx.app.messages;
+module dxx.util.messages;
 
 private import std.format;
 private import std.array : appender;
 
-private import dxx.app.config;
+private import dxx.util;
 
 mixin template __Text(string lang = DXXConfig.app.lang) {
     enum _Text = IniConfig!(lang ~ ".ini");
