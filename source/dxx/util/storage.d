@@ -21,12 +21,13 @@ SOFTWARE.
 **/
 module dxx.util.storage;
 
-private import dxx.util;
-
 private import standardpaths;
 private import std.stdio;
 private import std.path;
 private import std.file;
+
+private import dxx.util.messages;
+private import dxx.util.config;
 
 mixin __Text;
 
@@ -57,8 +58,10 @@ auto inputConfigFile(alias app)(string fn)
 }
 
 unittest {
+    import dxx.util.config;
     auto confOut = outputConfigFile!(DXXConfig.app)("tests.conf");
     confOut.write("[tests]");
     auto confIn = inputConfigFile!(DXXConfig.app)("tests.conf");
-    
+    //assert(confIn !is null);
 }
+

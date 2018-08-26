@@ -36,6 +36,8 @@ private import std.variant;
 
 private import dxx;
 private import dxx.util.storage;
+private import dxx.util.injector;
+private import dxx.util.ini;
 
 // Compile-time config
 enum DXXConfig = IniConfig!("dxx.ini");

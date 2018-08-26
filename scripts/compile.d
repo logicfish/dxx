@@ -42,7 +42,8 @@ void main(string[] args) {
     if(test) {
       sharedLog.info("unittest");
       Path(projectPath).run(_dub ~ " test " ~ opt);
-    } else if(run) {
+    } 
+    if(run) {
       sharedLog.info("run");
       Path(appPath).run(_dub ~ " run " ~ opt);
     }

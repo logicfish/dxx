@@ -24,7 +24,8 @@ module dxx.util.messages;
 private import std.format;
 private import std.array : appender;
 
-private import dxx.util;
+private import dxx.util.ini;
+private import dxx.util.config;
 
 mixin template __Text(string lang = DXXConfig.app.lang) {
     enum _Text = IniConfig!(lang ~ ".ini");

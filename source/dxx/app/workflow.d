@@ -26,15 +26,15 @@ private import std.algorithm;
 private import dxx.app.job;
 
 interface WorkflowElement {
-    void process(WorkflowJob job);
+    void processElement(WorkflowJob job);
 }
 
-abstract class WorkflowElementBase : WorkflowElement {
-    override void process(WorkflowJob job) {
-        processElement(job);
-    }
-    abstract void processElement(WorkflowJob job);
-}
+//abstract class WorkflowElementBase : WorkflowElement {
+//    override void process(WorkflowJob job) {
+//        processElement(job);
+//    }
+//    abstract void processElement(WorkflowJob job);
+//}
 
 interface Workflow {
     @property
@@ -74,11 +74,11 @@ final class WorkflowJob : JobBase {
         this._workflow = wf;
     }
     @property
-    Workflow workflow() {
+    inout(Workflow) workflow() inout {
         return _workflow;
     }
     override void executeJob() {
-        workflow.workflowElements.each!(e=>e.process(this));
+        workflow.workflowElements.each!(e=>e.processElement(this));
     }
 }
 
@@ -90,7 +90,7 @@ final class WorkflowRunner {
 }
 
 unittest {
-    class TestElement : WorkflowElementBase {
+    class TestElement : WorkflowElement {
         bool _done = false;
         override void processElement(WorkflowJob job) {
             _done = true;
@@ -111,7 +111,7 @@ unittest {
 }
 
 unittest {
-    class TestElementException : WorkflowElementBase {
+    class TestElementException : WorkflowElement {
         override void processElement(WorkflowJob job) {
             throw new Exception("workflow unittest");
         }

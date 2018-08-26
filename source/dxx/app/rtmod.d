@@ -26,22 +26,15 @@ private import aermicioi.aedi;
 private import std.experimental.logger;
 
 private import dxx.util.injector;
-private import dxx.app.workflow;
+private import dxx.app;
 
 @component
 abstract class RuntimeModule {
     static __gshared RuntimeModule MODULE;
-    //static __gshared Module APP_MODULE;
     static __gshared WorkflowRunner workflowRunner;
+    static __gshared ExtensionPointManager extensionPointManager;
 
-    //static __gshared DefaultInjector injector;
-    //DefaultInjector injector;
 
-    //public this() {
-    //    if(MODULE is null) {
-    //        MODULE = this;
-    //    }
-    //}
     abstract void registerAppDependencies(DefaultInjector injector);
 
     @component
@@ -60,6 +53,14 @@ abstract class RuntimeModule {
             workflowRunner = new WorkflowRunner;
         }
         return workflowRunner;
+    }
+    
+    @component
+    public ExtensionPointManager getExtensionPointManager() {
+        if(extensionPointManager is null) {
+            extensionPointManager = new ExtensionPointManager;
+        }
+        return extensionPointManager;
     }
 
     public this(this T)() {

@@ -39,7 +39,7 @@ interface Tool : WorkflowElement {
     int run(string[] args);
 }
 
-abstract class ToolBase : WorkflowElementBase, Tool {
+abstract class ToolBase : WorkflowElement, Tool {
     int status = OK;
     override void processElement(WorkflowJob job) {
         status = run(job.workflow.args);
