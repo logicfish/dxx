@@ -16,14 +16,13 @@ private import dxx.sys.appcmd;
 
 enum projectPath = ".";
 enum versionFile = "source/dxx/packageVersion.d";
-enum appPath = projectPath ~ "/examples/basic";
 
 void main(string[] args) {
     bool run = false;
     bool test = false;
     bool force = false;
 
-    getopt(args,"r","Run",&run,
+    getopt(args,"r","Run examples",&run,
             "t","Test",&test,
             "f","Force build",&force
 	  );
@@ -35,6 +34,7 @@ void main(string[] args) {
     version(Windows) {
       sharedLog.info("Building default lib for windows.");
       Path(projectPath).run(_dub ~ " build " ~ opt);
+      Path(projectPath).run(_dub ~ " build :services " ~ opt);
     } else {
       sharedLog.info("Building default lib.");
       Path(projectPath).run("build");
@@ -42,9 +42,11 @@ void main(string[] args) {
     if(test) {
       sharedLog.info("unittest");
       Path(projectPath).run(_dub ~ " test " ~ opt);
-    } 
+      Path(projectPath).run(_dub ~ " test :services " ~ opt);
+			Path(projectPath).run(_dub ~ " test :tool " ~ opt);
+    }
     if(run) {
       sharedLog.info("run");
-      Path(appPath).run(_dub ~ " run " ~ opt);
+      Path(projectPath).run(_dub ~ " run :basic " ~ opt);
     }
 }

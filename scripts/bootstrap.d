@@ -16,7 +16,7 @@ private import dxx.sys.appcmd;
 enum projectPath = ".";
 enum reggaeTarget = "binary";
 
-enum upgradePaths = [ projectPath,"examples/basic","tool" ];
+enum upgradePaths = [ projectPath,"services","tool","examples/basic" ];
 
 void main() {
     //tryRun("git pull");

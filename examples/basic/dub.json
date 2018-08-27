@@ -12,6 +12,7 @@
 	"targetName": "dxx-basic",
     "mainSourceFile": "source/app.d",
 	"dependencies" : {
-		"dxx" : { "path" : "../../"}
+		"dxx" : { "path" : "../../"},
+		"dxx:services" : { "path" : "../../services/"},
 	}
 }

@@ -1,0 +1,15 @@
+{
+	"name": "services",
+	"authors": [
+		"Mark"
+	],
+	"dependencies": {
+		"dxx": { "path" : "../" }
+	},
+    "targetType": "library",
+    "targetPath": "bin",
+    "stringImportPaths" : [ "resources" ],
+	"description": "DXX Services library",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT"
+}
