@@ -16,6 +16,7 @@
         "scriptlike": "~>0.10.2",
         "aedi": "~>0.5.0",
         "aedi-property-reader": "~>0.2.0",
+        "qscript": "~>0.6.1",
         "pegged": "~master"
     },
     "preGenerateCommands": [
