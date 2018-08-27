@@ -37,7 +37,7 @@ void main(string[] args) {
       Path(projectPath).run(_dub ~ " build :services " ~ opt);
     } else {
       sharedLog.info("Building default lib.");
-      Path(projectPath).run("build");
+      Path(projectPath).run("./build");
     }
     if(test) {
       sharedLog.info("unittest");

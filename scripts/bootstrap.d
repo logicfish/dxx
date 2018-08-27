@@ -29,6 +29,7 @@ void main() {
     version(Posix)enum buildExe = "build";
     version(Windows)enum buildExe = "build.exe";
     Path(projectPath ~ "/" ~ buildExe).tryRemove();
+    tryRun(_dub ~ " fetch reggae");
     Path(projectPath).tryRun(_dub ~ " run reggae " ~ dubopt ~ " -- -b "~reggaeTarget);
     //tryRun(_rdmd ~ dmdopt ~ " ./generate.d");
 }
