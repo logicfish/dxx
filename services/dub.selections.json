@@ -8,6 +8,7 @@
 		"dyaml": "0.6.5",
 		"isfreedesktop": "0.1.1",
 		"libinputvisitor": "1.2.2",
+		"metad": "~master",
 		"pegged": "~master",
 		"proper-d": "0.0.2",
 		"qscript": "0.6.1",
@@ -18,6 +19,7 @@
 		"taggedalgebraic": "0.10.11",
 		"tinyendian": "0.1.2",
 		"unit-threaded": "0.7.51",
+		"urld": "2.1.1",
 		"utils": "0.1.9",
 		"xdgpaths": "0.2.5"
 	}
