@@ -12,7 +12,7 @@ private import std.getopt;
 private import std.experimental.logger;
 
 private import scriptlike;
-private import dxx.sys.appcmd;
+private import dxx.sys.shellcmd;
 
 enum projectPath = ".";
 enum versionFile = "source/dxx/packageVersion.d";

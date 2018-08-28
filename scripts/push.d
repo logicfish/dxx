@@ -11,7 +11,7 @@ private import std.path;
 private import std.getopt;
 private import scriptlike;
 
-private import dxx.sys.appcmd;
+private import dxx.sys.shellcmd;
 
 enum projectPath = ".";
 

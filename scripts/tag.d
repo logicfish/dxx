@@ -11,7 +11,7 @@ private import std.path;
 private import std.getopt;
 private import scriptlike;
 
-private import dxx.sys.appcmd;
+private import dxx.sys.shellcmd;
 
 enum projectPath = ".";
 
@@ -33,4 +33,3 @@ void main(string[] args) {
         tryRun(_rdmd ~ " -Iscriptlike-0.10.2/scriptlike/src " ~ dmdopt ~ " ./bootstrap.d");
     }
 }
-
