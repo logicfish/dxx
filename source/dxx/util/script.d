@@ -21,37 +21,49 @@ SOFTWARE.
 **/
 module dxx.util.script;
 
-private import utils.misc : fileToArray;
+//private import utils.misc : fileToArray;
 private import qscript.qscript;
+
 private import std.datetime;
 private import std.stdio;
 
-class ScriptRunner : QScript {
+private import dxx.util.config;
+private import dxx.util.messages;
+private import dxx.util.log;
 
+mixin __Text;
+
+class Script : QScript {
+    string scriptName;
+    
 protected:
 	override bool onRuntimeError(RuntimeError error){
-		std.stdio.writeln ("# Runtime Error #");
-		std.stdio.writeln ("# Function: ", error.functionName, " Instruction: ",error.instructionIndex);
-		std.stdio.writeln ("# ", error.error);
-		std.stdio.writeln ("Enter n to return false, or just enter to return true");
-		string input = std.stdio.readln;
-		if (input == "n\n"){
-			return false;
-		}else{
-			return true;
-		}
+		//std.stdio.writeln ("# Runtime Error #");
+		//std.stdio.writeln ("# Function: ", error.functionName, " Instruction: ",error.instructionIndex);
+		//std.stdio.writeln ("# ", error.error);
+		//std.stdio.writeln ("Enter n to return false, or just enter to return true");
+		//string input = std.stdio.readln;
+		//if (input == "n\n"){
+		//	return false;
+		//}else{
+		//	return true;
+		//}
+        MsgLog.error(MsgText!(DXXConfig.messages.MSG_ERR_SCRIPT_RUNTIME)(scriptName,error.functionName,error.instructionIndex));
+        return true;
 	}
 
 	override bool onUndefinedFunctionCall(string fName){
-		std.stdio.writeln ("# undefined Function Called #");
-		std.stdio.writeln ("# Function: ", fName);
-		std.stdio.writeln ("Enter n to return false, or just enter to return true");
-		string input = std.stdio.readln;
-		if (input == "n\n"){
-			return false;
-		}else{
-			return true;
-		}
+		//std.stdio.writeln ("# undefined Function Called #");
+		//std.stdio.writeln ("# Function: ", fName);
+		//std.stdio.writeln ("Enter n to return false, or just enter to return true");
+		//string input = std.stdio.readln;
+		//if (input == "n\n"){
+		//	return false;
+		//}else{
+		//	return true;
+		//}
+        MsgLog.error(MsgText!(DXXConfig.messages.MSG_ERR_SCRIPT_UNDEFINED_FUNCTION)(scriptName,fName));
+        return true;
 	}
 private:
 	/// writeln function
@@ -82,7 +94,8 @@ private:
 	}
 public:
 	/// constructor
-	this (){
+	this (string name){
+        this.scriptName = name;
 		this.addFunction(Function("writeln", DataType("void"), [DataType("string")]), &writeln);
 		this.addFunction(Function("write", DataType("void"), [DataType("string")]), &write);
 		this.addFunction(Function("writeInt", DataType("void"), [DataType("int")]), &writeInt);

@@ -59,6 +59,7 @@ final class AppConfig {
     }
 
     shared static this() {
+        Variant[string] properties;
         //sharedLog.info("Config initialising.");
         //MsgLog.info(DXXConfig.messages.MSG_CONFIG_INIT);
         File f;
@@ -68,17 +69,18 @@ final class AppConfig {
             //sharedLog.info("Loading default config file.");
             //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
+            properties = readInjectorProperties(&f);
         } catch(Exception e) {
             // Create the default config file.
             //sharedLog.info("Creating default config file.");
             //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
-            auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
-            of.write(import(DXXConfig.app.configDefaults));
-            of.flush;
-            of.close;
-            f = inputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
+            //auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
+            //of.write(import(DXXConfig.app.configDefaults));
+            //of.flush;
+            //of.close;
+            //f = inputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
+            //properties = readInjectorProperties(&f);
         }
-        auto properties = readInjectorProperties(&f);
 
         iterateValuesF!(DXXConfig.vars)( (string fqn,string k,string v) {
             properties[k]=v;

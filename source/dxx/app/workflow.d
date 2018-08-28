@@ -90,15 +90,18 @@ final class WorkflowRunner {
 }
 
 unittest {
-    class TestElement : WorkflowElement {
+    import std.stdio;
+    
+    class TestWorkflowElement : WorkflowElement {
         bool _done = false;
         override void processElement(WorkflowJob job) {
+            writeln("TestWorkflowElement.processElement");
             _done = true;
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
     
-    auto elem = new TestElement;
+    auto elem = new TestWorkflowElement;
     WorkflowElement[] e = [ elem ];
     auto wf = new DefaultWorkflow(e,arg);
     auto r = new WorkflowRunner;
@@ -111,14 +114,16 @@ unittest {
 }
 
 unittest {
-    class TestElementException : WorkflowElement {
+    import std.stdio;
+    class TestWorkflowElementException : WorkflowElement {
         override void processElement(WorkflowJob job) {
+            writeln("TestWorkflowElementException.processElement");
             throw new Exception("workflow unittest");
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
     
-    auto elem = new TestElementException;
+    auto elem = new TestWorkflowElementException;
     WorkflowElement[] e = [ elem ];
     auto wf = new DefaultWorkflow(e,arg);
     auto r = new WorkflowRunner;

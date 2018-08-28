@@ -19,36 +19,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 **/
-module dxx.util.messages;
+module dxx.util.properties;
 
-private import std.format;
-private import std.array : appender;
-private import std.typecons;
+private import dxx.util;
 
-private import dxx.util.ini;
-private import dxx.util.config;
 
-mixin template __Text(string lang = DXXConfig.app.lang) {
-    enum _Text = IniConfig!(lang ~ ".ini");
-    import ctini.ctini;
-    const(string) MsgText(alias K,Args...)(Args args) {
-        return MsgParam!(mixin("_Text.text."~K))(args);
-    }
-    const(string) getText(Args...)(const(string) k,Args args) {
-        static foreach (t ; _Text.text.fieldNames) {
-            if(t == k) return MsgText!t(args);
-        }
-        return k;
-    }
-}
 
-const(string) MsgParam(alias K,Args...)(Args args) {
-    auto writer = appender!string;
-    writer.formattedWrite(K, args);
-    return writer.data;
-}
-
-unittest {
-  mixin __Text;
-  assert(MsgText!(DXXConfig.messages.MSG_APP_NAME) == "DXX Library");
-}

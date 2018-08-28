@@ -31,8 +31,10 @@ private import dxx.app;
 @component
 abstract class RuntimeModule {
     static __gshared RuntimeModule MODULE;
-    static __gshared WorkflowRunner workflowRunner;
-    static __gshared ExtensionPointManager extensionPointManager;
+    
+    static WorkflowRunner workflowRunner;
+    
+    //static __gshared ExtensionPointManager extensionPointManager;
 
 
     abstract void registerAppDependencies(DefaultInjector injector);
@@ -55,13 +57,13 @@ abstract class RuntimeModule {
         return workflowRunner;
     }
     
-    @component
-    public ExtensionPointManager getExtensionPointManager() {
-        if(extensionPointManager is null) {
-            extensionPointManager = new ExtensionPointManager;
-        }
-        return extensionPointManager;
-    }
+    //@component
+    //public ExtensionPointManager getExtensionPointManager() {
+    //    if(extensionPointManager is null) {
+    //        extensionPointManager = new ExtensionPointManager;
+    //    }
+    //    return extensionPointManager;
+    //}
 
     public this(this T)() {
         if(MODULE is null) {

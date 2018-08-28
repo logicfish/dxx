@@ -21,6 +21,8 @@ SOFTWARE.
 **/
 module dxx.app.job;
 
+private import core.thread;
+
 private import dxx.util;
 
 interface Job : NotificationSource {
@@ -46,7 +48,7 @@ interface Job : NotificationSource {
     ref inout(Exception) thrownException() inout;
 
     void execute();
-    void join();
+    //void join();
 }
 
 abstract class JobBase : SyncNotificationSource, Job {
@@ -83,8 +85,9 @@ abstract class JobBase : SyncNotificationSource, Job {
             _terminated = true;
         }
     }
-    void join() {
-        while(!terminated) {
+    static void join(Job j) {
+        while(!j.terminated) {
+            Thread.sleep( dur!("msecs")( 10 ) );
         }
     }
     abstract void executeJob();
@@ -92,6 +95,6 @@ abstract class JobBase : SyncNotificationSource, Job {
 
 class JobDelegate(alias F) : JobBase {
     override void executeJob() {
-        F(this);
+        F();
     }
 }
