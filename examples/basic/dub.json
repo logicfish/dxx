@@ -13,6 +13,6 @@
     "mainSourceFile": "source/app.d",
 	"dependencies" : {
 		"dxx" : { "path" : "../../"},
-		"dxx:services" : { "path" : "../../services/"},
+		"dxx:services" : { "path" : "../../services/"}
 	}
 }

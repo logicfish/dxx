@@ -1,15 +1,17 @@
 {
-	"name": "services",
-	"authors": [
-		"Mark"
-	],
-	"dependencies": {
-		"dxx": { "path" : "../" }
-	},
+    "name": "services",
+    "authors": [
+        "Mark"
+    ],
+    "dependencies": {
+        "dxx": { "path" : "../" },
+        "vibe-d:web": "~>0.8.4",
+        "ircbod2" : "~>0.1.6"
+    },
     "targetType": "library",
     "targetPath": "bin",
     "stringImportPaths" : [ "resources" ],
-	"description": "DXX Services library",
-	"copyright": "Copyright © 2018, Mark",
-	"license": "MIT"
+    "description": "DXX Services library",
+    "copyright": "Copyright © 2018, Mark",
+    "license": "MIT"
 }

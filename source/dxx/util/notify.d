@@ -2,21 +2,21 @@
 Copyright 2018 Mark Fisher
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
 module dxx.util.notify;
@@ -26,13 +26,21 @@ private import std.parallelism;
 
 private import std.experimental.logger;
 
+/++
+Simple notification service.
+
+An object that inherits NotificationSource maintains a vector of
+NotificationListener's.
+
+++/
+
 interface NotificationListener {
-  synchronized void handleNotification(void* t);
+  shared void handleNotification(void* t);
 };
 
 interface NotificationSource {
-  synchronized void addNotificationListener(shared(NotificationListener) n);
-  synchronized void removeNotificationListener(shared(NotificationListener) n);
+  shared void addNotificationListener(shared(NotificationListener) n);
+  shared void removeNotificationListener(shared(NotificationListener) n);
 }
 
 /++
@@ -40,29 +48,34 @@ Synchronized notification handler.
 ++/
 
 class SyncNotificationSource : NotificationSource {
+
   NotificationListener[] notificationListeners;
-  synchronized void send(T)(T* t) {
+
+  nothrow shared
+  void send(T)(T* t) {
     debug(Notify) {
         sharedLog.info("SyncNotificationSource : send ",typeid(T)," ",notificationListeners.length);
     }
-    //notificationListeners.parallel.each!(x=>x.handleNotification(cast(void*)t));
-    notificationListeners.each!(x=>x.handleNotification(cast(void*)&t));
-    //foreach(l;notificationListeners) {
-    //    l.handleNotification(cast(void*)&t);
-    //}
+    auto ar = notificationListeners.dup;
+    try {
+      ar.parallel.each!(x=>x.handleNotification(cast(void*)&t));
+    } catch(Exception e) {
+      //sharedLog.error(e.message); nothrow!
+    }
   }
+
   override shared void addNotificationListener(shared(NotificationListener) n) {
     debug(Notify) {
         sharedLog.info("SyncNotificationSource : addNotificationListener ",notificationListeners.length);
     }
     notificationListeners ~= n;
   }
+
   override shared void removeNotificationListener(shared(NotificationListener) n) {
     debug(Notify) {
         sharedLog.info("SyncNotificationSource : removeNotificationListener",notificationListeners.length);
     }
     notificationListeners = notificationListeners.remove(notificationListeners.countUntil(n));
-    //notificationListeners.remove!(a => a is n);
   }
 }
 

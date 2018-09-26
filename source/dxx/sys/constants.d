@@ -34,6 +34,8 @@ class Constants {
     enum compilerVersionMajor = version_major;
     enum compilerVersionMinor = version_minor;
 
+    enum compileTimestamp = __TIMESTAMP__;
+
     version(Windows) { enum platform_os = "Windows"; }
     version(Posix) { enum platform_os = "Posix"; }
     version(MacOS) { enum platform_os = "MacOS"; }

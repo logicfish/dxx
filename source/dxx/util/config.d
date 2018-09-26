@@ -54,6 +54,7 @@ final class AppConfig {
         properties[DXXConfig.keys.compilerVersionMajor] = Constants.compilerVersionMajor.to!string;
         properties[DXXConfig.keys.compilerVersionMinor] = Constants.compilerVersionMinor.to!string;
         properties[DXXConfig.keys.currentDir] = getcwd;
+        properties[DXXConfig.keys.compileTimestamp] = Constants.compileTimestamp;
         properties[DXXConfig.keys.appDir] = thisExePath;
         //properties[DXXConfig.keys.applicationName] = 
     }
