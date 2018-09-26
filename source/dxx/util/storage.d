@@ -36,6 +36,7 @@ auto outputConfigFile(alias app)(string fn)
     string configDir = writablePath(StandardPath.config, buildPath(app.organizationName, app.applicationName), FolderFlag.create);
     if (!configDir.length) {
         enum msg = DXXConfig.messages.MSG_CONFIG_DIR;
+        //enum msg = "err_config_dir";
         throw new Exception(MsgText!msg());
     }
     string configFile = buildPath(configDir, fn);
@@ -54,6 +55,7 @@ auto inputConfigFile(alias app)(string fn)
         }
     }
     enum msg = DXXConfig.messages.MSG_CONFIG_NOT_FOUND;
+    //enum msg = "err_config_not_found";
     throw new Exception(MsgText!msg(fn));
 }
 

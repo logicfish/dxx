@@ -30,6 +30,6 @@ void main(string[] args) {
         string versionString = args[1];
         tryRun(_git ~ " tag -a " ~ versionString ~ " -m 'Version " ~ versionString ~"'");
         tryRun(_git ~ " push --tags");
-        tryRun("./scripts/bootstrap.d");
+        tryRun("scripts/bootstrap.d");
     }
 }

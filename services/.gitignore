@@ -12,3 +12,5 @@ services-test-*
 *.o
 *.obj
 *.lst
+/dxx
+/bin/

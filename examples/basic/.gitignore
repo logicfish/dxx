@@ -12,3 +12,6 @@ basic-test-*
 *.o
 *.obj
 *.lst
+/.dub.json.un~
+/dub.json~
+/bin/

@@ -31,7 +31,7 @@ private import aermicioi.aedi;
 private import aermicioi.aedi_property_reader;
 
 private import dxx.util.ini;
-private import dxx.util.storage;
+//private import dxx.util.storage;
 
 static Variant[string] readInjectorProperties(File* f) {
     Variant[string] res;
@@ -59,7 +59,7 @@ static auto newInjector(alias T)(Container c = DefaultInjector._DEFAULT_CONTAINE
 
 abstract class DefaultInjector {
 
-        static __gshared Container _DEFAULT_CONTAINER;
+        static __gshared AggregateContainer _DEFAULT_CONTAINER;
 
         @property
         Container _container;
@@ -121,7 +121,7 @@ final class ContextInjector(alias C ) : DefaultInjector {
     this(Container c = _DEFAULT_CONTAINER) {
         super(c);
         c.scan!C;
-        foreach (subcontainer; c) {
+        foreach (subcontainer; c.constainers) {
 	        with (subcontainer.configure) {
 			//register!ushort("http.port");
 			//register!(string[])("http.listen");

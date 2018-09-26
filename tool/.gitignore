@@ -12,3 +12,4 @@ tools-test-*
 *.o
 *.obj
 *.lst
+/bin/
