@@ -40,7 +40,7 @@ mixin __Text!(ToolConfig.tools.lang);
 @component
 class ToolsModule : RuntimeModule {
     void registerTool(alias Cmd : string,T : Tool)(DefaultInjector injector) {
-        injector.container.configure.register!Tool(new T,"tool.cmd."~Cmd);
+        injector.register!Tool(new T,"tool.cmd."~Cmd);
     }
     override void registerAppDependencies(DefaultInjector injector) {
         //sharedLog.trace("ToolsModule registerAppDependencies()");
@@ -48,8 +48,12 @@ class ToolsModule : RuntimeModule {
         registerTool!("install",InstallTool)(injector);
         registerTool!("lang",LangTool)(injector);
         registerTool!("cfg",CfgTool)(injector);
+        
+        //InitTool.registerArguments(injector);
+        //InstallTool.registerArguments(injector);
+        //LangTool.registerArguments(injector);
+        //CfgTool.registerArguments(injector);
     }
-
 };
 
 struct Options {
@@ -84,7 +88,7 @@ int main(string[] args) {
     MsgLog.trace("tool "~typeid(typeof(tool)).to!string);
 
     WorkflowElement[] elements = [ tool ];
-    elements[0] = tool;
+    //elements[0] = tool;
     auto wf = new DefaultWorkflow(elements,args);
     
     WorkflowRunner runner = resolveInjector!WorkflowRunner;

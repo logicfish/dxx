@@ -24,7 +24,7 @@ module dxx.util.config;
 private import ctini.ctini;
 
 private import std.format;
-private import std.array : appender;
+private import std.array : appender,join;
 private import std.stdio;
 private import std.experimental.logger;
 private import std.conv;
@@ -33,6 +33,8 @@ private import std.compiler;
 private import std.process : environment;
 private import std.file : getcwd,thisExePath;
 private import std.variant;
+
+private import core.runtime;
 
 private import dxx;
 private import dxx.util.storage;
@@ -57,6 +59,7 @@ final class AppConfig {
         properties[DXXConfig.keys.compileTimestamp] = Constants.compileTimestamp;
         properties[DXXConfig.keys.appDir] = thisExePath;
         //properties[DXXConfig.keys.applicationName] = 
+        properties[DXXConfig.keys.commandLine] = Runtime.args.join(" ");
     }
 
     shared static this() {

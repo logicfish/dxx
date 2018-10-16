@@ -23,12 +23,13 @@ module dxx.tools.install;
 
 private import dxx.util;
 private import dxx.tools;
+private import eph.args;
 
 // Install
 
 class InstallTool : ToolBase {
-    int run(string[] args) {
-        MsgLog.info("InstallTool run()");
+	override int runTool(WorkflowJob job) {
+        MsgLog.info("InstallTool runTool()");
         return Tool.OK;
     }
     

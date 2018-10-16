@@ -24,6 +24,7 @@ module dxx.app.job;
 private import core.thread;
 
 private import dxx.util;
+private import dxx.app;
 
 interface Job : NotificationSource {
     enum Status {
@@ -49,12 +50,16 @@ interface Job : NotificationSource {
 
     void execute();
     //void join();
+	//void setProperty(string k,string v);
+	//string getProperty(string k);
 }
 
 abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
     Exception _thrownException;
     bool _terminated = false;
+    DefaultInjector _injector;
+    
     @property pure @safe nothrow @nogc
     const(Status) status() const {
         return _status;
@@ -73,10 +78,15 @@ abstract class JobBase : SyncNotificationSource, Job {
     ref inout(Exception) thrownException() inout {
         return _thrownException;
     }
+    @property @safe nothrow
+    ref inout(DefaultInjector) injector() inout {
+    	return _injector;
+    }
 
     nothrow
     void execute() {
         try {
+        	_injector = RuntimeModule.injector; 
             status(Status.STARTED);
             executeJob();
             status = Status.TERMINATED;
@@ -99,6 +109,20 @@ abstract class JobBase : SyncNotificationSource, Job {
         }
     }
     abstract void executeJob();
+//	override void setProperty(T)(string k,T v) {
+//		injector.setProperty(v,k);
+//	}    
+//	override T getProperty(T)(string k) {
+//		return injector.getProperty!T(k);
+//	}   
+	//override 
+	void setProperty(string k,string v) {
+		injector.register!string(v,k);
+	}    
+	//override 
+	string getProperty(string k) {
+		return injector.resolve!string(k);
+	}   
 }
 
 class JobDelegate(alias F) : JobBase {

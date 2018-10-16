@@ -24,14 +24,14 @@ module dxx.tools.cons;
 private import dxx.util;
 private import dxx.tools;
 
+private import eph.args;
+
 // Initialise empty project
 
 class ConsoleTool : ToolBase {
-    int run(string[] args) {
+	override int runTool(WorkflowJob job) {
         MsgLog.info("ConsoleTool run()");
         return Tool.OK;
     }
-    //void initWorkflow(Workflow wf) {
-    //}
 };
 

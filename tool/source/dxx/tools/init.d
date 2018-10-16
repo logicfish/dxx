@@ -21,17 +21,45 @@ SOFTWARE.
 **/
 module dxx.tools.init;
 
+private import eph.args;
+
+private import std.array : join,split;
+
 private import dxx.util;
 private import dxx.tools;
+private import dxx.tool;
 
 // Initialise empty project
 
 class InitTool : ToolBase {
-    int run(string[] args) {
-        MsgLog.info("InitTool run()");
+	override 
+	int runTool(WorkflowJob job) {
+    	string[] types = job.injector.getArgument(ToolConfig.args.type).values;
+    	
+    	job.injector.getArgument(ToolConfig.args.define).values.each!((string a) {
+    			string[] keyValue = a.split("=");
+	    		if(keyValue.length == 2) job.setProperty(keyValue[0],keyValue[1]);
+		    	else job.setProperty(keyValue[0],"true");
+			    //MsgLog.info("defn ",keyValue.join("="));
+    	});
+        
+        //MsgLog.info("InitTool runTool() %s",types.join(","));
+        
         return Tool.OK;
     }
     //void initWorkflow(Workflow wf) {
     //}
+    
+    override 
+    ArgParser registerArguments(ArgParser parser,WorkflowJob job) {
+    	//auto parser = super.registerDefaultArgs();
+    	Argument typeArg = new Argument().shortFlag('t').longFlag("type").requireParam();
+    	job.injector.registerArgument(typeArg,ToolConfig.args.type);
+    	    	
+    	Parameter param = new Parameter();
+    	job.injector.register!Parameter(param,ToolConfig.args.param);
+    	
+    	return parser.register(typeArg).register(param);
+    }
 };
 

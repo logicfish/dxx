@@ -14,3 +14,9 @@ workflow dxx.tool.update {
     dxx.tool.createBuildFiles {}
     
 }
+
+workflow dxx.tool.cfg {
+}
+
+workflow dxx.tool.lang {
+}

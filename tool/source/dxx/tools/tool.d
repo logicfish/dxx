@@ -21,7 +21,11 @@ SOFTWARE.
 **/
 module dxx.tools.tool;
 
+private import eph.args;
+
 private import dxx.tools;
+private import dxx.tool;
+private import dxx.util.injector;
 
 struct ToolOptions {
     string organisation;
@@ -36,12 +40,39 @@ struct ToolOptions {
 
 interface Tool : WorkflowElement {
     enum OK = 0;
-    int run(string[] args);
+    int run(WorkflowJob job);
+    //Argument getArgument(string key);
+}
+
+void registerArgument(DefaultInjector i,Argument arg,string id) {
+	i.register!Argument(arg,id);
+}
+Argument getArgument(DefaultInjector i,string id) {
+	return i.resolve!Argument(id);
 }
 
 abstract class ToolBase : WorkflowElement, Tool {
     int status = OK;
     override void processElement(WorkflowJob job) {
-        status = run(job.workflow.args);
+        status = run(job);
+    }
+	 
+    override int run(WorkflowJob job) {
+	    //auto argsParser = injector.lookup!ArgParser;
+	    auto argsParser = registerDefaultArgs(job);
+	    argsParser.parse(job.workflow.args);
+	    return this.runTool(job);
+    }
+    
+    ArgParser registerArguments(ArgParser parser,WorkflowJob job) {
+    	return parser;
+    }
+	int runTool(WorkflowJob job);
+    
+    ArgParser registerDefaultArgs(WorkflowJob job) {
+		auto parser = job.injector.resolve!ArgParser;
+       	Argument defArg = new Argument().shortFlag('D').longFlag("def").requireParam();
+    	job.injector.registerArgument(defArg,ToolConfig.args.define);
+    	return registerArguments(parser.register(defArg),job);
     }
 }

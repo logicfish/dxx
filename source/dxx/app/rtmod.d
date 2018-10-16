@@ -22,17 +22,24 @@ SOFTWARE.
 module dxx.app.rtmod;
 
 private import aermicioi.aedi;
+private import eph.args;
+
+private import core.runtime;
 
 private import std.experimental.logger;
 
 private import dxx.util.injector;
+private import dxx.util.config;
 private import dxx.app;
+
 
 @component
 abstract class RuntimeModule {
     static __gshared RuntimeModule MODULE;
 
     static WorkflowRunner workflowRunner;
+//    static ArgParser argParser;
+    DefaultInjector _injector;
 
     //static __gshared ExtensionPointManager extensionPointManager;
 
@@ -46,6 +53,28 @@ abstract class RuntimeModule {
     @component
     public Logger getLogger() {
         return sharedLog;
+    }
+    
+    nothrow
+	static DefaultInjector injector() {
+    	return MODULE._injector;
+    }
+    @component
+    public ArgParser getArgParser() {
+//    	if(argParser is null) {
+//			argParser = new ArgParser;
+//			Parameter param = new Parameter();
+//			argParser.register(param);
+//			//string args = AppConfig.get(DXXConfig.keys.commandLine);
+//			//args.split(" ");
+//			//Argument[] arguments = resolveInjector!(Argument[])();
+//			//arguments.each!(a => argParser.register(a)); 
+//			
+////			auto args = Runtime.args;
+////			argParser.parse(args);
+//    	}
+//    	return argParser;
+		return new ArgParser;
     }
 
     @component
@@ -68,7 +97,7 @@ abstract class RuntimeModule {
         if(MODULE is null) {
             MODULE = this;
         }
-        auto injector = newInjector!T;
+        _injector = newInjector!T;
         registerAppDependencies(injector);
         injector.instantiate();
     }

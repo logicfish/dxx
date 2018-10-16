@@ -21,14 +21,15 @@ SOFTWARE.
 **/
 module dxx.tools.cfg;
 
-import dxx.tools;
+private import dxx.tools;
+private import eph.args;
 
 // Manage config vars
 
 class CfgTool : ToolBase {
-    int run(string[] args) {
+	override int runTool(WorkflowJob job) {
         return Tool.OK;
     }
-    
+
 };
 

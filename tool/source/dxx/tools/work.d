@@ -21,14 +21,14 @@ SOFTWARE.
 **/
 module dxx.tools.work;
 
-import dxx.tools;
+private import dxx.tools;
+private import eph.args;
 
 // Manage workflows
 
 class WorkTool : ToolBase {
-    int run(string[] args) {
+	override int runTool(WorkflowJob job) {
         return Tool.OK;
     }
-    
 };
 

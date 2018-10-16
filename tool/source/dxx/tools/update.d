@@ -23,13 +23,14 @@ module dxx.tools.update;
 
 
 private import dxx.tools;
+private import eph.args;
 
 // Modify language keys
 
 class UpdateTool : ToolBase {
-    int run(string[] args) {
+	override int runTool(WorkflowJob job) {
         return Tool.OK;
     }
-    
+
 };
 

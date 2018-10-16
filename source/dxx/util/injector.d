@@ -53,8 +53,16 @@ static auto resolveInjector(alias T,Arg...)(Arg arg) {
     return DefaultInjector._DEFAULT_CONTAINER.locate!T(arg);
 }
 
-static auto newInjector(alias T)(Container c = DefaultInjector._DEFAULT_CONTAINER) {
+static auto newInjector(alias T)(AggregateContainer c = DefaultInjector._DEFAULT_CONTAINER) {
     return new ContextInjector!T(c);
+}
+
+static T getInjectorProperty(T)(DefaultInjector i,string k) {
+    return i.resolve!T(k);
+}
+
+static void setInjectorProperty(T)(DefaultInjector i,string k,T t) {
+    i.register!T(t,k);
 }
 
 abstract class DefaultInjector {
@@ -62,7 +70,7 @@ abstract class DefaultInjector {
         static __gshared AggregateContainer _DEFAULT_CONTAINER;
 
         @property
-        Container _container;
+        AggregateContainer _container;
         static auto config() {
 	        auto cont = container(
 	          singleton,
@@ -97,16 +105,22 @@ abstract class DefaultInjector {
             _DEFAULT_CONTAINER = c;
             scope(exit) _DEFAULT_CONTAINER.terminate();
         }
-        this(Container c = _DEFAULT_CONTAINER) {
+        this(AggregateContainer c = _DEFAULT_CONTAINER) {
             _container = c;
         }
         //void registerProperties(string[string] properties) {
         //}
-        auto resolve(alias T)() {
-            return _container.locate!T;
+//        auto resolve(alias T)() {
+//            return _container.locate!T;
+//        }
+        auto resolve(T,Arg ...)(Arg arg) {
+            return _container.locate!T(arg);
         }
-        void register(T...)() {
-            _container.register!T;
+//        void register(T...)() {
+//            _container.register!T;
+//        }
+        void register(T,Arg...)(Arg arg) {
+            _container.register!T(arg);
         }
         //auto configure() {
         //    return _container.configure;
@@ -118,22 +132,22 @@ abstract class DefaultInjector {
 
 
 final class ContextInjector(alias C ) : DefaultInjector {
-    this(Container c = _DEFAULT_CONTAINER) {
+    this(AggregateContainer c = _DEFAULT_CONTAINER) {
         super(c);
         c.scan!C;
-        foreach (subcontainer; c.constainers) {
-	        with (subcontainer.configure) {
-			//register!ushort("http.port");
-			//register!(string[])("http.listen");
-			//register!string("http.host");
-			//register!bool("http.compression");
-			//register!string("log.access.file");
-			//register!string("log.access.format");
-			//register!bool("log.access.console");
-			//register!string("route.index");
-			//register!string("route.about");
-			//register!string("route.public");
-		    }
-        }       
+//        foreach (subcontainer; c) {
+//	        with (subcontainer.configure) {
+//			//register!ushort("http.port");
+//			//register!(string[])("http.listen");
+//			//register!string("http.host");
+//			//register!bool("http.compression");
+//			//register!string("log.access.file");
+//			//register!string("log.access.format");
+//			//register!bool("log.access.console");
+//			//register!string("route.index");
+//			//register!string("route.about");
+//			//register!string("route.public");
+//		    }
+//        }       
     }
 }
