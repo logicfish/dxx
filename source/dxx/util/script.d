@@ -22,7 +22,7 @@ SOFTWARE.
 module dxx.util.script;
 
 //private import utils.misc : fileToArray;
-private import qscript.qscript;
+//private import qscript.qscript;
 
 private import std.datetime;
 private import std.stdio;
@@ -33,7 +33,7 @@ private import dxx.util.log;
 
 mixin __Text;
 
-class Script : QScript {
+class Script { // : QScript {
     string scriptName;
     
 protected:
@@ -66,41 +66,41 @@ protected:
         return true;
 	}
 private:
-	/// writeln function
-	QData writeln(QData[] args){
-		std.stdio.writeln (args[0].strVal);
-		return QData(0);
-	}
-	/// write function
-	QData write(QData[] args){
-		std.stdio.write (args[0].strVal);
-		return QData(0);
-	}
-	/// write int
-	QData writeInt(QData[] args){
-		std.stdio.write(args[0].intVal);
-		return QData(0);
-	}
-	/// write double
-	QData writeDbl(QData[] args){
-		std.stdio.write(args[0].doubleVal);
-		return QData(0);
-	}
-	/// readln function
-	QData readln(QData[] args){
-		string s = std.stdio.readln;
-		s.length--;
-		return QData(s);
-	}
+	///// writeln function
+	//QData writeln(QData[] args){
+	//	std.stdio.writeln (args[0].strVal);
+	//	return QData(0);
+	//}
+	///// write function
+	//QData write(QData[] args){
+	//	std.stdio.write (args[0].strVal);
+	//	return QData(0);
+	//}
+	///// write int
+	//QData writeInt(QData[] args){
+	//	std.stdio.write(args[0].intVal);
+	//	return QData(0);
+	//}
+	///// write double
+	//QData writeDbl(QData[] args){
+	//	std.stdio.write(args[0].doubleVal);
+	//	return QData(0);
+	//}
+	///// readln function
+	//QData readln(QData[] args){
+	//	string s = std.stdio.readln;
+	//	s.length--;
+	//	return QData(s);
+	//}
 public:
 	/// constructor
 	this (string name){
         this.scriptName = name;
-		this.addFunction(Function("writeln", DataType("void"), [DataType("string")]), &writeln);
-		this.addFunction(Function("write", DataType("void"), [DataType("string")]), &write);
-		this.addFunction(Function("writeInt", DataType("void"), [DataType("int")]), &writeInt);
-		this.addFunction(Function("writeDbl", DataType("void"), [DataType("double")]), &writeDbl);
-		this.addFunction(Function("readln", DataType("string"), []), &readln);
+		//this.addFunction(Function("writeln", DataType("void"), [DataType("string")]), &writeln);
+		//this.addFunction(Function("write", DataType("void"), [DataType("string")]), &write);
+		//this.addFunction(Function("writeInt", DataType("void"), [DataType("int")]), &writeInt);
+		//this.addFunction(Function("writeDbl", DataType("void"), [DataType("double")]), &writeDbl);
+		//this.addFunction(Function("readln", DataType("string"), []), &readln);
 	}
 };
 

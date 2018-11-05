@@ -17,7 +17,6 @@
         "scriptlike": "~>0.10.2",
         "aedi": "~>0.5.0",
         "aedi-property-reader": "~>0.2.0",
-        "qscript": "~>0.6.1",
         "urld": "~>2.1.1",
         "d-opts": "~>1.0.2",
         "pegged": "~master",

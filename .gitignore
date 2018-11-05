@@ -34,3 +34,4 @@ source/dxx/packageVersion.d
 compile_commands.json
 
 ./source/dxx/packageVersion.d
+/bin/
