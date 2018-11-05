@@ -47,11 +47,11 @@ static void registerInjectorProperties(Variant[string] properties) {
     //        });
     //    }
     //});
-    properties.keys.each!((k)=>{
-	    if(v.type == typeid(string)) {
+    //properties.keys.each!((k)=>{
+//	    if(v.type == typeid(string)) {
 	//    	DefaultInjector.register!string(k);
-        }
-    });
+//        }
+//    });
 }
 
 static auto resolveInjector(alias T,Arg...)(Arg arg) {
