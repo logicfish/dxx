@@ -49,7 +49,7 @@ static void registerInjectorProperties(Variant[string] properties) {
     //});
     properties.keys.each!((k)=>{
 	    if(v.type == typeid(string)) {
-	    	DefaultInjector.register!string(k);
+	//    	DefaultInjector.register!string(k);
         }
     });
 }
