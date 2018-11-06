@@ -21,8 +21,10 @@ SOFTWARE.
 **/
 module dxx.sys.constants;
 
-import std.compiler;
-import core.cpuid;
+private import dxx.packageVersion;
+
+private import std.compiler;
+private import core.cpuid;
 
 class Constants {
     //enum {
@@ -40,3 +42,12 @@ class Constants {
     version(Posix) { enum platform_os = "Posix"; }
     version(MacOS) { enum platform_os = "MacOS"; }
 };
+
+struct RTConstants {
+    const(string) compilerName = Constants.compilerName;
+    const(string) libVersion = packageVersion;
+    const(string) libTimestamp = packageTimestampISO;
+};
+
+static __gshared RTConstants runtimeConstants;
+
