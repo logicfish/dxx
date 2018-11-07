@@ -21,15 +21,20 @@ SOFTWARE.
 **/
 module dxx.sys.loader;
 
+private import dxx.sys.constants;
+private import dxx.packageVersion;
+
+
 private import std.stdio : writeln;
 private import core.stdc.stdlib : system;
-private import core.thread;
+//private import core.thread;
 
 private import reloaded : Reloaded, ReloadedCrashReturn;
 
 
 struct ModuleData
 {
+    const(RTConstants)* hostRuntime;
     const(string) libVersion;
     void* userData;
 }
@@ -42,6 +47,8 @@ class Loader {
     Reloaded script;
 
     this(const(string) path,void* userData) {
+        this.moduleData.libVersion = packageVersion;
+        this.moduleData.hostRuntime = &RTConstants.runtimeConstants;
         this.moduleData.userData = userData;
         this.path = path;
         script = Reloaded();
@@ -61,16 +68,46 @@ class Loader {
         auto l = new Loader(path,userData);
         l.load;
         return l;
-        //while(true) {
-        //    script.update;
-        //    auto result = userdata.x + userdata.y;
-        //    writeln("x + y = ", result);
-        //    if(result < 0) {
-        //        writeln("Negative result skip loop :)");
-        //        break;
-        //    }
-        //    Thread.sleep(1.seconds);
-        //}
     }
 }
 
+version(DXX_Module) {
+    
+    final class Module {
+        ModuleData* moduleData;
+        static __gshared Module thisModule;
+
+        shared static this() {
+            thisModule = new Module;
+        }
+    }
+    
+    
+    extern(C):
+
+    import core.stdc.stdio : printf;
+
+    void load( void* userdata ) {
+        printf("load\n");
+        Module.thisModule.moduleData = cast(ModuleData*) userdata;
+    }
+
+    void unload(void* userdata) {
+        Module.thisModule.moduleData = cast(ModuleData*) userdata;
+        printf("unload\n");
+    }
+
+    void init(void* userdata) {
+        Module.thisModule.moduleData = cast(ModuleData*) userdata;
+        printf("init\n");
+    }
+    void uninit(void* userdata){
+        Module.thisModule.moduleData = cast(ModuleData*) userdata;
+        printf("uninit\n");
+    }
+
+    void update() {
+        printf("update\n");
+    }
+
+}

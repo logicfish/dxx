@@ -140,7 +140,7 @@ final class ContextInjector(alias C ) : DefaultInjector {
     this(AggregateContainer c = _DEFAULT_CONTAINER) {
         super(c);
         c.scan!C;
-        foreach (subcontainer; c) {
+        //foreach (subcontainer; c) {
 //	        with (subcontainer.configure) {
 //			//register!ushort("http.port");
 //			//register!(string[])("http.listen");
@@ -153,6 +153,6 @@ final class ContextInjector(alias C ) : DefaultInjector {
 //			//register!string("route.about");
 //			//register!string("route.public");
 //		    }
-        }       
+        //}       
     }
 }

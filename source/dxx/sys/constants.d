@@ -38,16 +38,45 @@ class Constants {
 
     enum compileTimestamp = __TIMESTAMP__;
 
-    version(Windows) { enum platform_os = "Windows"; }
-    version(Posix) { enum platform_os = "Posix"; }
-    version(MacOS) { enum platform_os = "MacOS"; }
+    version(Posix) { enum hostOperatingSystem = "Posix"; }
+    else version(Windows) { enum hostOperatingSystem = "Windows"; }
+    else version(MacOS) { enum hostOperatingSystem = "MacOS"; }
+    else { enum hostOperatingSystem = "<unknown-OS>"; }
+
+    version(unittest) { enum unitTest = true; }
+    else { enum unitTest = false; }
+
+    debug {
+        enum buildType = "Debug";
+    } else version(Release) {
+        enum buildType = "Release";
+    } else {
+        enum buildType = "<unknown-buildtype>";
+    }
 };
 
 struct RTConstants {
     const(string) compilerName = Constants.compilerName;
+    const(uint) compilerVersionMajor = Constants.compilerVersionMajor;
+    const(uint) compilerVersionMinor = Constants.compilerVersionMinor;
+
+    const(string) compileTimestamp = Constants.compileTimestamp;
+
+    const(string) hostOperatingSystem = Constants.hostOperatingSystem;
+    
+    const(bool) unitTest = Constants.unitTest;
+    const(string) buildType = Constants.buildType;
+
     const(string) libVersion = packageVersion;
-    const(string) libTimestamp = packageTimestampISO;
+    const(string) libTimestamp = packageTimestamp;
+    const(string) libTimestampISO = packageTimestampISO;
+
+    static __gshared RTConstants runtimeConstants;
+    
+    unittest {
+        assert(runtimeConstants.unitTest);
+    }
 };
 
-static __gshared RTConstants runtimeConstants;
+
 
