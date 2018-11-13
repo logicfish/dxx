@@ -3,7 +3,7 @@ WorkflowGrammar :
 
     WorkflowHeader <- "options" "{" WorkflowOption* "}"
 
-    WorkflowOption <- identifier ("." identifier)? = .* ";"
+    WorkflowOption <- identifier ("." identifier)? "=" .* ";"
 
     WorkflowDefinition <- "workflow" identifier "{" WorkflowHeader? WorkflowElement* "}"
 

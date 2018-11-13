@@ -19,36 +19,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 **/
-module app;
+module dxx.example.plugin.exampleplugin;
 
-//private import aermicioi.aedi;
+private import dxx.util.plugin;
 
-private import std.stdio;
-private import std.experimental.logger;
-
-private import dxx.app;
-private import dxx.util;
-
-enum CFG = DXXConfig ~ IniConfig!"basic.ini";
-
-mixin __Text!(CFG.basic.lang);
-
-class Example {
-};
-
-//@component
-class BasicComponents : RuntimeComponents {
-    override void registerAppDependencies(DefaultInjector injector) {
-        debug {
-            sharedLog.info("BasicComponents registerAppDependencies()");
-        }
+class ExamplePlugin : PluginDefault {
+    override void activate(PluginContext* ctx) {
     }
-};
 
-void main() {
-    auto m = new BasicComponents;
-    debug {
-        sharedLog.info("BasicComponents created.");
+    override void deactivate(PluginContext* ctx) {
     }
-    MsgLog.info(MsgText!(CFG.basicMessages.MSG_APP_BANNER));
 }

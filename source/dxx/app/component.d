@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.app.rtmod;
+module dxx.app.component;
 
 private import aermicioi.aedi;
 private import eph.args;
@@ -32,10 +32,16 @@ private import dxx.util.injector;
 private import dxx.util.config;
 private import dxx.app;
 
+interface DXXComponents {
+    //public RuntimeComponents getRuntimeComponents();
+    public Logger getLogger();
+    public ArgParser getArgParser();
+    public WorkflowRunner getWorkflowRunner();
+}
 
 @component
-abstract class RuntimeModule {
-    static __gshared RuntimeModule MODULE;
+abstract class RuntimeComponents : DXXComponents {
+    static __gshared RuntimeComponents INSTANCE;
 
     static WorkflowRunner workflowRunner;
 //    static ArgParser argParser;
@@ -45,44 +51,46 @@ abstract class RuntimeModule {
 
     abstract void registerAppDependencies(DefaultInjector injector);
 
-    @component
-    public RuntimeModule getRuntimeModule() {
-        return MODULE;
+    public {
+        //@component
+        //override RuntimeModule getRuntimeComponents() {
+        //    return INSTANCE;
+        //}
+        @component
+        override Logger getLogger() {
+            return sharedLog;
+        }
+        @component
+        override ArgParser getArgParser() {
+    //    	if(argParser is null) {
+    //			argParser = new ArgParser;
+    //			Parameter param = new Parameter();
+    //			argParser.register(param);
+    //			//string args = AppConfig.get(DXXConfig.keys.commandLine);
+    //			//args.split(" ");
+    //			//Argument[] arguments = resolveInjector!(Argument[])();
+    //			//arguments.each!(a => argParser.register(a)); 
+    //			
+    ////			auto args = Runtime.args;
+    ////			argParser.parse(args);
+    //    	}
+    //    	return argParser;
+    		return new ArgParser;
+        }
+
+        @component
+        override WorkflowRunner getWorkflowRunner() {
+            if(workflowRunner is null) {
+                workflowRunner = new WorkflowRunner;
+            }
+            return workflowRunner;
+        }
     }
 
-    @component
-    public Logger getLogger() {
-        return sharedLog;
-    }
     
     nothrow
 	static DefaultInjector injector() {
-    	return MODULE._injector;
-    }
-    @component
-    public ArgParser getArgParser() {
-//    	if(argParser is null) {
-//			argParser = new ArgParser;
-//			Parameter param = new Parameter();
-//			argParser.register(param);
-//			//string args = AppConfig.get(DXXConfig.keys.commandLine);
-//			//args.split(" ");
-//			//Argument[] arguments = resolveInjector!(Argument[])();
-//			//arguments.each!(a => argParser.register(a)); 
-//			
-////			auto args = Runtime.args;
-////			argParser.parse(args);
-//    	}
-//    	return argParser;
-		return new ArgParser;
-    }
-
-    @component
-    public WorkflowRunner getWorkflowRunner() {
-        if(workflowRunner is null) {
-            workflowRunner = new WorkflowRunner;
-        }
-        return workflowRunner;
+    	return INSTANCE._injector;
     }
 
     //@component
@@ -94,11 +102,11 @@ abstract class RuntimeModule {
     //}
 
     public this(this T)() {
-        if(MODULE is null) {
-            MODULE = this;
+        if(INSTANCE is null) {
+            INSTANCE = this;
+            _injector = newInjector!T;
+            registerAppDependencies(_injector);
+            _injector.instantiate();
         }
-        _injector = newInjector!T;
-        registerAppDependencies(injector);
-        injector.instantiate();
     }
 }

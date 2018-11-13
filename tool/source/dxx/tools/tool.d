@@ -53,8 +53,12 @@ Argument getArgument(DefaultInjector i,string id) {
 
 abstract class ToolBase : WorkflowElement, Tool {
     int status = OK;
-    override void processElement(WorkflowJob job) {
+    override void setup(WorkflowJob job) {
+    }
+    override void process(WorkflowJob job) {
         status = run(job);
+    }
+    override void terminate(WorkflowJob job) {
     }
 	 
     override int run(WorkflowJob job) {

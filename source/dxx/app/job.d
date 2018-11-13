@@ -86,7 +86,7 @@ abstract class JobBase : SyncNotificationSource, Job {
     nothrow
     void execute() {
         try {
-        	_injector = RuntimeModule.injector; 
+        	_injector = RuntimeComponents.injector; 
             status(Status.STARTED);
             executeJob();
             status = Status.TERMINATED;
@@ -109,16 +109,16 @@ abstract class JobBase : SyncNotificationSource, Job {
         }
     }
     abstract void executeJob();
-//	override void setProperty(T)(string k,T v) {
-//		injector.setProperty(v,k);
-//	}    
-//	override T getProperty(T)(string k) {
-//		return injector.getProperty!T(k);
-//	}   
-	//override 
-	void setProperty(string k,string v) {
-		injector.register!string(v,k);
-	}    
+	//override void setProperty(T)(string k,T v) {
+	//	injector.setProperty(v,k);
+	//}    
+	//override T getProperty(T)(string k) {
+	//	return injector.getProperty!T(k);
+	//}   
+	////override 
+    void setProperty(string k,string v) {
+        injector.setProperty(v,k);
+    }    
 	//override 
 	string getProperty(string k) {
 		return injector.resolve!string(k);

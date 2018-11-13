@@ -3,7 +3,7 @@ options {
 }
 
 workflow dxx.tool.init {
-    dxx.tool.init.CreateBuildFiles {}
+    dxx.tool.createBuildFiles {}
     
 }
 

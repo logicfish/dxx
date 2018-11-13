@@ -19,12 +19,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.app.resource;
-
-import dxx.util;
+module dxx.app.resource.resource;
 
 class Resource {
+    ResourceSet owner;
+    Resource parent;
+    Resource[] children;
+    const(string) uri;
+    bool isFolder;
+    void* contents;
 }
 
-class ResourceSet {
+final class ResourceSet {
+    Resource[const(string)] uriMap;
+
+    auto getResouce(const(string) uri) {
+        return uriMap[uri];
+    }
+
+    auto importResource(Resource r) {
+        if (r.uri in uriMap) return null;
+        uriMap[r.uri] = r;
+        return r;
+    }
+
+    Resource[] getAll() {
+        return uriMap.values;
+    }
+}
+
+class ResourceValidator {
+    bool isValid(ResourceSet set) {
+        return true;
+    }
+    bool isValidResource(Resource res) {
+        return true;
+    }
 }

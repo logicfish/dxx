@@ -53,9 +53,19 @@ class Constants {
     } else {
         enum buildType = "<unknown-buildtype>";
     }
+
+    version(DXX_Module) {
+        enum dxxModule = true;
+    } else {
+        enum dxxModule = false;
+    }
 };
 
 struct RTConstants {
+    const(string) libVersion = packageVersion;
+    const(string) libTimestamp = packageTimestamp;
+    const(string) libTimestampISO = packageTimestampISO;
+
     const(string) compilerName = Constants.compilerName;
     const(uint) compilerVersionMajor = Constants.compilerVersionMajor;
     const(uint) compilerVersionMinor = Constants.compilerVersionMinor;
@@ -67,14 +77,24 @@ struct RTConstants {
     const(bool) unitTest = Constants.unitTest;
     const(string) buildType = Constants.buildType;
 
-    const(string) libVersion = packageVersion;
-    const(string) libTimestamp = packageTimestamp;
-    const(string) libTimestampISO = packageTimestampISO;
+    const(bool) dxxModule = Constants.dxxModule;
 
-    static __gshared RTConstants runtimeConstants;
+    static __gshared shared(RTConstants) runtimeConstants;
     
     unittest {
         assert(runtimeConstants.unitTest);
+        debug {
+            assert(runtimeConstants.buildType == "Debug");
+        } else version(Release) {
+            assert(runtimeConstants.buildType == "Release");
+        } else {
+            assert(runtimeConstants.buildType == "<unknown-buildtype>");
+        }
+        version(DXX_Module) {
+            assert(runtimeConstants.dxxModule);
+        } else {
+            assert(runtimeConstants.dxxModule == false);
+        }
     }
 };
 

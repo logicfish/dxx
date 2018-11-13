@@ -24,6 +24,7 @@ module dxx.tools.init;
 private import eph.args;
 
 private import std.array : join,split;
+private import std.algorithm : each;
 
 private import dxx.util;
 private import dxx.tools;

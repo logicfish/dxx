@@ -73,7 +73,7 @@ final class AppConfig {
             //sharedLog.info("Loading default config file.");
             //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
-            properties = readInjectorProperties(&f);
+            //properties = readInjectorProperties(&f);
         } catch(Exception e) {
             // Create the default config file.
             //sharedLog.info("Creating default config file.");
@@ -139,7 +139,7 @@ final class AppConfig {
         }
 
         setRuntimeDefaults(properties);
-        registerInjectorProperties(properties);
+        //registerInjectorProperties(properties);
 
         if(_appconfig is null) {
             _appconfig = new AppConfig;

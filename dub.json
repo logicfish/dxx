@@ -29,6 +29,7 @@
     "subPackages" : [
         "services",
         "tool",
-        "examples/basic"
+        "examples/basic",
+        "examples/plugin"
     ]
 }

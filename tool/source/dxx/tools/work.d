@@ -26,7 +26,7 @@ private import eph.args;
 
 // Manage workflows
 
-class WorkTool : ToolBase {
+class WorkflowTool : ToolBase {
 	override int runTool(WorkflowJob job) {
         return Tool.OK;
     }

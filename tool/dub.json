@@ -1,15 +1,15 @@
 {
-	"name": "tool",
-	"authors": [
-		"Mark"
-	],
-	"description": "DXX Tools",
-	"copyright": "Copyright © 2018, Mark",
-	"license": "MIT",
+    "name": "tool",
+    "authors": [
+        "Mark"
+    ],
+    "description": "DXX Tools",
+    "copyright": "Copyright © 2018, Mark",
+    "license": "MIT",
     "stringImportPaths" : [ "resources" ],
-	"dependencies": {
-		"dxx": { "path" : ".." }
-	},
+    "dependencies": {
+        "dxx": { "path" : ".." }
+    },
     "targetPath": "bin",
     "configurations" : [
         { 

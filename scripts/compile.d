@@ -2,7 +2,7 @@
 /+ dub.sdl:
 	name "compile"
 	dependency "scriptlike" version="~>0.10.2"
-	dependency "dxx" version="~master"
+	dependency "dxx" version="~>0.0.9"
 +/
 module compile;
 

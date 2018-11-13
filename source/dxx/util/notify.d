@@ -82,7 +82,7 @@ class SyncNotificationSource : NotificationSource {
 unittest {
     shared(bool) done = false;
     class TestNotificationListener : NotificationListener {
-        override synchronized void handleNotification(void* t) {
+        override shared void handleNotification(void* t) {
             done = true;
         }
     }

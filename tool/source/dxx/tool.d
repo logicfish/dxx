@@ -39,15 +39,22 @@ mixin __Text!(ToolConfig.tools.lang);
 
 @component
 class ToolsModule : RuntimeModule {
-    void registerTool(alias Cmd : string,T : Tool)(DefaultInjector injector) {
-        injector.register!Tool(new T,"tool.cmd."~Cmd);
+    static void registerTool(alias Cmd : string,T : Tool)(DefaultInjector injector) {
+        debug {
+            sharedLog.trace("ToolsModule registerTool "~Cmd);
+        }
+        injector.register!T("tool.cmd."~Cmd);
     }
     override void registerAppDependencies(DefaultInjector injector) {
-        //sharedLog.trace("ToolsModule registerAppDependencies()");
+        debug {
+            sharedLog.info("ToolsModule registerAppDependencies()");
+        }
         registerTool!("init",InitTool)(injector);
         registerTool!("install",InstallTool)(injector);
         registerTool!("lang",LangTool)(injector);
-        registerTool!("cfg",CfgTool)(injector);
+        registerTool!("cfg",ConfigTool)(injector);
+        registerTool!("cons",ConsoleTool)(injector);
+        registerTool!("work",WorkflowTool)(injector);
         
         //InitTool.registerArguments(injector);
         //InstallTool.registerArguments(injector);
@@ -60,8 +67,13 @@ struct Options {
 };
 
 int main(string[] args) {
+    debug {
+        sharedLog.info("ToolsModule main");
+    }
     auto m = new ToolsModule;
+    
     MsgLog.info(ToolConfig.tools.applicationName);
+    
     Options opt;
     auto rslt = getopt(args
     );
@@ -75,6 +87,7 @@ int main(string[] args) {
             rslt.options);
         return -1;
     }
+    
     string cmd = args[1];
     MsgLog.info("cmd = "~cmd);
 
@@ -85,10 +98,7 @@ int main(string[] args) {
         MsgLog.fatal(MsgText!(ToolConfig.toolsMessages.ERR_TOOL_NOT_FOUND)(cmd));
         return -1;
     }
-    MsgLog.trace("tool "~typeid(typeof(tool)).to!string);
-
     WorkflowElement[] elements = [ tool ];
-    //elements[0] = tool;
     auto wf = new DefaultWorkflow(elements,args);
     
     WorkflowRunner runner = resolveInjector!WorkflowRunner;

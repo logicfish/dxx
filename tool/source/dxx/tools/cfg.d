@@ -26,7 +26,7 @@ private import eph.args;
 
 // Manage config vars
 
-class CfgTool : ToolBase {
+class ConfigTool : ToolBase {
 	override int runTool(WorkflowJob job) {
         return Tool.OK;
     }

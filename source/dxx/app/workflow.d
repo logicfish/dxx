@@ -22,11 +22,12 @@ SOFTWARE.
 module dxx.app.workflow;
 
 private import std.algorithm;
-
 private import dxx.app.job;
 
 interface WorkflowElement {
-    void processElement(WorkflowJob job);
+    void setup(WorkflowJob job);
+    void process(WorkflowJob job);
+    void terminate(WorkflowJob job);
 }
 
 //abstract class WorkflowElementBase : WorkflowElement {
@@ -42,11 +43,15 @@ interface Workflow {
     
     @property
     ref inout (string[]) args() inout;
+    
+    @property
+    ref inout (string[string]) param() inout;
 }
 
 abstract class WorkflowBase : Workflow {
     WorkflowElement[] _workflowElements;
     string[] _args;
+    string[string] _param;
     
     @property
     ref inout (WorkflowElement[]) workflowElements() inout {
@@ -60,6 +65,10 @@ abstract class WorkflowBase : Workflow {
         _workflowElements = elements;
         _args = args;
     }
+    @property
+    ref inout (string[string]) param() inout {
+        return _param;
+    }
 }
 
 final class DefaultWorkflow : WorkflowBase {
@@ -70,23 +79,49 @@ final class DefaultWorkflow : WorkflowBase {
 
 final class WorkflowJob : JobBase {
     Workflow _workflow;
-    this(Workflow wf) {
+    WorkflowRunner _runner;
+    string[string] _param;
+    
+    this(Workflow wf,WorkflowRunner r) {
         this._workflow = wf;
+        this._runner = r;
+        this._param = wf.param.dup;
     }
     @property
     inout(Workflow) workflow() inout {
         return _workflow;
     }
+    @property
+    inout(WorkflowRunner) workflowRunner() inout {
+        return _runner;
+    }
     override void executeJob() {
-        workflow.workflowElements.each!(e=>e.processElement(this));
+        workflow.workflowElements.each!(e=>e.setup(this));
+        try {
+            workflow.workflowElements.each!(e=>e.process(this));
+        } finally {
+            workflow.workflowElements.each!(e=>e.terminate(this));
+        }
+    }
+    @property
+    ref inout (string[string]) param() inout {
+        return _param;
     }
 }
 
 final class WorkflowRunner {
     Job createJob(Workflow wf) {
-        auto job = new WorkflowJob(wf);
+        auto job = new WorkflowJob(wf,this);
         return job;
     }
+}
+
+class WorkflowElementDelegate(alias D) : WorkflowElement {
+    override void setup(WorkflowJob job) {}
+    override void process(WorkflowJob job) {
+        D(job);
+    }
+    override void terminate(WorkflowJob job) {}
 }
 
 unittest {
@@ -94,9 +129,15 @@ unittest {
     
     class TestWorkflowElement : WorkflowElement {
         bool _done = false;
-        override void processElement(WorkflowJob job) {
-            writeln("TestWorkflowElement.processElement");
+        override void setup(WorkflowJob job) {
+            writeln("TestWorkflowElement.setup");
+        }
+        override void process(WorkflowJob job) {
+            writeln("TestWorkflowElement.process");
             _done = true;
+        }
+        override void terminate(WorkflowJob job) {
+            writeln("TestWorkflowElement.terminate");
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
@@ -116,9 +157,17 @@ unittest {
 unittest {
     import std.stdio;
     class TestWorkflowElementException : WorkflowElement {
-        override void processElement(WorkflowJob job) {
-            writeln("TestWorkflowElementException.processElement");
+        bool terminated = false;
+        override void setup(WorkflowJob job) {
+            writeln("TestWorkflowElement.setup");
+        }
+        override void process(WorkflowJob job) {
+            writeln("TestWorkflowElementException.process");
             throw new Exception("workflow unittest");
+        }
+        override void terminate(WorkflowJob job) {
+            writeln("TestWorkflowElement.terminate");
+            terminated = true;
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
@@ -132,5 +181,7 @@ unittest {
     assert(j.terminated);
     assert(j.status == Job.Status.THROWN_EXCEPTION);
     assert(j.thrownException !is null);
+    assert(elem.terminated);
 }
+
 
