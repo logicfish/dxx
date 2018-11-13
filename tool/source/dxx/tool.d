@@ -38,7 +38,7 @@ enum ToolConfig = DXXConfig ~ IniConfig!("tool.ini");
 mixin __Text!(ToolConfig.tools.lang);
 
 @component
-class ToolsModule : RuntimeModule {
+class ToolsModule : RuntimeComponents {
     static void registerTool(alias Cmd : string,T : Tool)(DefaultInjector injector) {
         debug {
             sharedLog.trace("ToolsModule registerTool "~Cmd);
