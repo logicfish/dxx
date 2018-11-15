@@ -4,7 +4,7 @@
         "Mark"
     ],
     "dependencies": {
-        "dxx" : { "path" : "../../"}
+        "app" : "*"
     },
     "description": "DXX example module",
     "copyright": "Copyright © 2018, Mark",
@@ -14,5 +14,5 @@
     "targetPath": "bin",
     "sourceFiles": [
         "example_plugin.def"
-    ],
+    ]
 }

@@ -12,6 +12,7 @@
 	"targetName": "dxx-basic",
     "mainSourceFile": "source/dxx/example/basic/app.d",
 	"dependencies" : {
-		"dxx" : { "path" : "../../"}
+		"app" : "*",
+		"aedi": "~>0.5.0"
 	}
 }

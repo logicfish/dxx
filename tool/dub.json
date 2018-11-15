@@ -8,12 +8,12 @@
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
-        "dxx": { "path" : ".." }
+      "core": "*",
+      "app": "*"
     },
     "targetPath": "bin",
-    "mainSourceFile": "source/dxx/tool.d",
     "configurations" : [
-        { 
+        {
             "name": "dxx-console",
             "targetType": "executable",
             "targetName": "dxx",
@@ -21,13 +21,13 @@
             "excludedSourceFiles" : [ "source/dxx/gui.d" ],
             "versions" : [ "DXX_Console" ]
         },
-        { 
-            "name": "dxx-gui", 
+        {
+            "name": "dxx-gui",
             "targetType": "executable",
             "targetName": "dxx-g",
             "mainSourceFile": "source/dxx/gui.d",
             "excludedSourceFiles": [ "source/dxx/tool.d" ],
-            "versions" : [ "DXX_Gui" ] 
+            "versions" : [ "DXX_Gui" ]
         }
     ]
 }
