@@ -27,29 +27,49 @@ private import eph.args;
 private import core.runtime;
 
 private import std.experimental.logger;
+private import std.exception;
 
 private import dxx.util.injector;
 private import dxx.util.config;
 private import dxx.app;
 
-interface DXXComponents {
-    //public RuntimeComponents getRuntimeComponents();
+interface Components {
     public Logger getLogger();
+    
     public ArgParser getArgParser();
+    
     public WorkflowRunner getWorkflowRunner();
+
+    //nothrow
+    //ref DefaultInjector injector();
+    
+    //static __gshared Components INSTANCE;
+}
+
+mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
+    shared static this() {
+        import std.conv;
+        sharedLog.info("RuntimeComponents register "~typeid(T).to!string);
+        auto _injector = newInjector!(T,Param);
+        auto t = new T;
+        t.registerAppDependencies(_injector);
+        _injector.instantiate();
+    }
+}
+
+mixin template registerComponents(Param...) {
+    mixin registerComponent!(RuntimeComponents!Param);
 }
 
 @component
-abstract class RuntimeComponents : DXXComponents {
-    static __gshared RuntimeComponents INSTANCE;
-
+class RuntimeComponents(Param...) : Components {
     static WorkflowRunner workflowRunner;
 //    static ArgParser argParser;
-    DefaultInjector _injector;
-
     //static __gshared ExtensionPointManager extensionPointManager;
 
-    abstract void registerAppDependencies(DefaultInjector injector);
+    void registerAppDependencies(InjectionContainer injector) {
+        //
+    }
 
     public {
         //@component
@@ -85,12 +105,7 @@ abstract class RuntimeComponents : DXXComponents {
             }
             return workflowRunner;
         }
-    }
 
-    
-    nothrow
-	static DefaultInjector injector() {
-    	return INSTANCE._injector;
     }
 
     //@component
@@ -101,12 +116,4 @@ abstract class RuntimeComponents : DXXComponents {
     //    return extensionPointManager;
     //}
 
-    public this(this T)() {
-        if(INSTANCE is null) {
-            INSTANCE = this;
-            _injector = newInjector!T;
-            registerAppDependencies(_injector);
-            _injector.instantiate();
-        }
-    }
 }

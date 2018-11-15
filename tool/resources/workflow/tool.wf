@@ -1,13 +1,23 @@
 options {
-
+    module = "dxx.tool.workflow";
+    pluginName = "<unknown-Plugin>";
 }
 
 workflow dxx.tool.init {
     dxx.tool.createBuildFiles {}
-    
+    dxx.tool.createPlugin {}    
 }
 
 workflow dxx.tool.install {
+    dxx.tool.pull {
+    }
+    dxx.tool.dub {
+        cmd = "build";
+        root = pluginDir;
+    }
+    dxx.tool.installPlugin {
+        dir = pluginDir;
+    }
 }
 
 workflow dxx.tool.update {

@@ -54,28 +54,34 @@ class SyncNotificationSource : NotificationSource {
   nothrow shared
   void send(T)(T* t) {
     debug(Notify) {
-        sharedLog.info("SyncNotificationSource : send ",typeid(T)," ",notificationListeners.length);
+        try {
+            sharedLog.info("SyncNotificationSource : send ",typeid(T)," ",notificationListeners.length);
+        } catch(Exception) {
+        }
     }
     auto ar = notificationListeners.dup;
     try {
       ar.parallel.each!(x=>x.handleNotification(cast(void*)&t));
     } catch(Exception e) {
-      //sharedLog.error(e.message); nothrow!
+        try {
+            sharedLog.error(e.message);
+        } catch(Exception) {
+        }
     }
   }
 
   override shared void addNotificationListener(shared(NotificationListener) n) {
-    debug(Notify) {
-        sharedLog.info("SyncNotificationSource : addNotificationListener ",notificationListeners.length);
-    }
     notificationListeners ~= n;
+    debug(Notify) {
+        sharedLog.info(typeid(this)," : addNotificationListener ",notificationListeners.length," ");
+    }
   }
 
   override shared void removeNotificationListener(shared(NotificationListener) n) {
-    debug(Notify) {
-        sharedLog.info("SyncNotificationSource : removeNotificationListener",notificationListeners.length);
-    }
     notificationListeners = notificationListeners.remove(notificationListeners.countUntil(n));
+    debug(Notify) {
+        sharedLog.info(typeid(this)," : removeNotificationListener",notificationListeners.length);
+    }
   }
 }
 

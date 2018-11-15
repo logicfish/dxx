@@ -38,7 +38,7 @@ private import core.runtime;
 
 private import dxx;
 private import dxx.util.storage;
-private import dxx.util.injector;
+//private import dxx.util.injector;
 private import dxx.util.ini;
 
 // Compile-time config
@@ -57,9 +57,9 @@ final class AppConfig {
         properties[DXXConfig.keys.compilerVersionMinor] = Constants.compilerVersionMinor.to!string;
         properties[DXXConfig.keys.currentDir] = getcwd;
         properties[DXXConfig.keys.compileTimestamp] = Constants.compileTimestamp;
-        properties[DXXConfig.keys.appDir] = thisExePath;
+        properties[DXXConfig.keys.appDir] = RTConstants.constants.appDir;
         //properties[DXXConfig.keys.applicationName] = 
-        properties[DXXConfig.keys.commandLine] = Runtime.args.join(" ");
+        properties[DXXConfig.keys.commandLine] =  RTConstants.constants.argString;
     }
 
     shared static this() {
@@ -138,7 +138,7 @@ final class AppConfig {
             }
         }
 
-        setRuntimeDefaults(properties);
+        //setRuntimeDefaults(properties);
         //registerInjectorProperties(properties);
 
         if(_appconfig is null) {

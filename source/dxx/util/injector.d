@@ -26,12 +26,15 @@ private import std.variant;
 private import std.experimental.logger;
 private import std.stdio;
 private import std.process : environment;
+private import std.typecons;
 
 private import aermicioi.aedi;
 private import aermicioi.aedi_property_reader;
 
+private import dxx.sys.constants;
 private import dxx.util.ini;
 //private import dxx.util.storage;
+private import dxx.util.config;
 
 //static Variant[string] readInjectorProperties(File* f) {
 //    Variant[string] res;
@@ -39,7 +42,7 @@ private import dxx.util.ini;
 //}
 //
 //static void registerInjectorProperties(Variant[string] properties) {
-    //DefaultInjector._DEFAULT_CONTAINER.each!(c=>{
+    //InjectionContainer._DEFAULT_CONTAINER.each!(c=>{
     //    with(c.configure) {
     //        properties.each!((k,v)=>{
     //            if(v.type == typeid(string)) {
@@ -49,48 +52,52 @@ private import dxx.util.ini;
     //});
     //properties.keys.each!((k)=>{
 //	    if(v.type == typeid(string)) {
-	//    	DefaultInjector.register!string(k);
+	//    	InjectionContainer.register!string(k);
 //        }
 //    });
 //}
 
-static auto resolveInjector(alias T,Arg...)(Arg arg) {
-    return DefaultInjector._DEFAULT_INJECTOR.resolve!T(arg);
+static auto resolveInjector(alias T,Arg...)(Arg arg,InjectionContainer i=InjectionContainer.getInstance) {
+    return i.resolve!T(arg);
 }
 
-static auto newInjector(alias T)(AggregateContainer c = null) {
-    if(DefaultInjector._DEFAULT_INJECTOR !is null) {
-        return DefaultInjector._DEFAULT_INJECTOR;
-    } else {
-        return new ContextInjector!T(c);
-    }
-}
-
-static T getInjectorProperty(T)(DefaultInjector i,string k) {
+static T getInjectorProperty(T)(string k,InjectionContainer i=InjectionContainer.getInstance) {
     return i.resolve!T(k);
 }
 
-static void setInjectorProperty(T)(DefaultInjector i,string k,T t) {
+static void setInjectorProperty(T)(string k,T t,InjectionContainer i=InjectionContainer.getInstance) {
     i.register!T(t,k);
 }
 
-abstract class DefaultInjector {
+static auto newInjector(alias T,V...)(AggregateContainer c = null) {
+    if(InjectionContainer.instantiated) {
+        return InjectionContainer.getInstance;
+    } else {
+        return new ContextInjector!(T,V)(c);
+    }
+}
 
-    static __gshared DefaultInjector _DEFAULT_INJECTOR;
+static void terminateInjector() {
+    synchronized(InjectionContainer.classinfo) {
+        if(InjectionContainer.INSTANCE) {
+            InjectionContainer.INSTANCE.terminate;
+        }
+    }
+}
+
+abstract class InjectionContainer {
+
+    private static __gshared InjectionContainer INSTANCE;
+    static bool instantiated = false;
+
+    static auto ref getInstance() {
+        assert(INSTANCE !is null);
+        return INSTANCE;
+    }
 
     @property
     AggregateContainer _container;
         
-    //auto services(T)(T parent) {
-    //    auto cont = container(
-    //        singleton,
-    //        prototype
-    //    );
-    //
-    //    configureSingleton(cont[0]);
-    //    scanPrototype(cont[1]);
-    //    return cont;
-    //}
     void services(T)(T parent) {
         auto s = singleton;
         auto p = prototype;
@@ -102,100 +109,35 @@ abstract class DefaultInjector {
         parent.set(p,"prototype");    
         
     }        
-    auto config() {
-        auto cont = container(
-          //singleton,
-          //prototype,
-          argument,
-          env
-          //xml("./config.xml"),
-          //xml("~/.config/aedi-example/config.xml"),
-          //xml("/etc/aedi-example/config.xml"),
-          //json("./config.json"),
-          //json("~/.config/aedi-example/config.json"),
-          //json("/etc/aedi-example/config.json"),
-          //sdlang("./config.sdlang"),
-   	      //sdlang("~/.config/aedi-example/config.sdlang"),
-          //sdlang("/etc/aedi-example/config.sdlang")
-          //configFiles
-           );
-        foreach (c; cont) {
-            load(c);
-        }
-
-        return cont;
-    }
     abstract void scanPrototype(PrototypeContainer);
     abstract void configureSingleton(SingletonContainer);
+    //abstract void configureGlobals(AggregateContainer _container);    
     
-    static void load(T : DocumentContainer!X, X...)(T container) {
-        with (container.configure) {
-            register!long("first");
-            register!double("second");
-            register!string("third");
-            //register!Component("");
-            //register!Component("json");
-            //register!Component("xml");
-            //register!Component("sdlang");
-            //register!Component("yaml");
-                
-        }
-    }        
-        
-    //shared static this() {
-    //    debug {
-    //        sharedLog.info("Creating shared container.");
-    //    }
-    ////    //_DEFAULT_CONTAINER = prototype();
-    ////    //auto c = container(
-	////    //    argument(),
-    // ////	env()
-    ////    //    );
-    ////    //auto c = aggregate(config, "parameters");
-    ////    //c.set(services(c), "services");
-    ////    //_DEFAULT_CONTAINER = c;
-    ////    //scope(exit) _DEFAULT_CONTAINER.terminate();
-    ////    
-    //}
-    //this(AggregateContainer _c = _DEFAULT_INJECTOR._container) {
-    this(AggregateContainer _c = null) {
-        debug {
-            sharedLog.info("Creating injector.");
-        }
-        if(_c !is null) {
-            _container = _c;
-        } else {
-            debug {
-                sharedLog.info("Creating injection container.");
+    this(AggregateContainer _c) {
+        synchronized(InjectionContainer.classinfo) {
+            if(!instantiated) {
+                if(INSTANCE is null) {
+                    INSTANCE = this;
+                }
+                instantiated = true;
             }
-           //auto c = container(
-           //    argument(),
-           //	env()
-           //);
-           auto c = aggregate(config, "parameters");
-           services(c);
-           _container = c;
         }
-        if(_DEFAULT_INJECTOR is null) {
-            _DEFAULT_INJECTOR = this;
-        }
+        services(_c);
+        _container = _c;
     }
-    //void registerProperties(string[string] properties) {
-    //}
-//        auto resolve(alias T)() {
-//            return _container.locate!T;
-//        }
+
     auto resolve(T,Arg ...)(Arg arg) {
         return _container.locate!T(arg);
     }
-//        void register(T...)() {
-//            _container.register!T;
-//        }
+
     void register(T...)(const(string) arg) {
         with(_container.configure("prototype")) {
-        //    with(configure("prototye")) {
-                register!T(arg);
-        //    }
+            register!T(arg);
+        }
+    }
+    void register(T...)() {
+        with(_container.configure("prototype")) {
+            register!T();
         }
     }
     void register(T)(ref T t,const(string) arg) {
@@ -203,60 +145,99 @@ abstract class DefaultInjector {
             register!T(t,arg);
         }
     }
-    //void set(string k,string v) {
-    //    with(_container.configure("prototype")) {
-    //    }        
-    //}
-    void setProperty(T)(string k,T v) {
+    void setParam(T)(string k,T v) {
         with(container.configure("parameters")) {
             register!T(v,k);
         }
     }    
-    T getProperty(T)(string k) {
+    T getParam(T)(string k) {
         return _container.locate!T(k);
     }   
-    //auto configure() {
-    //    return _container.configure;
-    //}
+    void terminate() {
+        debug {
+            sharedLog.info("terminating");
+        }
+        _container.terminate();
+    }
     auto instantiate() {
         debug {
-            sharedLog.info("instantiating.");
+            sharedLog.info("instantiating");
         }
-        scope(exit) _container.terminate();
         return _container.instantiate;
     }
+    abstract void load(T : DocumentContainer!X, X...)(T container);
 }
 
 
-final class ContextInjector(C...) : DefaultInjector {
+final class ContextInjector(C...) : InjectionContainer {
     this(AggregateContainer c = null) {
+        if(c is null) c = aggregate(config, "parameters");
         super(c);
-        //c.scan!C;
-        //foreach (subcontainer; c) {
-//	        with (subcontainer.configure) {
-//			//register!ushort("http.port");
-//			//register!(string[])("http.listen");
-//			//register!string("http.host");
-//			//register!bool("http.compression");
-//			//register!string("log.access.file");
-//			//register!string("log.access.format");
-//			//register!bool("log.access.console");
-//			//register!string("route.index");
-//			//register!string("route.about");
-//			//register!string("route.public");
-//		    }
-        //}       
     }
     override void scanPrototype(PrototypeContainer p) {
+        debug {
+            sharedLog.info("scanPrototype");
+        }
         static foreach(c;C) {
-            debug {
-                import std.conv;
-                sharedLog.info("Scanning prototype: " ~ typeid(c).to!string);
+            //debug {
+            //    import std.conv;
+            //    sharedLog.info("Scanning prototype: " ~ typeid(c).to!string);
+            //}
+            static if(isTuple!c) {
+            } else {
+                //pragma(msg,"scanning prototype: ");
+                //pragma(msg,c);
+                p.scan!c;
             }
-            p.scan!c;
         }
     }
     override void configureSingleton(SingletonContainer) {
+    }
+    
+    auto config() {
+        debug {
+            sharedLog.info("config");
+        }
+        auto cont = container(
+          argument,
+          env,
+          json("./dxx.json"),
+          json(RTConstants.constants.appDir ~ "/dxx.json")
+          //json("/etc/aedi-example/config.json"),
+          //configFiles
+           );
+        foreach (c; cont) {
+            load(c);
+        }
+        return cont;
+    }
+    void load(T : DocumentContainer!X, X...)(T container) {
+        with (container.configure) {
+            static foreach(c;C) {
+                static if(isTuple!c) {
+                    debug {
+                        pragma(msg,"scanning parameters: ");
+                        pragma(msg,c);
+                    }
+                    register!string;
+                    //register!uint;
+                    //register!int;
+                    register!long;
+                    
+                    static foreach (fieldName ; c.fieldNames) {
+                        {
+                            mixin("alias f = c." ~ fieldName~";");
+                            alias fieldType = typeof(f);
+                            debug {
+                                import std.conv;
+                                sharedLog.info("param: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
+                            }
+                            register!fieldType(fieldName);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -272,11 +253,25 @@ unittest {
         }    
     }
     debug {
-        sharedLog.info("Starting unittest.");
+        sharedLog.info("Starting component unittest.");
     }
     auto injector = newInjector!MyModule;
     assert(injector !is null);
     auto my = injector.resolve!MyClass;
     assert(my !is null);
+}
+
+unittest {
+    alias param = Tuple!(
+        string,"name",
+        uint,"age"
+    );    
+    debug {
+        sharedLog.info("Starting injector parameters unittest.");
+    }
+    auto injector = newInjector!param;
+    assert(injector !is null);
+    auto name = injector.resolve!string("name");
+    auto age = injector.resolve!uint("age");
 }
 

@@ -1,0 +1,15 @@
+{
+    "dxx" : {
+        "workspace" : {
+            "name" : "DXX Library"
+        },
+        "plugins" : {
+            "example-plugin" : "./examples/example-plugin.json"
+        },
+        "tool" : {
+            
+        }
+    },
+    "name" : "test",
+    "age" : 22
+}

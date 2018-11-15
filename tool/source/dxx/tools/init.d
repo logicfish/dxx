@@ -35,6 +35,9 @@ private import dxx.tool;
 class InitTool : ToolBase {
 	override 
 	int runTool(WorkflowJob job) {
+        debug {
+            MsgLog.info("InitTool run");
+        }
     	string[] types = job.injector.getArgument(ToolConfig.args.type).values;
     	
     	job.injector.getArgument(ToolConfig.args.define).values.each!((string a) {

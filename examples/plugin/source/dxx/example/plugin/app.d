@@ -21,21 +21,26 @@ SOFTWARE.
 **/
 module dxx.example.plugin.app;
 
+private import aermicioi.aedi;
+
+private import dxx.util;
+private import dxx.app;
+
 private import dxx.example.plugin.exampleplugin;
 
-static __gshared ExamplePlugin PLUGIN;
+mixin pluginMain;
 
-shared static this() {
-    PLUGIN = new ExamplePlugin;
-}
-
-version(unittest) {
-} else {
-    version(Windows) {
-        private import core.sys.windows.dll;
-        mixin SimpleDllMain;
-    } else {
-    }
-}    
-    
+//@component
+//class ExamplePluginModule : PluginComponents!ExamplePlugin {
+//    override void registerPluginComponents(InjectionContainer injector) {
+//        debug {
+//            MsgLog.info("registerPluginComponents");
+//        }
+//        //injector.register!(Plugin,ExamplePlugin);
+//    }
+//    mixin registerComponent!ExamplePluginModule;
+//};
+//
+//
+//
 

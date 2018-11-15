@@ -24,6 +24,60 @@ module dxx.app.resource.file;
 
 public import dxx.app.resource;
 
-class FileResource : Resource {
+struct FileResourceDesc {
+    string uri;
+    bool isFolder;
+    void* contents;
+}
+
+
+class FileResourceBase : FileResource {
+    string _uri;
+    FolderResourceBase _parent;
+    Resource[] _children;
+    void* _contents;
+        
+    ResourceSet owner() {
+        return owner;
+    }
+
+    @property
+    override Resource parent() {
+        return _parent;
+    }
+
+    @property
+    override Resource[] children() {
+        return _children;
+    }
+    
+    @property
+    override const(string) uri() {
+        return _uri;
+    }
+    @property
+    override bool isFolder() {
+        return false;
+    }
+    
+    @property
+    override void* contents() {
+        return _contents;
+    }
+
+    this(string uri,FolderResource parent) {
+    }
+}
+
+class FolderResourceBase : FileResourceBase,FolderResource {
+    override void* contents() {
+        return null;
+    }
+    this(string uri,FolderResource parent) {
+        super(uri,parent);
+    }
+    override bool isFolder() {
+        return true;
+    }
 }
 

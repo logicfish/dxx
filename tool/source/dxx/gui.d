@@ -39,10 +39,10 @@ mixin __Text!(ToolConfig.tools.lang);
 
 @component
 class ToolsModule : RuntimeModule {
-    void registerTool(alias Cmd : string,T : Tool)(DefaultInjector injector) {
+    void registerTool(alias Cmd : string,T : Tool)(InjectionContainer injector) {
         injector.container.configure.register!Tool(new T,"tool.cmd."~Cmd);
     }
-    override void registerAppDependencies(DefaultInjector injector) {
+    override void registerAppDependencies(InjectionContainer injector) {
         //sharedLog.trace("ToolsModule registerAppDependencies()");
         registerTool!("init",InitTool)(injector);
         registerTool!("install",InstallTool)(injector);

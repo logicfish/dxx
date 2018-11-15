@@ -38,14 +38,14 @@ enum ToolConfig = DXXConfig ~ IniConfig!("tool.ini");
 mixin __Text!(ToolConfig.tools.lang);
 
 @component
-class ToolsModule : RuntimeComponents {
-    static void registerTool(alias Cmd : string,T : Tool)(DefaultInjector injector) {
-        debug {
-            sharedLog.trace("ToolsModule registerTool "~Cmd);
-        }
+class ToolsModule : RuntimeComponents!() {
+    static void registerTool(alias Cmd : string,T : Tool)(InjectionContainer injector) {
+        //debug {
+        //    sharedLog.trace("ToolsModule registerTool "~Cmd);
+        //}
         injector.register!T("tool.cmd."~Cmd);
     }
-    override void registerAppDependencies(DefaultInjector injector) {
+    override void registerAppDependencies(InjectionContainer injector) {
         debug {
             sharedLog.info("ToolsModule registerAppDependencies()");
         }
@@ -61,21 +61,20 @@ class ToolsModule : RuntimeComponents {
         //LangTool.registerArguments(injector);
         //CfgTool.registerArguments(injector);
     }
+    mixin registerComponent!ToolsModule;
 };
 
 struct Options {
+    string[] inFiles;
 };
 
 int main(string[] args) {
-    debug {
-        sharedLog.info("ToolsModule main");
-    }
-    auto m = new ToolsModule;
-    
     MsgLog.info(ToolConfig.tools.applicationName);
     
     Options opt;
-    auto rslt = getopt(args
+    auto rslt = getopt(args,
+        std.getopt.config.passThrough,
+        "infile|i", &opt.inFiles
     );
     if (rslt.helpWanted) {
         defaultGetoptPrinter(ToolConfig.tools.applicationName,
@@ -91,6 +90,9 @@ int main(string[] args) {
     string cmd = args[1];
     MsgLog.info("cmd = "~cmd);
 
+    //auto loader = new PluginLoader("examples/plugin/bin/dxx_example-plugin.dll");
+    //loader.update;
+    
     Tool tool;
     try {
         tool = resolveInjector!Tool("tool.cmd."~cmd);

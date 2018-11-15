@@ -22,12 +22,14 @@ SOFTWARE.
 module dxx.app.workflow;
 
 private import std.algorithm;
+private import std.variant;
+
 private import dxx.app.job;
 
 interface WorkflowElement {
     void setup(WorkflowJob job);
     void process(WorkflowJob job);
-    void terminate(WorkflowJob job);
+    nothrow void terminate(WorkflowJob job);
 }
 
 //abstract class WorkflowElementBase : WorkflowElement {
@@ -38,20 +40,20 @@ interface WorkflowElement {
 //}
 
 interface Workflow {
-    @property
+    @property nothrow
     ref inout (WorkflowElement[]) workflowElements() inout;
     
-    @property
+    @property nothrow
     ref inout (string[]) args() inout;
     
-    @property
-    ref inout (string[string]) param() inout;
+    @property nothrow
+    ref inout (Variant[string]) param() inout;
 }
 
 abstract class WorkflowBase : Workflow {
     WorkflowElement[] _workflowElements;
     string[] _args;
-    string[string] _param;
+    Variant[string] _param;
     
     @property
     ref inout (WorkflowElement[]) workflowElements() inout {
@@ -66,7 +68,7 @@ abstract class WorkflowBase : Workflow {
         _args = args;
     }
     @property
-    ref inout (string[string]) param() inout {
+    ref inout (Variant[string]) param() inout {
         return _param;
     }
 }
@@ -80,32 +82,41 @@ final class DefaultWorkflow : WorkflowBase {
 final class WorkflowJob : JobBase {
     Workflow _workflow;
     WorkflowRunner _runner;
-    string[string] _param;
+    Variant[string] _param;
     
     this(Workflow wf,WorkflowRunner r) {
         this._workflow = wf;
         this._runner = r;
         this._param = wf.param.dup;
     }
-    @property
+
+    @property nothrow
     inout(Workflow) workflow() inout {
         return _workflow;
     }
-    @property
+
+    @property nothrow
     inout(WorkflowRunner) workflowRunner() inout {
         return _runner;
     }
-    override void executeJob() {
-        workflow.workflowElements.each!(e=>e.setup(this));
-        try {
-            workflow.workflowElements.each!(e=>e.process(this));
-        } finally {
-            workflow.workflowElements.each!(e=>e.terminate(this));
-        }
-    }
-    @property
-    ref inout (string[string]) param() inout {
+
+    @property nothrow
+    ref inout (Variant[string]) param() inout {
         return _param;
+    }
+    
+    override void setup() {
+        _param = workflow.param;
+        workflow.workflowElements.each!(e=>e.setup(this));
+    }
+
+    override void process() {
+        workflow.workflowElements.each!(e=>e.process(this));
+    }
+
+    nothrow
+    override void terminate() {
+        workflow.workflowElements.each!(e=>e.terminate(this));
     }
 }
 
@@ -130,14 +141,14 @@ unittest {
     class TestWorkflowElement : WorkflowElement {
         bool _done = false;
         override void setup(WorkflowJob job) {
-            writeln("TestWorkflowElement.setup");
+            //writeln("TestWorkflowElement.setup");
         }
         override void process(WorkflowJob job) {
-            writeln("TestWorkflowElement.process");
+            //writeln("TestWorkflowElement.process");
             _done = true;
         }
         override void terminate(WorkflowJob job) {
-            writeln("TestWorkflowElement.terminate");
+            //writeln("TestWorkflowElement.terminate");
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
@@ -159,14 +170,14 @@ unittest {
     class TestWorkflowElementException : WorkflowElement {
         bool terminated = false;
         override void setup(WorkflowJob job) {
-            writeln("TestWorkflowElement.setup");
+            //writeln("TestWorkflowElement.setup");
         }
         override void process(WorkflowJob job) {
-            writeln("TestWorkflowElementException.process");
+            //writeln("TestWorkflowElementException.process");
             throw new Exception("workflow unittest");
         }
         override void terminate(WorkflowJob job) {
-            writeln("TestWorkflowElement.terminate");
+            //writeln("TestWorkflowElement.terminate");
             terminated = true;
         }
     }

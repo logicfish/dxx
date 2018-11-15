@@ -21,6 +21,8 @@ SOFTWARE.
 **/
 module dxx.app.job;
 
+private import std.exception;
+
 private import core.thread;
 
 private import dxx.util;
@@ -30,7 +32,7 @@ interface Job : NotificationSource {
     enum Status {
         NOT_STARTED,
         STARTED,
-        PAUSED,
+        SUSPENDED,
         TERMINATED,
         THROWN_EXCEPTION
     }
@@ -48,7 +50,9 @@ interface Job : NotificationSource {
     @property pure @safe nothrow @nogc
     ref inout(Exception) thrownException() inout;
 
-    void execute();
+    nothrow
+    void execute(InjectionContainer injector=InjectionContainer.getInstance);
+
     //void join();
 	//void setProperty(string k,string v);
 	//string getProperty(string k);
@@ -57,14 +61,13 @@ interface Job : NotificationSource {
 abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
     Exception _thrownException;
-    bool _terminated = false;
-    DefaultInjector _injector;
+    InjectionContainer _injector;
     
     @property pure @safe nothrow @nogc
     const(Status) status() const {
         return _status;
     }
-    @property
+    @property nothrow
     void status(Status s) {
       _status = s;
       auto e = JobStatusEvent(this,s);
@@ -72,34 +75,32 @@ abstract class JobBase : SyncNotificationSource, Job {
     }
     @property pure @safe nothrow @nogc
     bool terminated() const {
-        return _terminated;
+        return (status == Status.TERMINATED) || (status == Status.THROWN_EXCEPTION);
     }
     @property @safe nothrow
     ref inout(Exception) thrownException() inout {
         return _thrownException;
     }
     @property @safe nothrow
-    ref inout(DefaultInjector) injector() inout {
+    ref inout(InjectionContainer) injector() inout {
     	return _injector;
     }
 
     nothrow
-    void execute() {
+    void execute(InjectionContainer injector=InjectionContainer.getInstance) {
         try {
-        	_injector = RuntimeComponents.injector; 
+            enforce(_status == Status.NOT_STARTED);
+            _injector = injector; 
+            setup;
             status(Status.STARTED);
-            executeJob();
-            status = Status.TERMINATED;
+            process;
         } catch(Exception e) {
             _thrownException = e;
-            try {
-              MsgLog.warning(e.message);
-              status = Status.THROWN_EXCEPTION;
-            } catch(Exception _e) {
-              MsgLog.error(_e.message);
-            } finally {}
+            status(Status.THROWN_EXCEPTION);
+            MsgLog.warning(e.message);
         } finally {
-            _terminated = true;
+            status(Status.TERMINATED);
+            terminate;
         }
     }
 
@@ -108,25 +109,24 @@ abstract class JobBase : SyncNotificationSource, Job {
             Thread.sleep( dur!("msecs")( 10 ) );
         }
     }
-    abstract void executeJob();
-	//override void setProperty(T)(string k,T v) {
-	//	injector.setProperty(v,k);
-	//}    
-	//override T getProperty(T)(string k) {
-	//	return injector.getProperty!T(k);
-	//}   
-	////override 
-    void setProperty(string k,string v) {
-        injector.setProperty(v,k);
+    
+    void setup() {}
+
+    abstract void process();
+    
+    nothrow void terminate() {}
+    
+    void setProperty(T)(string k,T v) {
+        injector.setParam(v,k);
     }    
-	//override 
-	string getProperty(string k) {
-		return injector.resolve!string(k);
-	}   
+
+    T getProperty(T)(string k) {
+        return injector.getParm(k);
+    }   
 }
 
 class JobDelegate(alias F) : JobBase {
-    override void executeJob() {
+    override void process() {
         F();
     }
 }

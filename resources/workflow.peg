@@ -1,12 +1,47 @@
 WorkflowGrammar :
-    WorkflowDoc <- WorkflowHeader WorkflowDefinition*
+    WorkflowDoc <- WorkflowHeader? WorkflowDefinition*
 
     WorkflowHeader <- "options" "{" WorkflowOption* "}"
 
-    WorkflowOption <- identifier ("." identifier)? "=" .* ";"
+    WorkflowOption <- Ident "=" RValue 
+    
+    RValue <- (( String | Number | Ident ) ";") | ( "{" WorkflowOption* "}" )
 
     WorkflowDefinition <- "workflow" identifier "{" WorkflowHeader? WorkflowElement* "}"
 
-    WorkflowElement <- identifier ("." identifier)? "{" WorkflowSetting* "}"
+    WorkflowElement <- Ident "{" WorkflowSetting* "}"
 
     WorkflowSetting <- WorkflowOption | WorkflowElement
+
+    Ident <- identifier ("." identifier)*
+    
+    String <~ doublequote (!doublequote Char)* doublequote
+    
+    Char   <~ backslash ( doublequote  # '\' Escapes
+                        / quote
+                        / backslash
+                        / [bfnrt]
+                        / [0-2][0-7][0-7]
+                        / [0-7][0-7]?
+                        / 'x' Hex Hex
+                        / 'u' Hex Hex Hex Hex
+                        / 'U' Hex Hex Hex Hex Hex Hex Hex Hex
+                        )
+             / . # Or any char, really
+             
+    Hex     <- [0-9a-fA-F]
+    
+    Number <~ Scientific | Floating | Unsigned | Integer | Hexa
+    
+    Scientific <~ Floating ( ('e' / 'E' ) Integer )?
+    
+    Floating   <~ Integer ('.' Unsigned )?
+    
+    Unsigned   <~ [0-9]+
+    
+    Integer    <~ Sign? Unsigned
+    
+    Hexa       <~ '0x' [0-9a-fA-F]+
+    
+    Sign       <- '-' / '+'
+    

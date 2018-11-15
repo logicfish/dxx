@@ -21,12 +21,14 @@ SOFTWARE.
 **/
 module dxx.example.plugin.exampleplugin;
 
-private import dxx.util.plugin;
+private import dxx.app.plugin;
 
 class ExamplePlugin : PluginDefault {
     override void activate(PluginContext* ctx) {
+        // .. TODO
     }
 
     override void deactivate(PluginContext* ctx) {
+        // .. TODO
     }
 }

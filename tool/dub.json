@@ -11,6 +11,7 @@
         "dxx": { "path" : ".." }
     },
     "targetPath": "bin",
+    "mainSourceFile": "source/dxx/tool.d",
     "configurations" : [
         { 
             "name": "dxx-console",

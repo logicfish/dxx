@@ -21,10 +21,17 @@ SOFTWARE.
 **/
 module dxx.sys.constants;
 
-private import dxx.packageVersion;
-
 private import std.compiler;
-private import core.cpuid;
+private import std.file;
+private import std.path;
+
+private import core.runtime;
+//private import core.cpuid;
+private import std.array : appender,join;
+
+private import semver;
+
+private import dxx.packageVersion;
 
 class Constants {
     //enum {
@@ -38,10 +45,31 @@ class Constants {
 
     enum compileTimestamp = __TIMESTAMP__;
 
-    version(Posix) { enum hostOperatingSystem = "Posix"; }
-    else version(Windows) { enum hostOperatingSystem = "Windows"; }
+    enum libVersion = packageVersion;
+    enum libTimestamp = packageTimestamp;
+    enum libTimestampISO = packageTimestampISO;
+
+    version (OSX) { enum hostOperatingSystem = "OSX"; }
     else version(MacOS) { enum hostOperatingSystem = "MacOS"; }
+    else version (linux) { enum hostOperatingSystem = "linux"; }
+    else version(Windows) { enum hostOperatingSystem = "Windows"; }
+    else version (FreeBSD) { enum hostOperatingSystem = "FreeBSD"; }
+    else version (NetBSD) { enum hostOperatingSystem = "NetBSD"; }
+    else version (DragonFlyBSD) { enum hostOperatingSystem = "DragonFlyBSD"; }
+    else version (Solaris) { enum hostOperatingSystem = "Solaris"; }
+    else version(Posix) { enum hostOperatingSystem = "Posix"; }
     else { enum hostOperatingSystem = "<unknown-OS>"; }
+
+    version(Windows) {
+        enum Windows = true;
+        enum Posix = false;
+    } else version(Posix) {
+        enum Windows = false;
+        enum Posix = true;
+    } else {
+        enum Windows = false;
+        enum Posix = false;
+    }
 
     version(unittest) { enum unitTest = true; }
     else { enum unitTest = false; }
@@ -59,13 +87,17 @@ class Constants {
     } else {
         enum dxxModule = false;
     }
+
+    //template libSemVer() {
+    //    auto libSemVer = SemVer(packageVersion);
+    //}
 };
 
 struct RTConstants {
-    const(string) libVersion = packageVersion;
-    const(string) libTimestamp = packageTimestamp;
-    const(string) libTimestampISO = packageTimestampISO;
-
+    const(string) libVersion = Constants.libVersion;
+    const(string) libTimestamp = Constants.libTimestamp;
+    const(string) libTimestampISO = Constants.libTimestampISO;
+    
     const(string) compilerName = Constants.compilerName;
     const(uint) compilerVersionMajor = Constants.compilerVersionMajor;
     const(uint) compilerVersionMinor = Constants.compilerVersionMinor;
@@ -79,7 +111,49 @@ struct RTConstants {
 
     const(bool) dxxModule = Constants.dxxModule;
 
+    const(string) appFileName;
+    const(string) appDir;
+    const(string) curDir;
+    const(string) appBaseName;
+    const(string) argString;
+
+    shared static this() {
+        runtimeConstants.appFileName = thisExePath;
+        runtimeConstants.appDir = dirName(runtimeConstants.appFileName);
+        runtimeConstants.curDir = getcwd;
+        runtimeConstants.argString = Runtime.args.join(" ");
+         
+        version(Windows) {
+            version(DXX_Module) {
+                runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName,".dll");
+            } else {
+                runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName,".exe");
+            }
+        } else {
+            runtimeConstants.appBaseName = baseName(appFileName);
+        }    
+    }
+
+
+    // the following variables may be filled in by the application...
+    
+    string userAppVersion; // user-defined app version string.
+    string appName; // user-defined app name.
+    string orgName; // user-defined org name.
+    
+    shared void registerAppVersion(vers)() {
+        userAppVersion = vers;
+    }
+
+    shared void registerAppVars(T)() {
+        orgName = T.organizationName;
+        appName = T.applicationName;
+    }
+
+
     static __gshared shared(RTConstants) runtimeConstants;
+
+    alias constants = runtimeConstants;
     
     unittest {
         assert(runtimeConstants.unitTest);
@@ -96,7 +170,19 @@ struct RTConstants {
             assert(runtimeConstants.dxxModule == false);
         }
     }
-};
 
+    const shared inout ref
+    auto libVersions() {
+        return SemVerRange(">~"~libVersion);
+    }
+    const shared inout ref
+    auto semVer() {
+        return SemVer(Constants.libVersion);
+    }
+    const shared inout 
+    bool checkVersion(SemVer v) {
+        return v.satisfies(libVersions);
+    }
+};
 
 

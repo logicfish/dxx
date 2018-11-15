@@ -21,13 +21,33 @@ SOFTWARE.
 **/
 module dxx.app.resource.resource;
 
-class Resource {
-    ResourceSet owner;
-    Resource parent;
-    Resource[] children;
-    const(string) uri;
-    bool isFolder;
-    void* contents;
+interface URIResolver {
+    Resource resolveURI(string uri,ResourceSet owner);
+}
+
+interface ResourceValidator {
+   bool isValid(ResourceSet set);
+   bool isValidResource(Resource res);
+}
+
+interface ResourceContentProvider {
+    void* getContent(Resource);
+}
+
+interface Resource {
+    ResourceSet owner();
+    Resource parent();
+    Resource[] children();
+    const(string) uri();
+    bool isFolder();
+    void* contents();
+    //uint putContents(void*,uint);
+}
+
+interface FileResource : Resource {
+}
+
+interface FolderResource : FileResource {
 }
 
 final class ResourceSet {
@@ -48,11 +68,4 @@ final class ResourceSet {
     }
 }
 
-class ResourceValidator {
-    bool isValid(ResourceSet set) {
-        return true;
-    }
-    bool isValidResource(Resource res) {
-        return true;
-    }
-}
+

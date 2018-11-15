@@ -1,0 +1,18 @@
+/**
+{{pluginDoc}}
+**/
+module {{moduleName}};
+
+{{pluginImports}}
+
+private import dxx.util.plugin;
+
+class {{pluginClassName}} : {{pluginBaseClass}} {
+    override void activate(PluginContext* ctx) {
+        // TODO ...
+    }
+
+    override void deactivate(PluginContext* ctx) {
+        // TODO ...
+    }
+}

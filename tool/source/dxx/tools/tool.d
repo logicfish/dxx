@@ -44,10 +44,10 @@ interface Tool : WorkflowElement {
     //Argument getArgument(string key);
 }
 
-void registerArgument(DefaultInjector i,Argument arg,string id) {
+void registerArgument(InjectionContainer i,Argument arg,string id) {
 	i.register!Argument(arg,id);
 }
-Argument getArgument(DefaultInjector i,string id) {
+Argument getArgument(InjectionContainer i,string id) {
 	return i.resolve!Argument(id);
 }
 
