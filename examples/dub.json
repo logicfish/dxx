@@ -11,6 +11,6 @@
 	},
     "subPackages" : [
         "basic",
-				"example-plugin"
+				"plugin"
     ]
 }
