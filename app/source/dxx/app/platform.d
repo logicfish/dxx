@@ -129,6 +129,7 @@ class PlatformRuntime(Param...)
     }
     
     override void registerAppDependencies(InjectionContainer injector) {
+        super.registerAppDependencies(injector);
         registerPlatformDependencies(injector);
     }
 }

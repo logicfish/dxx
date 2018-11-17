@@ -43,30 +43,48 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
     __gshared shared(MsgLog) _MSGLOG;
 
     shared static this() {
-        sharedLog.trace("MsgLog static this");
+        debug(Log) {
+            sharedLog.trace("MsgLog static this");
+        }
         if(_MSGLOG is null) {
             _MSGLOG = new MsgLog;
             _MSGLOG.addNotificationListener(_MSGLOG);
         }
     }
 
-    override synchronized void handleNotification(void* p) {
-        debug(Notify) {
+    override synchronized void handleNotification(void* _p) {
+        debug(Log) {
             sharedLog.trace("MsgLog handleNotification");
         }
-        //LogNotification* n = cast(LogNotification*)p;
-        //if(n !is null) {
+        LogNotification* p = cast(LogNotification*)_p;
+        assert(p);
+        
+        //switch(p.logLevel) {
+        //    case LogLevel.trace:
+        //        logger.trace!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        break;
+        //    case LogLevel.warning:
+        //        logger.warning!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        break;
+        //    case LogLevel.error:
+        //        logger.error!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        break;
+        //    case LogLevel.info:
+        //        logger.info!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        break;
+        //    case LogLevel.fatal:
+        //        logger.fatal!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        break;
         //}
     }
 
 
     static auto logger() {
         if(InjectionContainer.getInstance is null) {
-            return sharedLog;
+            return stdThreadLocalLog;
         }
         return resolveInjector!Logger;
     }
-
 
     static void addLogNotificationListener(T)(T t) {
         _MSGLOG.addNotificationListener(t);
@@ -88,6 +106,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                 lazy A args) {
         try {
             sendLogNotification(LogNotification(LogLevel.trace,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            version(DXX_Module) {
+                debug(Module) {
+                    logger.trace("[module]");
+                }
+            }
             logger.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);        
         } catch (Exception e) {
             //debug { // nothrow
@@ -103,6 +126,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         try {
+            version(DXX_Module) {
+                debug(Module) {
+                    logger.trace("[module]");
+                }
+            }
             sendLogNotification(LogNotification(LogLevel.warning,line,file,funcName,prettyFuncName,moduleName,args.to!string));
             logger.warning!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
@@ -115,6 +143,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         try {
+            version(DXX_Module) {
+                debug(Module) {
+                    logger.trace("[module]");
+                }
+            }
             sendLogNotification(LogNotification(LogLevel.error,line,file,funcName,prettyFuncName,moduleName,args.to!string));
             logger.error!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
@@ -127,6 +160,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         try {
+            version(DXX_Module) {
+                debug(Module) {
+                    logger.trace("[module]");
+                }
+            }
             sendLogNotification(LogNotification(LogLevel.info,line,file,funcName,prettyFuncName,moduleName,args.to!string));
             logger.info!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
@@ -138,8 +176,29 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             string moduleName = __MODULE__, A...)(
                 lazy A args) {
         try {
+            version(DXX_Module) {
+                debug(Module) {
+                    logger.trace("[module]");
+                }
+            }
             sendLogNotification(LogNotification(LogLevel.fatal,line,file,funcName,prettyFuncName,moduleName,args.to!string));
             logger.fatal!(line,file,funcName,prettyFuncName,moduleName,A)(args);
+        } catch (Exception) {
+        }
+    }
+    static void critical(int line = __LINE__, string file = __FILE__,
+            string funcName = __FUNCTION__,
+            string prettyFuncName = __PRETTY_FUNCTION__,
+            string moduleName = __MODULE__, A...)(
+                lazy A args) {
+        try {
+            version(DXX_Module) {
+                debug(Module) {
+                    logger.trace("[module]");
+                }
+            }
+            sendLogNotification(LogNotification(LogLevel.critical,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            logger.critical!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
         }
     }

@@ -96,8 +96,8 @@ class Loader {
             sharedLog.info(moduleData.hostRuntime.libVersions);
         }
         enforce(moduleData.moduleRuntime);
-        //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
-        enforce(RTConstants.runtimeConstants.checkVersion(moduleData.moduleRuntime.semVer));
+        enforce(moduleData.moduleRuntime.checkVersion(RTConstants.constants.semVer));
+        //enforce(RTConstants.runtimeConstants.checkVersion(moduleData.moduleRuntime.semVer));
     }
 }
 
@@ -228,7 +228,7 @@ version(DXX_Module) {
     import std.experimental.logger;
 
     void load( void* userdata ) {
-        debug { sharedLog.info("load"); }
+        debug(Module) { sharedLog.info("[module] load"); }
 //        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
 //        Module.getInstance.moduleData.moduleRuntime = &RTConstants.runtimeConstants;
         Module.getInstance.load;
@@ -236,13 +236,13 @@ version(DXX_Module) {
 
     void unload(void* userdata) {
 //        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
-        debug { sharedLog.info("unload"); }
+        debug(Module) { sharedLog.info("[module] unload"); }
         Module.getInstance.unload;
     }
 
     void init(void* data) {
         assert(data);
-        debug { sharedLog.info("init"); }
+        debug(Module) { sharedLog.info("[module] init"); }
 
         auto moduleData = cast(shared(ModuleData)*)data;
         
@@ -251,21 +251,20 @@ version(DXX_Module) {
         Module.getInstance.moduleData = moduleData;
         Module.getInstance.moduleData.moduleRuntime = &RTConstants.runtimeConstants;
         
-        debug { sharedLog.info("checking version"); }
         //enforce(moduleData.hostRuntime.checkVersion());
         //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
+        enforce(moduleData.hostRuntime.checkVersion(RTConstants.constants.semVer));
         
-        debug { sharedLog.info("Module.init"); }
         Module.getInstance.init;
     }
     void uninit(void* userdata){
         Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
-        debug { sharedLog.info("uninit"); }
+        debug(Module) { sharedLog.info("[module] uninit"); }
         Module.getInstance.deinit;
     }
 
     void update() {
-        debug { sharedLog.info("update"); }
+        debug(Module) { sharedLog.info("[module] update"); }
         Module.getInstance.update;
     }
 

@@ -40,6 +40,8 @@ interface Components {
     
     public WorkflowRunner getWorkflowRunner();
 
+    public PluginLoader getPluginLoader();
+    
     //nothrow
     //ref DefaultInjector injector();
     
@@ -52,7 +54,7 @@ mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
         import std.experimental.logger;
         import dxx.util.injector;
         
-        sharedLog.info("RuntimeComponents register "~typeid(T).to!string);
+        debug(Component) { sharedLog.info("RuntimeComponents register "~typeid(T).to!string); }
         //auto _injector = newInjector!(T,Param);
         auto t = new T;
         //t.registerAppDependencies(_injector);
@@ -129,7 +131,10 @@ class RuntimeComponents(Param...) : Components {
             }
             return workflowRunner;
         }
-
+        @component
+        override PluginLoader getPluginLoader() {
+            return new PluginLoader;
+        }
     }
 
     //@component

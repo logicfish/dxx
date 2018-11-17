@@ -45,8 +45,8 @@ final class PluginLoader {
     Loader loader;
     alias loader this;
 
-    this(const(string) path) {
-        debug {
+    void load(const(string) path) {
+        debug(Plugin) {
             MsgLog.info("PluginLoader " ~ path);
         }
         loader = Loader.loadModule(path,&ctx);
@@ -57,19 +57,20 @@ class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param)
     void registerPluginComponents(InjectionContainer injector) {
     }
     override void registerAppDependencies(InjectionContainer injector) {
-        debug {
-            MsgLog.info("registerAppDependencies()");
+        debug(Plugin) {
+            import std.experimental.logger;
+            sharedLog.info("registerAppDependencies()");
         }
+        super.registerAppDependencies(injector);
         injector.register!(Plugin,PluginType);
         registerPluginComponents(injector);
     }
-    //template registerPlugin(Component : PluginComponents!(PluginType,Param)) {
-    //    mixin registerComponent!Component;
-    //}    
 }
 
 mixin template registerPlugin(P : Plugin,Param ...) {
-    mixin registerComponent!(PluginComponents!(P,Param));
+    version(DXX_Plugin) {
+        mixin registerComponent!(PluginComponents!(P,Param));
+    }
 }
 
 interface Plugin {
@@ -85,6 +86,9 @@ abstract class PluginDefault : Plugin {
     static __gshared PluginDescriptor DESCR;
     static bool instantiated = false;
 
+    static void setDescr(PluginDescriptor desc) {
+        DESCR = desc;
+    }
     static auto getInstance() {
         if(!instantiated) {
             synchronized(PluginDefault.classinfo) {
@@ -107,6 +111,7 @@ abstract class PluginDefault : Plugin {
             debug {
                 MsgLog.info("onInit");
             }
+            event.mod.data!(PluginContext).desc = &DESCR;
             getInstance.init;
         }
         override shared void onDeinit(Module.ModuleEvent* event) {
@@ -118,7 +123,6 @@ abstract class PluginDefault : Plugin {
             debug {
                 MsgLog.info("onLoad");
             }
-            event.mod.data!(PluginContext).desc = &DESCR;
             getInstance.activate(event.mod.data!PluginContext);
         }
         override shared void onUnload(Module.ModuleEvent* event) {
@@ -141,21 +145,21 @@ abstract class PluginDefault : Plugin {
     this() {
     }
     void init() {
-        debug {
+        debug(Pugin) {
             MsgLog.info("init");
             MsgLog.info(descr.id);
         }
     }
 
     void activate(PluginContext* ctx) {
-        debug {
+        debug(Pugin) {
             MsgLog.info("activate");
             MsgLog.info(descr.id);
         }
     }
 
     void deactivate(PluginContext* ctx) {
-        debug {
+        debug(Pugin) {
             MsgLog.info("deactivate");
             MsgLog.info(descr.id);
         }

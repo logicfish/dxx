@@ -24,6 +24,9 @@ module dxx.example.plugin.exampleplugin;
 private import dxx.app.plugin;
 
 class ExamplePlugin : PluginDefault {
+    override void init() {
+        setDescr(PluginDescriptor("example-plugin","v0.1.0","Example"));
+    }
     override void activate(PluginContext* ctx) {
         // .. TODO
     }

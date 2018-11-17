@@ -57,7 +57,7 @@ class BasicComponents : RuntimeComponents!BasicParam {
 };
 */
 
-mixin registerComponent!(RuntimeComponents!BasicParam);
+mixin registerComponent!(PlatformRuntime!BasicParam);
 
     
 int main(string[] args) {
@@ -76,7 +76,11 @@ int main(string[] args) {
     auto age = (getInjectorProperty!uint("age"));
     MsgLog.info("age = " ~ age.to!string);
 
-    auto l = new PluginLoader("examples/plugin/bin/dxx_example-plugin.dll");
+    //auto l = new PluginLoader("examples/plugin/bin/dxx_example-plugin.dll");
+    //auto l = new PluginLoader;
+    auto l = resolveInjector!PluginLoader();
+    assert(l);
+    l.load("examples/plugin/bin/dxx_example-plugin.dll");
     l.update;
         
     return 0;
