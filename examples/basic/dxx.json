@@ -1,0 +1,13 @@
+{
+    "dxx" : {
+        "workspace" : {
+            "name" : "Default workspace"
+        },
+        "plugins" : {
+            "example-plugin" : {
+                "path" : "examples/plugin/bin/dxx_plugin",
+                "version" : "*"
+            }
+        }
+    }
+}

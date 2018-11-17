@@ -80,7 +80,7 @@ int main(string[] args) {
     //auto l = new PluginLoader;
     auto l = resolveInjector!PluginLoader();
     assert(l);
-    l.load("examples/plugin/bin/dxx_example-plugin.dll");
+    l.load("examples/plugin/bin/dxx_plugin.dll");
     l.update;
         
     return 0;
