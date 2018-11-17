@@ -26,6 +26,10 @@ private import std.conv;
 
 private import dxx.util;
 
+/++
+A notifying logger.
+++/
+
 final class MsgLog : SyncNotificationSource,NotificationListener {
     struct LogNotification {
         LogLevel logLevel;
@@ -56,7 +60,12 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
     }
 
 
-    alias logger = resolveInjector!Logger;
+    static auto logger() {
+        if(InjectionContainer.getInstance is null) {
+            return sharedLog;
+        }
+        return resolveInjector!Logger;
+    }
 
 
     static void addLogNotificationListener(T)(T t) {
@@ -81,7 +90,9 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
             sendLogNotification(LogNotification(LogLevel.trace,line,file,funcName,prettyFuncName,moduleName,args.to!string));
             logger.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);        
         } catch (Exception e) {
-            //sharedLog.error(e);
+            //debug { // nothrow
+            //    sharedLog.error(e);
+            //}
         }
         
     }

@@ -32,10 +32,18 @@ Simple notification service.
 An object that inherits NotificationSource maintains a vector of
 NotificationListener's.
 
+At any time the listeners callback method handleNotification may be invoked.
+If the client implements the interface ASyncNotificationListener then the 
+invocations should be in parallel.
+
+
 ++/
 
 interface NotificationListener {
   shared void handleNotification(void* t);
+};
+
+interface ASyncNotificationListener : NotificationListener {
 };
 
 interface NotificationSource {
@@ -44,7 +52,10 @@ interface NotificationSource {
 }
 
 /++
-Synchronized notification handler.
+
+Synchronized notification handler. Extend this class to create an object that can send
+notifications to a group of listeners.
+
 ++/
 
 class SyncNotificationSource : NotificationSource {
@@ -59,9 +70,29 @@ class SyncNotificationSource : NotificationSource {
         } catch(Exception) {
         }
     }
-    auto ar = notificationListeners.dup;
+    //auto ar = notificationListeners.dup;
+    alias ar = notificationListeners;
+    
+    ar.filter!(x=>cast(shared(ASyncNotificationListener))x  is null).each!( x=>{
+        try {
+            debug(Notify) {
+                sharedLog.info("sync notification ",typeid(x));
+            }
+            x.handleNotification(cast(void*)&t);
+        } catch(Exception e) {
+            try {
+                sharedLog.error(e.message);
+            } catch(Exception) {
+            }
+        }
+    });
     try {
-      ar.parallel.each!(x=>x.handleNotification(cast(void*)&t));
+        ar.filter!(x=>cast(shared(ASyncNotificationListener))x !is null).parallel.each!(
+            //debug(Notify) {
+            //    sharedLog.info("async notification ",typeid(x));
+            //}
+            x=>x.handleNotification(cast(void*)&t)
+        );
     } catch(Exception e) {
         try {
             sharedLog.error(e.message);

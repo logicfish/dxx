@@ -24,6 +24,7 @@ module dxx.sys.constants;
 private import std.compiler;
 private import std.file;
 private import std.path;
+private import std.string : split;
 
 private import core.runtime;
 //private import core.cpuid;
@@ -46,6 +47,7 @@ class Constants {
     enum compileTimestamp = __TIMESTAMP__;
 
     enum libVersion = packageVersion;
+    enum libVersionRange = "~>"~(packageVersion[1..$].split("-")[0]);
     enum libTimestamp = packageTimestamp;
     enum libTimestampISO = packageTimestampISO;
 
@@ -97,6 +99,7 @@ struct RTConstants {
     const(string) libVersion = Constants.libVersion;
     const(string) libTimestamp = Constants.libTimestamp;
     const(string) libTimestampISO = Constants.libTimestampISO;
+    const(string) libVersionRange = Constants.libVersionRange;
     
     const(string) compilerName = Constants.compilerName;
     const(uint) compilerVersionMajor = Constants.compilerVersionMajor;
@@ -173,14 +176,17 @@ struct RTConstants {
 
     const shared inout ref
     auto libVersions() {
-        return SemVerRange(">~"~libVersion);
+        auto r = SemVerRange(libVersionRange);
+        assert(r.isValid);
+        return r;
     }
-    const shared inout ref
+    const shared inout ref 
     auto semVer() {
-        return SemVer(Constants.libVersion);
+        return SemVer(libVersion);
     }
     const shared inout 
     bool checkVersion(SemVer v) {
+        assert(v.isValid);
         return v.satisfies(libVersions);
     }
 };

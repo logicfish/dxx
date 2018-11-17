@@ -22,6 +22,7 @@ SOFTWARE.
 module dxx.sys.loader;
 
 private import std.exception;
+private import std.experimental.logger;
 
 private import reloaded : Reloaded, ReloadedCrashReturn;
 
@@ -46,7 +47,7 @@ class Loader {
     Reloaded script;
 
     this(const(string) path,void* data) {
-        debug {
+        debug(Loader) {
             MsgLog.info("Loader " ~ path);
         }
         //this.moduleData.libVersion = packageVersion;
@@ -56,33 +57,47 @@ class Loader {
         script = Reloaded();
     }
     void load() {
-        debug {
-            MsgLog.info("load " ~ path);
+        debug(Loader) {
+            sharedLog.info("load " ~ path);
         }
         script.load(path, moduleData);
         mixin ReloadedCrashReturn;
     }
     void update() {
-        debug {
-            MsgLog.info("load " ~ path);
+        debug(Loader) {
+            sharedLog.info("load " ~ path);
         }
         script.update;
     }
     void update(void* data) {
+        debug(Loader) {
+            sharedLog.info("updated " ~ path);
+        }
         this.moduleData.modData = cast(shared(void*))data;
         update;
     }
     static auto loadModule(const(string) path,void* data) {
+        debug(Loader) {
+            sharedLog.info("loadModule " ~ path);
+        }
         auto l = new Loader(path,data);
         l.load;
+        debug(Loader) {
+            sharedLog.info("loaded " ~ path);
+        }
         l.validate;
         return l;
     }
     void validate() {
+        debug(Loader) {
+            sharedLog.info("validate " ~ path);
+            //sharedLog.info(moduleData.moduleRuntime.semVer);
+            //sharedLog.info(moduleData.hostRuntime.semVer);
+            sharedLog.info(moduleData.hostRuntime.libVersions);
+        }
         enforce(moduleData.moduleRuntime);
-        //enforce(RTConstants.libSemVer.satisfies(moduleData.moduleRuntime.libSemVer));
-        //enforce(moduleData.hostRuntime.libSemVer.satisfies(moduleData.moduleRuntime.libSemVer));
-        enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
+        //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
+        enforce(RTConstants.runtimeConstants.checkVersion(moduleData.moduleRuntime.semVer));
     }
 }
 
@@ -106,6 +121,9 @@ final class Module : SyncNotificationSource {
         if(!instantiated) {
             synchronized(Module.classinfo) {
                 if(!INSTANCE) {
+                    debug(Module) {
+                        sharedLog.info("new instance.");
+                    }
                     INSTANCE = new shared(Module);
                 }
             }
@@ -137,19 +155,23 @@ final class Module : SyncNotificationSource {
     }
     private shared void init() {
         //checkModuleVersion;
-        debug { MsgLog.info("init"); }
+        debug(Module) { sharedLog.info("init"); }
         sendModuleEvent!(ModuleEvent.Type.Init);
     }
     private shared void deinit() {
+        debug(Module) { sharedLog.info("deinit"); }
         sendModuleEvent!(ModuleEvent.Type.Deinit);
     }
     private shared void load() {
+        debug(Module) { sharedLog.info("load"); }
         sendModuleEvent!(ModuleEvent.Type.Load);
     }
     private shared void unload() {
+        debug(Module) { sharedLog.info("unload"); }
         sendModuleEvent!(ModuleEvent.Type.Unload);
     }
     private shared void update() {
+        debug(Module) { sharedLog.info("update"); }
         sendModuleEvent!(ModuleEvent.Type.Update);
     }
 }
@@ -158,8 +180,8 @@ final class Module : SyncNotificationSource {
 class ModuleNotificationListener : NotificationListener {
     override shared void handleNotification(void* t) {
         Module.ModuleEvent* event = cast(Module.ModuleEvent*)t;
-        debug {
-            MsgLog.info("Notification");
+        debug(Module) {
+            sharedLog.info("Notification");
         }
         final switch(event.eventType) {
             case Module.ModuleEvent.Type.Init: 
@@ -202,7 +224,7 @@ version(DXX_Module) {
     
     extern(C):
 
-    //import core.stdc.stdio : printf;
+    import core.stdc.stdio : printf;
     import std.experimental.logger;
 
     void load( void* userdata ) {
@@ -219,18 +241,21 @@ version(DXX_Module) {
     }
 
     void init(void* data) {
-        enforce(data);
+        assert(data);
         debug { sharedLog.info("init"); }
 
         auto moduleData = cast(shared(ModuleData)*)data;
-        enforce(moduleData.hostRuntime);
+        
+        assert(moduleData.hostRuntime);
 
         Module.getInstance.moduleData = moduleData;
         Module.getInstance.moduleData.moduleRuntime = &RTConstants.runtimeConstants;
         
+        debug { sharedLog.info("checking version"); }
         //enforce(moduleData.hostRuntime.checkVersion());
-        enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
+        //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
         
+        debug { sharedLog.info("Module.init"); }
         Module.getInstance.init;
     }
     void uninit(void* userdata){

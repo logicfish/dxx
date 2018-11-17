@@ -23,6 +23,9 @@ module dxx.app.plugin;
 
 private import dxx.util;
 
+private import dxx.util;
+private import dxx.app.component;
+
 private import dxx.sys.loader;
 
 struct PluginDescriptor {
@@ -58,7 +61,7 @@ class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param)
             MsgLog.info("registerAppDependencies()");
         }
         injector.register!(Plugin,PluginType);
-        injector.registerPluginComponents;
+        registerPluginComponents(injector);
     }
     //template registerPlugin(Component : PluginComponents!(PluginType,Param)) {
     //    mixin registerComponent!Component;
@@ -66,7 +69,7 @@ class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param)
 }
 
 mixin template registerPlugin(P : Plugin,Param ...) {
-    mixin registerComponent!(PluginComponents!(Plugin,Param));
+    mixin registerComponent!(PluginComponents!(P,Param));
 }
 
 interface Plugin {
@@ -172,6 +175,5 @@ mixin template pluginMain() {
         } else {
         }
     }    
-    
 }
 

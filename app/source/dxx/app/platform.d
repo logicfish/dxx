@@ -31,57 +31,56 @@ private import dxx.app.resource;
 private import dxx.app.document;
 private import dxx.app.component;
 
-interface DocumentResourceAdaptor {
-    DocumentType getDocType(FileResource);
-}
+//interface DocumentResourceAdaptor {
+    //DocumentType getDocType(FileResource);
+//}
 
 interface PlatformComponents {
     URIResolver getURIResolver();
     ResourceValidator getResourceValidator();
     ResourceContentProvider getResourceContentProvider();
-    DocumentResourceAdaptor getDocumentResourceAdaptor();
-}
-
-@component
-class PlatformRuntime(Param...) 
-            : RuntimeComponents!(Param), PlatformComponents {
-    @component
-    URIResolver getURIResolver() {
-        return Platform.getInstance;
-    }
-    
-    @component
-    ResourceValidator getResourceValidator() {
-        return Platform.getInstance;
-    }
-    
-    @component
-    ResourceContentProvider getResourceContentProvider() {
-        return Platform.getInstance;
-    }
-    
-    @component
-    DocumentResourceAdaptor getDocumentResourceAdaptor() {
-        return Platform.getInstance;
-    }
-    void registerPlatformDependencies(InjectionContainer injector) {
-        injector.register!(Workspace)(new WorkspaceDefault,"app.workspace");
-    }
-    override void registerAppDependencies(InjectionContainer injector) {
-        injector.registerPlatformDependencies;
-    }
+    //DocumentResourceAdaptor getDocumentResourceAdaptor();
 }
 
 class Platform  
-        : URIResolver, ResourceValidator,ResourceContentProvider,DocumentResourceAdaptor 
 {
+    static class ThreadLocal :
+        URIResolver, 
+        ResourceValidator,
+        ResourceContentProvider
+        //DocumentResourceAdaptor 
+    {
+        Resource resolveURI(string uri,ResourceSet owner) {
+            return null;
+        }
+        bool isValid(ResourceSet set) {
+            return true;
+        }
+        bool isValidResource(Resource res) {
+            return true;
+        }
+        void* getContent(Resource) {
+            return null;
+        }
+        override ubyte[] getContent(Resource) {
+            return [];
+        }
+        override void putContent(ubyte[],Resource) {
+        }
+        DocumentType getDocType(FileResource) {
+            return null;
+        }
+    }
+    static ThreadLocal _local;
+    static auto getLocals() {
+        if(_local is null) {
+            _local = new ThreadLocal;
+        }
+        return _local;
+    }
+        
     static __gshared Platform INSTANCE;
     static bool instantiated = false;
-
-    //shared static this() {
-    //    assert(INSTANCE is null);
-    //    INSTANCE=new Platform;
-    //}
     
     static auto getInstance() {
         if(!instantiated) {
@@ -92,28 +91,46 @@ class Platform
             }
             instantiated = true;
         }
-    }
-
-    Resource resolveURI(string uri,ResourceSet owner) {
-        return null;
-    }
-    bool isValid(ResourceSet set) {
-        return true;
-    }
-    bool isValidResource(Resource res) {
-        return true;
-    }
-    void* getContent(Resource) {
-        return null;
-    }
-    DocumentType getDocType(FileResource) {
-        return null;
+        return INSTANCE;
     }
 
     static Workspace getDefaultWorkspace() {
         return resolveInjector!(Workspace)("app.workspace");
     }
 
+}
+
+@component
+class PlatformRuntime(Param...) 
+            : RuntimeComponents!(Param), PlatformComponents {
+    @component
+    override URIResolver getURIResolver() {
+        return Platform.getLocals();
+    }
+
+    @component
+    override ResourceValidator getResourceValidator() {
+        return Platform.getLocals;
+    }
+
+    @component
+    override ResourceContentProvider getResourceContentProvider() {
+        return Platform.getLocals;
+    }
+
+    //@component
+    //override DocumentResourceAdaptor getDocumentResourceAdaptor() {
+    //    return Platform.getInstance();
+    //}
+    
+    void registerPlatformDependencies(InjectionContainer injector) {
+        Workspace w = new WorkspaceDefault;
+        injector.register!(Workspace)(w,"app.workspace");
+    }
+    
+    override void registerAppDependencies(InjectionContainer injector) {
+        registerPlatformDependencies(injector);
+    }
 }
 
 

@@ -21,26 +21,46 @@ SOFTWARE.
 **/
 module dxx.app.resource.workspace;
 
+private import aermicioi.aedi;
+
 private import dxx.app.resource;
 private import dxx.app.document;
 
 interface Workspace {
-    //Project getProject(string name);
-    //Project[] getProjects();
+    enum ResourceLocation {
+        CONFIG,SYSTEM,PROJECT
+    };
+    Project getProject(string name);
+    Project[] getProjects();
     Resource getResource(string uri,ResourceSet owner);
+    string getNativePath(string uri);
+    string getNativePath(Project);
 }
 
 class WorkspaceDefault : Workspace {
-    
+    @autowired
     URIResolver uriResolver;
     
+    @autowired
     ResourceValidator validator;
+
+    Project[string] projects;
     
     override Resource getResource(string uri,ResourceSet owner) {
         return uriResolver.resolveURI(uri,owner);
     }
     
-    //void enumerate(string uri,void delegate(string)) {
-    //}
+    string getNativePath(string uri) {
+        return uri;
+    }
+    string getNativePath(Project p) {
+        return getNativePath(p.uri);
+    }
+    Project getProject(string name) {
+        return null;
+    }
+    Project[] getProjects() {
+        return null;
+    }
 }
 

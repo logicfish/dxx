@@ -31,6 +31,7 @@ private import std.meta;
 private import dxx.util;
 private import dxx.app;
 private import dxx.tools;
+private import dxx.app.platform;
 
 // Compile-time config
 enum ToolConfig = DXXConfig ~ IniConfig!("tool.ini");
@@ -38,17 +39,18 @@ enum ToolConfig = DXXConfig ~ IniConfig!("tool.ini");
 mixin __Text!(ToolConfig.tools.lang);
 
 @component
-class ToolsModule : RuntimeComponents!() {
+class ToolsModule : PlatformRuntime!() {
     static void registerTool(alias Cmd : string,T : Tool)(InjectionContainer injector) {
         //debug {
         //    sharedLog.trace("ToolsModule registerTool "~Cmd);
         //}
         injector.register!T("tool.cmd."~Cmd);
     }
-    override void registerAppDependencies(InjectionContainer injector) {
+    override void registerPlatformDependencies(InjectionContainer injector) {
         debug {
-            sharedLog.info("ToolsModule registerAppDependencies()");
+            sharedLog.info("ToolsModule registerPlatformDependencies()");
         }
+        super.registerPlatformDependencies(injector);
         registerTool!("init",InitTool)(injector);
         registerTool!("install",InstallTool)(injector);
         registerTool!("lang",LangTool)(injector);

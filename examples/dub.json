@@ -10,6 +10,7 @@
 		"dxx" : { "path" : "../"}
 	},
     "subPackages" : [
-        "basic"
+        "basic",
+				"example-plugin"
     ]
 }

@@ -22,6 +22,9 @@ SOFTWARE.
 module dxx.app.resource.resource;
 
 interface URIResolver {
+    /++
+    Resolve a URI in space or in the filesystem.
+    ++/
     Resource resolveURI(string uri,ResourceSet owner);
 }
 
@@ -31,7 +34,18 @@ interface ResourceValidator {
 }
 
 interface ResourceContentProvider {
-    void* getContent(Resource);
+    ubyte[] getContent(Resource);
+    void putContent(ubyte[],Resource);
+}
+
+struct ResourceMetaData {
+    string ns;
+    string content;
+}
+
+interface ResouceMetaDataProvider {
+    ResourceMetaData[] getMetaData(string id,string uri);
+    void setMetaData(ResourceMetaData[] data,string id,string uri);
 }
 
 interface Resource {
@@ -40,8 +54,8 @@ interface Resource {
     Resource[] children();
     const(string) uri();
     bool isFolder();
-    void* contents();
-    //uint putContents(void*,uint);
+    //byte[] contents();
+    //int putContents(byte[]);
 }
 
 interface FileResource : Resource {

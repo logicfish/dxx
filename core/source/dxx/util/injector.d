@@ -70,11 +70,10 @@ static void setInjectorProperty(T)(string k,T t,InjectionContainer i=InjectionCo
 }
 
 static auto newInjector(alias T,V...)(AggregateContainer c = null) {
-    if(InjectionContainer.instantiated) {
-        return InjectionContainer.getInstance;
-    } else {
-        return new ContextInjector!(T,V)(c);
+    if(InjectionContainer.INSTANCE is null) {    
+        new ContextInjector!(T,V)(c);        
     }
+    return InjectionContainer.getInstance;
 }
 
 static void terminateInjector() {
@@ -85,13 +84,18 @@ static void terminateInjector() {
     }
 }
 
+//interface InjectionComponent {
+//    void registerComponent(InjectionContainer injector);
+//    
+//}
+
 abstract class InjectionContainer {
 
     private static __gshared InjectionContainer INSTANCE;
     static bool instantiated = false;
 
     static auto ref getInstance() {
-        assert(INSTANCE !is null);
+        //assert(INSTANCE !is null);
         return INSTANCE;
     }
 
@@ -117,13 +121,13 @@ abstract class InjectionContainer {
         synchronized(InjectionContainer.classinfo) {
             if(!instantiated) {
                 if(INSTANCE is null) {
+                    services(_c);
+                    _container = _c;
                     INSTANCE = this;
                 }
                 instantiated = true;
             }
         }
-        services(_c);
-        _container = _c;
     }
 
     auto resolve(T,Arg ...)(Arg arg) {
@@ -154,13 +158,13 @@ abstract class InjectionContainer {
         return _container.locate!T(k);
     }   
     void terminate() {
-        debug {
+        debug(Injector) {
             sharedLog.info("terminating");
         }
         _container.terminate();
     }
     auto instantiate() {
-        debug {
+        debug(Injector) {
             sharedLog.info("instantiating");
         }
         return _container.instantiate;
@@ -175,18 +179,20 @@ final class ContextInjector(C...) : InjectionContainer {
         super(c);
     }
     override void scanPrototype(PrototypeContainer p) {
-        debug {
+        debug(Injector) {
             sharedLog.info("scanPrototype");
         }
         static foreach(c;C) {
-            //debug {
-            //    import std.conv;
-            //    sharedLog.info("Scanning prototype: " ~ typeid(c).to!string);
-            //}
+            debug(Injector) {
+                import std.conv;
+                sharedLog.info("Scanning prototype: " ~ typeid(c).to!string);
+            }
             static if(isTuple!c) {
             } else {
-                //pragma(msg,"scanning prototype: ");
-                //pragma(msg,c);
+                debug(Injector) {
+                    pragma(msg,"scanning prototype: ");
+                    pragma(msg,c);
+                }
                 p.scan!c;
             }
         }
@@ -195,8 +201,8 @@ final class ContextInjector(C...) : InjectionContainer {
     }
     
     auto config() {
-        debug {
-            sharedLog.info("config");
+        debug(Injector) {
+            sharedLog.info("Injector config");
         }
         auto cont = container(
           argument,
@@ -215,7 +221,7 @@ final class ContextInjector(C...) : InjectionContainer {
         with (container.configure) {
             static foreach(c;C) {
                 static if(isTuple!c) {
-                    debug {
+                    debug(Injector) {
                         pragma(msg,"scanning parameters: ");
                         pragma(msg,c);
                     }
@@ -228,9 +234,9 @@ final class ContextInjector(C...) : InjectionContainer {
                         {
                             mixin("alias f = c." ~ fieldName~";");
                             alias fieldType = typeof(f);
-                            debug {
+                            debug(Injector) {
                                 import std.conv;
-                                sharedLog.info("param: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
+                                sharedLog.info("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
                             }
                             register!fieldType(fieldName);
                         }

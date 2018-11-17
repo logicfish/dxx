@@ -35,7 +35,7 @@ class FileResourceBase : FileResource {
     string _uri;
     FolderResourceBase _parent;
     Resource[] _children;
-    void* _contents;
+    //void* _contents;
         
     ResourceSet owner() {
         return owner;
@@ -60,19 +60,19 @@ class FileResourceBase : FileResource {
         return false;
     }
     
-    @property
-    override void* contents() {
-        return _contents;
-    }
+    //@property
+    //override void* contents() {
+    //    return _contents;
+    //}
 
     this(string uri,FolderResource parent) {
     }
 }
 
 class FolderResourceBase : FileResourceBase,FolderResource {
-    override void* contents() {
-        return null;
-    }
+    //override void* contents() {
+    //    return null;
+    //}
     this(string uri,FolderResource parent) {
         super(uri,parent);
     }

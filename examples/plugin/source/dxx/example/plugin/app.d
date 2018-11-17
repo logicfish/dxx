@@ -30,17 +30,6 @@ private import dxx.example.plugin.exampleplugin;
 
 mixin pluginMain;
 
-//@component
-//class ExamplePluginModule : PluginComponents!ExamplePlugin {
-//    override void registerPluginComponents(InjectionContainer injector) {
-//        debug {
-//            MsgLog.info("registerPluginComponents");
-//        }
-//        //injector.register!(Plugin,ExamplePlugin);
-//    }
-//    mixin registerComponent!ExamplePluginModule;
-//};
-//
-//
-//
+mixin registerPlugin!ExamplePlugin;
+
 

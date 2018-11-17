@@ -49,13 +49,17 @@ interface Components {
 mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
     shared static this() {
         import std.conv;
+        import std.experimental.logger;
+        import dxx.util.injector;
+        
         sharedLog.info("RuntimeComponents register "~typeid(T).to!string);
-        auto _injector = newInjector!(T,Param);
+        //auto _injector = newInjector!(T,Param);
         auto t = new T;
-        t.registerAppDependencies(_injector);
-        _injector.instantiate();
+        //t.registerAppDependencies(_injector);
+        //_injector.instantiate();
     }
 }
+
 
 mixin template registerComponents(Param...) {
     mixin registerComponent!(RuntimeComponents!Param);
@@ -66,6 +70,26 @@ class RuntimeComponents(Param...) : Components {
     static WorkflowRunner workflowRunner;
 //    static ArgParser argParser;
     //static __gshared ExtensionPointManager extensionPointManager;
+
+    static __gshared InjectionContainer _injector;
+    static bool instantiated = false;
+    
+    this(this T)() {
+        debug(Component) {
+            import std.conv;
+            sharedLog.info("RuntimeComponents "~typeid(T).to!string);
+        }
+        synchronized(InjectionContainer.classinfo) {
+            if(!instantiated) {
+                if(_injector is null) {
+                    _injector = newInjector!(T,Param);
+                    registerAppDependencies(_injector);
+                    _injector.instantiate();
+                }
+                instantiated = true;
+            }
+        }
+    }
 
     void registerAppDependencies(InjectionContainer injector) {
         //

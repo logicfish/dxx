@@ -6,10 +6,12 @@
     "dependencies": {
         "app" : "*"
     },
+    "subConfigurations": {
+        "app": "dxx-plugin"
+    },
     "description": "DXX example module",
     "copyright": "Copyright © 2018, Mark",
     "license": "MIT",
-    "versions": [ "DXX_Module","DXX_Plugin" ],
     "targetType": "dynamicLibrary",
     "targetPath": "bin",
     "sourceFiles": [
