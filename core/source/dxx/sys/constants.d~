@@ -133,7 +133,7 @@ struct RTConstants {
                 runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName,".exe");
             }
         } else {
-            runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName);
+            runtimeConstants.appBaseName = baseName(appFileName);
         }    
     }
 

@@ -222,10 +222,11 @@ class ModuleNotificationListener : NotificationListener {
 
 version(DXX_Module) {
     
+    extern(C):
+
     import core.stdc.stdio : printf;
     import std.experimental.logger;
-    
-    extern(C):
+
     void load( void* userdata ) {
         debug(Module) { sharedLog.info("[module] load"); }
 //        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;

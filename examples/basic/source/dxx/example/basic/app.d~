@@ -84,8 +84,6 @@ int main(string[] args) {
         l.load("examples/plugin/bin/libdxx_plugin.so");
     } else version(Windows) {
 	l.load("examples/plugin/bin/dxx_plugin.dll");
-    } else {
-	    // ...
     }
     l.update;
         
