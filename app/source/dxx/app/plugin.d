@@ -30,10 +30,10 @@ private import dxx.sys.loader;
 
 struct PluginDescriptor {
     string id;
-    string semVer;
+    string pluginVersion;
     string name;
     string pluginDoc;
-    string[string] properties;
+    string[string] attr;
 }
 
 struct PluginContext {
@@ -73,18 +73,25 @@ mixin template registerPlugin(P : Plugin,Param ...) {
     }
 }
 
+interface PluginActivator {
+    void activate(PluginContext* ctx);
+    void deactivate(PluginContext* ctx);
+}
+
 interface Plugin {
 //    void init(PluginDescriptor* pluginData);
     const(PluginDescriptor)* descr();
     void init();
-    void activate(PluginContext* ctx);
-    void deactivate(PluginContext* ctx);
+    void deinit();
+    PluginActivator activator();
 }
 
 abstract class PluginDefault : Plugin {
     static __gshared Plugin INSTANCE;
     static __gshared PluginDescriptor DESCR;
     static bool instantiated = false;
+
+    PluginActivator _activator;
 
     static void setDescr(PluginDescriptor desc) {
         DESCR = desc;
@@ -108,32 +115,36 @@ abstract class PluginDefault : Plugin {
     //}
     static class ModuleListener : ModuleNotificationListener {
         override shared void onInit(Module.ModuleEvent* event) {
-            debug {
+            debug(Plugin) {
                 MsgLog.info("onInit");
             }
             event.mod.data!(PluginContext).desc = &DESCR;
             getInstance.init;
         }
         override shared void onDeinit(Module.ModuleEvent* event) {
-            debug {
+            debug(Plugin) {
                 MsgLog.info("onDeinit");
             }
         }
         override shared void onLoad(Module.ModuleEvent* event) {
-            debug {
+            debug(Plugin) {
                 MsgLog.info("onLoad");
             }
-            getInstance.activate(event.mod.data!PluginContext);
+            if(getInstance.activator !is null) {
+                getInstance.activator.activate(event.mod.data!PluginContext);
+            }
         }
         override shared void onUnload(Module.ModuleEvent* event) {
-            debug {
+            debug(Plugin) {
                 MsgLog.info("onUnload");
             }
-            getInstance.deactivate(event.mod.data!PluginContext);
+            if(getInstance.activator !is null) {
+                getInstance.activator.deactivate(event.mod.data!PluginContext);
+            }
             unregister;
         }
         override shared void onUpdate(Module.ModuleEvent* event) {
-            debug {
+            debug(Plugin) {
                 MsgLog.info("onUpdate");
             }
         }
@@ -144,27 +155,29 @@ abstract class PluginDefault : Plugin {
     }
     this() {
     }
-    void init() {
+    override void init() {
         debug(Pugin) {
             MsgLog.info("init");
             MsgLog.info(descr.id);
         }
     }
-
-    void activate(PluginContext* ctx) {
+    override void deinit() {
         debug(Pugin) {
-            MsgLog.info("activate");
+            MsgLog.info("deinit");
             MsgLog.info(descr.id);
         }
     }
-
-    void deactivate(PluginContext* ctx) {
+    override PluginActivator activator() {
         debug(Pugin) {
-            MsgLog.info("deactivate");
+            MsgLog.info("activator");
             MsgLog.info(descr.id);
         }
+        return _activator;
     }
-    
+    void activator(PluginActivator a) {
+        _activator = a;
+    }
+
     override const(PluginDescriptor)* descr() {
         return &DESCR;
     }

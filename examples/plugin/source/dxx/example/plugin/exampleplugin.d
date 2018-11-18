@@ -21,17 +21,36 @@ SOFTWARE.
 **/
 module dxx.example.plugin.exampleplugin;
 
+private import dxx.util;
 private import dxx.app.plugin;
 
-class ExamplePlugin : PluginDefault {
+class ExamplePlugin : PluginDefault,PluginActivator {
     override void init() {
+        super.init;
+        MsgLog.info("init");
         setDescr(PluginDescriptor("example-plugin","v0.1.0","Example"));
+        activator(this);
     }
     override void activate(PluginContext* ctx) {
-        // .. TODO
+        MsgLog.info("activate");
+        MsgLog.info(descr.id);
     }
 
     override void deactivate(PluginContext* ctx) {
-        // .. TODO
+        MsgLog.info("activate");
+        MsgLog.info(descr.id);
     }
+    //void activate(PluginContext* ctx) {
+    //    debug(Pugin) {
+    //        MsgLog.info("activate");
+    //        MsgLog.info(descr.id);
+    //    }
+    //}
+    //
+    //void deactivate(PluginContext* ctx) {
+    //    debug(Pugin) {
+    //        MsgLog.info("deactivate");
+    //        MsgLog.info(descr.id);
+    //    }
+    //}
 }
