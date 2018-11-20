@@ -190,6 +190,7 @@ unittest {
     auto j = r.createJob(wf);
     j.execute();
     assert(j.terminated);
+    writeln("Job status: ",j.status);
     assert(j.status == Job.Status.THROWN_EXCEPTION);
     assert(j.thrownException !is null);
     assert(elem.terminated);

@@ -28,6 +28,9 @@ private import dxx.app;
 
 private import dxx.example.plugin.exampleplugin;
 
+import dxx.sys.loader;
+//mixin moduleMain;
+
 mixin pluginMain;
 
 mixin registerPlugin!ExamplePlugin;

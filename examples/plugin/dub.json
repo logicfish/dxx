@@ -4,7 +4,7 @@
         "Mark"
     ],
     "dependencies": {
-        "dxx:app" : "*"
+	"app" : "*"
     },
     "subConfigurations": {
         "dxx:app": "dxx-plugin"
@@ -13,6 +13,7 @@
     "copyright": "Copyright © 2018, Mark",
     "license": "MIT",
     "targetType": "dynamicLibrary",
+    "versions" : ["DXX_Plugin","DXX_Module"],
     "targetPath": "bin",
     "sourceFiles-windows": [
         "example_plugin.def"

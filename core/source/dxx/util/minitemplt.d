@@ -91,5 +91,7 @@ struct ExpandIdentifiers {
 
 unittest {
     ExpandIdentifiers x;
-    x.compile();
+    enum data = q{
+    };
+    //auto c = x.__compile!(data);
 }

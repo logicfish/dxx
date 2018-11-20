@@ -27,7 +27,7 @@ private import std.path;
 private import std.string : split;
 
 private import core.runtime;
-//private import core.cpuid;
+private import core.cpuid;
 private import std.array : appender,join;
 
 private import semver;
@@ -50,6 +50,10 @@ class Constants {
     enum libVersionRange = "~>"~(packageVersion[1..$].split("-")[0]);
     enum libTimestamp = packageTimestamp;
     enum libTimestampISO = packageTimestampISO;
+
+    //enum cpuID = core.cpuid.getCpuFeatures.vendorID;
+    alias cpuCores = core.cpuid.coresPerCPU;
+    alias cpuThreads = core.cpuid.threadsPerCPU;
 
     version (OSX) { enum hostOperatingSystem = "OSX"; }
     else version(MacOS) { enum hostOperatingSystem = "MacOS"; }

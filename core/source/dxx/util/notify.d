@@ -60,39 +60,41 @@ notifications to a group of listeners.
 
 class SyncNotificationSource : NotificationSource {
 
-  NotificationListener[] notificationListeners;
+  NotificationListener[] listenersAsync;
+  NotificationListener[] listeners;
 
   nothrow shared
   void send(T)(T* t) {
+    assert(t);
     debug(Notify) {
         try {
-            sharedLog.info("SyncNotificationSource : send ",typeid(T)," ",notificationListeners.length);
-        } catch(Exception) {
+            info("SyncNotificationSource : send ",listeners.length);
+        } catch(Exception e) {
+            //error(e.message);
         }
     }
-    //auto ar = notificationListeners.dup;
-    alias ar = notificationListeners;
-    
-    ar.filter!(x=>cast(shared(ASyncNotificationListener))x  is null).each!( x=>{
+    alias ar = listeners;
+    foreach(x;ar) {
         try {
             debug(Notify) {
-                sharedLog.info("sync notification ",typeid(x));
+                info("sync notification");
             }
-            x.handleNotification(cast(void*)&t);
+            x.handleNotification(cast(void*)t);
         } catch(Exception e) {
             try {
-                sharedLog.error(e.message);
+                error(e.message);
             } catch(Exception) {
             }
         }
-    });
+    }
     try {
-        ar.filter!(x=>cast(shared(ASyncNotificationListener))x !is null).parallel.each!(
-            //debug(Notify) {
-            //    sharedLog.info("async notification ",typeid(x));
-            //}
-            x=>x.handleNotification(cast(void*)&t)
-        );
+        foreach(x;listenersAsync.parallel) {
+            //assert(x);
+            debug(Notify) {
+                sharedLog.info("async notification ",typeid(x));
+            }
+            x.handleNotification(cast(void*)t);
+        }
     } catch(Exception e) {
         try {
             sharedLog.error(e.message);
@@ -102,16 +104,27 @@ class SyncNotificationSource : NotificationSource {
   }
 
   override shared void addNotificationListener(shared(NotificationListener) n) {
-    notificationListeners ~= n;
-    debug(Notify) {
-        sharedLog.info(typeid(this)," : addNotificationListener ",notificationListeners.length," ");
+    if(cast(ASyncNotificationListener) n is null) {
+        debug(Notify) {
+            info(typeid(this)," : addNotificationListener sync ",listeners.length," ");
+        }
+        listeners ~= n;
+    } else {
+        debug(Notify) {
+            info(typeid(this)," : addNotificationListener async ",listeners.length," ");
+        }
+        listenersAsync ~= n;
     }
   }
 
   override shared void removeNotificationListener(shared(NotificationListener) n) {
-    notificationListeners = notificationListeners.remove(notificationListeners.countUntil(n));
+    if(cast(ASyncNotificationListener) n is null) {
+        listeners = listeners.remove(listeners.countUntil(n));
+    } else {
+        listenersAsync = listenersAsync.remove(listenersAsync.countUntil(n));
+    }
     debug(Notify) {
-        sharedLog.info(typeid(this)," : removeNotificationListener",notificationListeners.length);
+        info(typeid(this)," : removeNotificationListener",listeners.length);
     }
   }
 }
@@ -134,4 +147,55 @@ unittest {
     n.removeNotificationListener(l);
     n.send!string(&s);
     assert(done is false);
+}
+
+unittest {
+    import core.thread; 
+    
+    shared(bool) done = false;
+    class TestNotificationListener : NotificationListener,ASyncNotificationListener {
+        override shared void handleNotification(void* t) {
+            done = true;
+        }
+    }
+    auto n = new shared(SyncNotificationSource);
+    shared(NotificationListener) l = new shared(TestNotificationListener);
+    n.addNotificationListener(l);
+    string s = "";
+    n.send!string(&s);
+    Thread.sleep(dur!("msecs")( 500 ));
+    assert(done is true);
+
+    done = false;
+    n.removeNotificationListener(l);
+    n.send!string(&s);
+    Thread.sleep(dur!("msecs")( 500 ));
+    assert(done is false);
+}
+
+unittest {
+    class TestHandler {
+        bool done = false;
+    }
+    class TestNotificationListener : NotificationListener {
+        override shared void handleNotification(void* t) {
+            assert(t);
+            auto a = cast(TestHandler*)t;
+            assert(a);
+            a.done = true;
+        }
+    }
+    auto n = new shared(SyncNotificationSource);
+    shared(NotificationListener) l = new shared(TestNotificationListener);
+    TestHandler testHandler = new TestHandler;
+    
+    n.addNotificationListener(l);
+    //string s = "";
+    n.send(&testHandler);
+    assert(testHandler.done is true);
+
+    testHandler.done = false;
+    n.removeNotificationListener(l);
+    n.send(&testHandler);
+    assert(testHandler.done is false);
 }

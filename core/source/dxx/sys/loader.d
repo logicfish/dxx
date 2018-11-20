@@ -153,24 +153,24 @@ final class Module : SyncNotificationSource {
         auto m = ModuleEvent(T,this);
         this.send!ModuleEvent(&m);
     }
-    private shared void init() {
+    shared void init() {
         //checkModuleVersion;
         debug(Module) { sharedLog.info("init"); }
         sendModuleEvent!(ModuleEvent.Type.Init);
     }
-    private shared void deinit() {
+    shared void deinit() {
         debug(Module) { sharedLog.info("deinit"); }
         sendModuleEvent!(ModuleEvent.Type.Deinit);
     }
-    private shared void load() {
+    shared void load() {
         debug(Module) { sharedLog.info("load"); }
         sendModuleEvent!(ModuleEvent.Type.Load);
     }
-    private shared void unload() {
+    shared void unload() {
         debug(Module) { sharedLog.info("unload"); }
         sendModuleEvent!(ModuleEvent.Type.Unload);
     }
-    private shared void update() {
+    shared void update() {
         debug(Module) { sharedLog.info("update"); }
         sendModuleEvent!(ModuleEvent.Type.Update);
     }
@@ -181,7 +181,8 @@ class ModuleNotificationListener : NotificationListener {
     override shared void handleNotification(void* t) {
         Module.ModuleEvent* event = cast(Module.ModuleEvent*)t;
         debug(Module) {
-            sharedLog.info("Notification");
+            import std.conv;
+            sharedLog.info("Notification:",event.eventType);
         }
         final switch(event.eventType) {
             case Module.ModuleEvent.Type.Init: 
@@ -189,13 +190,14 @@ class ModuleNotificationListener : NotificationListener {
             break;
             case Module.ModuleEvent.Type.Deinit:
             onDeinit(event); 
+            unregister;
             break;
             case Module.ModuleEvent.Type.Load:
             onLoad(event); 
             break;
             case Module.ModuleEvent.Type.Unload:
             onUnload(event); 
-            unregister;
+            //unregister;
             break;
             case Module.ModuleEvent.Type.Update:
             onUpdate(event); 
@@ -220,51 +222,53 @@ class ModuleNotificationListener : NotificationListener {
 }
 
 
-version(DXX_Module) {
+//mixin template moduleMain() {
+    version(DXX_Module) {
+        
+        import core.stdc.stdio : printf;
+        import std.experimental.logger;
+        import std.exception;
+        import dxx.sys.constants;
     
-    import core.stdc.stdio : printf;
-    import std.experimental.logger;
-    
-    extern(C):
-    void load( void* userdata ) {
-        debug(Module) { sharedLog.info("[module] load"); }
-//        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
-//        Module.getInstance.moduleData.moduleRuntime = &RTConstants.runtimeConstants;
-        Module.getInstance.load;
-    }
+        extern(C):
+        void load( void* userdata ) {
+            debug(Module) { sharedLog.info("[module] load"); }
+    //        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
+    //        Module.getInstance.moduleData.moduleRuntime = &RTConstants.runtimeConstants;
+            Module.getInstance.load;
+        }
 
-    void unload(void* userdata) {
-//        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
-        debug(Module) { sharedLog.info("[module] unload"); }
-        Module.getInstance.unload;
-    }
+        void unload(void* userdata) {
+    //        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
+            debug(Module) { sharedLog.info("[module] unload"); }
+            Module.getInstance.unload;
+        }
 
-    void init(void* data) {
-        assert(data);
-        debug(Module) { sharedLog.info("[module] init"); }
+        void init(void* data) {
+            assert(data);
+            debug(Module) { sharedLog.info("[module] init"); }
 
-        auto moduleData = cast(shared(ModuleData)*)data;
+            auto moduleData = cast(shared(ModuleData)*)data;
         
-        assert(moduleData.hostRuntime);
+            assert(moduleData.hostRuntime);
 
-        Module.getInstance.moduleData = moduleData;
-        Module.getInstance.moduleData.moduleRuntime = &RTConstants.runtimeConstants;
+            Module.getInstance.moduleData = moduleData;
+            moduleData.moduleRuntime = &RTConstants.runtimeConstants;
+            //enforce(moduleData.hostRuntime.checkVersion());
+            //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
+            enforce(moduleData.hostRuntime.checkVersion(RTConstants.constants.semVer));
         
-        //enforce(moduleData.hostRuntime.checkVersion());
-        //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
-        enforce(moduleData.hostRuntime.checkVersion(RTConstants.constants.semVer));
-        
-        Module.getInstance.init;
-    }
-    void uninit(void* userdata){
-        Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
-        debug(Module) { sharedLog.info("[module] uninit"); }
-        Module.getInstance.deinit;
-    }
+            Module.getInstance.init;
+        }
+        void uninit(void* userdata){
+            Module.getInstance.moduleData = cast(shared(ModuleData)*) userdata;
+            debug(Module) { sharedLog.info("[module] uninit"); }
+            Module.getInstance.deinit;
+        }
 
-    void update() {
-        debug(Module) { sharedLog.info("[module] update"); }
-        Module.getInstance.update;
+        void update() {
+            debug(Module) { sharedLog.info("[module] update"); }
+            Module.getInstance.update;
+        }
     }
-
-}
+//}

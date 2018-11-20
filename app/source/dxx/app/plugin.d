@@ -21,7 +21,7 @@ SOFTWARE.
 **/
 module dxx.app.plugin;
 
-private import dxx.util;
+private import std.experimental.logger;
 
 private import dxx.util;
 private import dxx.app.component;
@@ -55,6 +55,8 @@ final class PluginLoader {
 
 class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param) {
     void registerPluginComponents(InjectionContainer injector) {
+        injector.register!(Plugin,PluginType);
+        new PluginDefault.ModuleListener().register;
     }
     override void registerAppDependencies(InjectionContainer injector) {
         debug(Plugin) {
@@ -62,7 +64,6 @@ class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param)
             sharedLog.info("registerAppDependencies()");
         }
         super.registerAppDependencies(injector);
-        injector.register!(Plugin,PluginType);
         registerPluginComponents(injector);
     }
 }
@@ -116,43 +117,43 @@ abstract class PluginDefault : Plugin {
     static class ModuleListener : ModuleNotificationListener {
         override shared void onInit(Module.ModuleEvent* event) {
             debug(Plugin) {
-                MsgLog.info("onInit");
+                info("onInit");
             }
             event.mod.data!(PluginContext).desc = &DESCR;
             getInstance.init;
         }
         override shared void onDeinit(Module.ModuleEvent* event) {
             debug(Plugin) {
-                MsgLog.info("onDeinit");
+                info("onDeinit");
             }
+            unregister;
         }
         override shared void onLoad(Module.ModuleEvent* event) {
             debug(Plugin) {
-                MsgLog.info("onLoad");
+                info("onLoad");
+            }
+        }
+        override shared void onUnload(Module.ModuleEvent* event) {
+            debug(Plugin) {
+                info("onUnload");
+            }
+            if(getInstance.activator !is null) {
+                getInstance.activator.deactivate(event.mod.data!PluginContext);
+            }
+        }
+        override shared void onUpdate(Module.ModuleEvent* event) {
+            debug(Plugin) {
+                info("onUpdate");
             }
             if(getInstance.activator !is null) {
                 getInstance.activator.activate(event.mod.data!PluginContext);
             }
         }
-        override shared void onUnload(Module.ModuleEvent* event) {
-            debug(Plugin) {
-                MsgLog.info("onUnload");
-            }
-            if(getInstance.activator !is null) {
-                getInstance.activator.deactivate(event.mod.data!PluginContext);
-            }
-            unregister;
-        }
-        override shared void onUpdate(Module.ModuleEvent* event) {
-            debug(Plugin) {
-                MsgLog.info("onUpdate");
-            }
-        }
     }
 
-    shared static this() {
-        new ModuleListener().register;
-    }
+    //shared static this() {
+    //    new ModuleListener().register;
+    //}
     this() {
     }
     override void init() {

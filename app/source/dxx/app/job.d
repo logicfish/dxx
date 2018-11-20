@@ -94,12 +94,12 @@ abstract class JobBase : SyncNotificationSource, Job {
             setup;
             status(Status.STARTED);
             process;
+            status = Status.TERMINATED;
         } catch(Exception e) {
+            MsgLog.warning("Exception: " ~ e.message);
             _thrownException = e;
-            status(Status.THROWN_EXCEPTION);
-            MsgLog.warning(e.message);
+            status = Status.THROWN_EXCEPTION;
         } finally {
-            status(Status.TERMINATED);
             terminate;
         }
     }

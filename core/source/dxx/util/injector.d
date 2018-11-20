@@ -270,7 +270,7 @@ unittest {
 unittest {
     alias param = Tuple!(
         string,"name",
-        uint,"age"
+        long,"age"
     );    
     debug {
         sharedLog.info("Starting injector parameters unittest.");
@@ -278,6 +278,6 @@ unittest {
     auto injector = newInjector!param;
     assert(injector !is null);
     auto name = injector.resolve!string("name");
-    auto age = injector.resolve!uint("age");
+    auto age = injector.resolve!long("age");
 }
 

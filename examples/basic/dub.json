@@ -10,9 +10,11 @@
 	"targetPath": "bin",
 	"targetType": "executable",
 	"targetName": "dxx-basic",
-    "mainSourceFile": "source/dxx/example/basic/app.d",
+        "mainSourceFile": "source/dxx/example/basic/app.d",
 	"dependencies" : {
-		"dxx:app" : "*",
 		"aedi": "~>0.5.0"
+	},
+	"dependencies" : {
+		"app" : "*"
 	}
 }
