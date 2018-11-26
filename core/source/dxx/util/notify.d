@@ -33,7 +33,7 @@ An object that inherits NotificationSource maintains a vector of
 NotificationListener's.
 
 At any time the listeners callback method handleNotification may be invoked.
-If the client implements the interface ASyncNotificationListener then the 
+If the client implements the interface ASyncNotificationListener then the
 invocations should be in parallel.
 
 
@@ -41,14 +41,22 @@ invocations should be in parallel.
 
 interface NotificationListener {
   shared void handleNotification(void* t);
-};
+}
 
 interface ASyncNotificationListener : NotificationListener {
-};
+}
 
 interface NotificationSource {
   shared void addNotificationListener(shared(NotificationListener) n);
   shared void removeNotificationListener(shared(NotificationListener) n);
+}
+
+abstract class NotificationListenerBase(T) : NotificationListener {
+  abstract shared void handle(T* t);
+  shared void handleNotification(void* t) {
+    this.handle(cast(T*)t);
+  }
+
 }
 
 /++
@@ -57,14 +65,58 @@ Synchronized notification handler. Extend this class to create an object that ca
 notifications to a group of listeners.
 
 ++/
-
 class SyncNotificationSource : NotificationSource {
+  shared shared(NotificationListener)[] _listenersAsync;
+  shared shared(NotificationListener)[] _listeners;
 
-  NotificationListener[] listenersAsync;
-  NotificationListener[] listeners;
+  shared void addNotificationListener(shared(NotificationListener) n) {
+    if(cast(shared(ASyncNotificationListener)) n is null) {
+        debug(Notify) {
+            info(typeid(this)," : addNotificationListener sync ",_listeners.length," ");
+        }
+        _listeners ~= n;
+    } else {
+        debug(Notify) {
+            info(typeid(this)," : addNotificationListener async ",_listeners.length," ");
+        }
+        _listenersAsync ~= n;
+    }
+  }
 
-  nothrow shared
-  void send(T)(T* t) {
+  shared void removeNotificationListener(shared(NotificationListener) n) {
+    if(cast(shared(ASyncNotificationListener)) n is null) {
+        debug(Notify) {
+            info(typeid(this)," : removeNotificationListener ",_listeners.length);
+        }
+        _listeners = _listeners.remove(_listeners.countUntil(n));
+    } else {
+        debug(Notify) {
+            info(typeid(this)," : removeNotificationListener async",_listenersAsync.length);
+        }
+        _listenersAsync = _listenersAsync.remove(_listenersAsync.countUntil(n));
+    }
+  }
+
+//    shared(Notifier) notifier;
+//    alias notifier this;
+
+    @property
+    nothrow shared ref
+    auto listeners() {
+      return _listeners;
+    }
+
+    @property
+    nothrow shared ref inout
+    auto listenersAsync() {
+      return _listenersAsync;
+    }
+    nothrow
+    void _send(T)(T* t) {
+      (cast(shared)this).send(t);
+    }
+    nothrow shared
+    void send(T)(T* t) {
     assert(t);
     debug(Notify) {
         try {
@@ -73,7 +125,8 @@ class SyncNotificationSource : NotificationSource {
             //error(e.message);
         }
     }
-    alias ar = listeners;
+    //shared(NotificationListener)[] ar = listeners.dup;
+    auto ar = _listeners.dup;
     foreach(x;ar) {
         try {
             debug(Notify) {
@@ -87,8 +140,9 @@ class SyncNotificationSource : NotificationSource {
             }
         }
     }
+    auto ar2 = _listenersAsync.dup;
     try {
-        foreach(x;listenersAsync.parallel) {
+        foreach(x;ar2.parallel) {
             //assert(x);
             debug(Notify) {
                 sharedLog.info("async notification ",typeid(x));
@@ -101,32 +155,7 @@ class SyncNotificationSource : NotificationSource {
         } catch(Exception) {
         }
     }
-  }
-
-  override shared void addNotificationListener(shared(NotificationListener) n) {
-    if(cast(ASyncNotificationListener) n is null) {
-        debug(Notify) {
-            info(typeid(this)," : addNotificationListener sync ",listeners.length," ");
-        }
-        listeners ~= n;
-    } else {
-        debug(Notify) {
-            info(typeid(this)," : addNotificationListener async ",listeners.length," ");
-        }
-        listenersAsync ~= n;
     }
-  }
-
-  override shared void removeNotificationListener(shared(NotificationListener) n) {
-    if(cast(ASyncNotificationListener) n is null) {
-        listeners = listeners.remove(listeners.countUntil(n));
-    } else {
-        listenersAsync = listenersAsync.remove(listenersAsync.countUntil(n));
-    }
-    debug(Notify) {
-        info(typeid(this)," : removeNotificationListener",listeners.length);
-    }
-  }
 }
 
 unittest {
@@ -150,8 +179,8 @@ unittest {
 }
 
 unittest {
-    import core.thread; 
-    
+    import core.thread;
+
     shared(bool) done = false;
     class TestNotificationListener : NotificationListener,ASyncNotificationListener {
         override shared void handleNotification(void* t) {
@@ -188,7 +217,7 @@ unittest {
     auto n = new shared(SyncNotificationSource);
     shared(NotificationListener) l = new shared(TestNotificationListener);
     TestHandler testHandler = new TestHandler;
-    
+
     n.addNotificationListener(l);
     //string s = "";
     n.send(&testHandler);

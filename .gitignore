@@ -39,3 +39,10 @@ compile_commands.json
 
 ./source/dxx/packageVersion.d
 bin/
+*.un~
+*.un~
+*.d~
+*.un~
+*.d~
+*.un~
+*.wf~

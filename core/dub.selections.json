@@ -6,6 +6,7 @@
 		"ctini": "0.2.1",
 		"d-opts": "1.0.2",
 		"derelict-util": "3.0.0-beta.2",
+		"dxx": {"path":".."},
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
 		"isfreedesktop": "0.1.1",

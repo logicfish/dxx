@@ -24,6 +24,7 @@ module dxx.app.workflow;
 private import std.algorithm;
 private import std.variant;
 
+private import dxx.app.platform;
 private import dxx.app.job;
 
 interface WorkflowElement {
@@ -79,15 +80,13 @@ final class DefaultWorkflow : WorkflowBase {
     }
 }
 
-final class WorkflowJob : JobBase {
+final class WorkflowJob : PlatformJobBase {
     Workflow _workflow;
     WorkflowRunner _runner;
-    Variant[string] _param;
     
     this(Workflow wf,WorkflowRunner r) {
         this._workflow = wf;
         this._runner = r;
-        this._param = wf.param.dup;
     }
 
     @property nothrow
@@ -100,22 +99,18 @@ final class WorkflowJob : JobBase {
         return _runner;
     }
 
-    @property nothrow
-    ref inout (Variant[string]) param() inout {
-        return _param;
-    }
-    
     override void setup() {
-        _param = workflow.param;
+        super.setup;
         workflow.workflowElements.each!(e=>e.setup(this));
     }
 
-    override void process() {
+    override void processPlatformJob() {
         workflow.workflowElements.each!(e=>e.process(this));
     }
 
     nothrow
     override void terminate() {
+        super.terminate;
         workflow.workflowElements.each!(e=>e.terminate(this));
     }
 }

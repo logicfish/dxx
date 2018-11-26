@@ -2,58 +2,95 @@
 Copyright 2018 Mark Fisher
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
 module dxx.app.plugin;
 
 private import std.experimental.logger;
+private import std.exception;
 
 private import dxx.util;
-private import dxx.app.component;
-
 private import dxx.sys.loader;
+
+private import dxx.app.component;
+private import dxx.app.extension;
+private import dxx.app.platform;
+
+struct PluginDependency {
+    string id;
+    string verRange;
+    bool optional;
+}
 
 struct PluginDescriptor {
     string id;
     string pluginVersion;
     string name;
     string pluginDoc;
+    uint runLevel;
     string[string] attr;
+
+    PluginDependency[] dependencies;
+    ExtensionPointDesc[]* extensionPoints;
+    ExtensionDesc[]* extensions;
 }
 
 struct PluginContext {
     PluginDescriptor* desc;
+    void* delegate(string id) shared pluginCreateInstance;
+    void delegate(void*) shared pluginDestroyInstance;
 }
 
-final class PluginLoader {
+class PluginLoader {
     PluginContext ctx;
     Loader loader;
     alias loader this;
 
-    void load(const(string) path) {
-        debug(Plugin) {
-            MsgLog.info("PluginLoader " ~ path);
-        }
-        loader = Loader.loadModule(path,&ctx);
+    static auto pluginFileName(string name,string path) {
+      version(Windows) {
+          return path ~ "/" ~ name ~ ".dll";
+      } else {
+          return path ~ "/lib" ~ name ~ ".so";
+      }
+
+    }
+    void load(string path) {
+      debug(Plugin) {
+          MsgLog.info("PluginLoader load "  ~ path);
+      }
+      loader = Loader.loadModule(path,&ctx);
+      enforce(loader);
+    }
+    void load(string name,string path) {
+        auto p = pluginFileName(name,path);
+        this.load(p);
+    }
+    inout ref
+    auto desc() {
+        return ctx.desc;
+    }
+    inout ref
+    auto pluginContext() {
+        return ctx;
     }
 }
 
-class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param) {
+class PluginRuntime(PluginType : Plugin,Param...) : PlatformRuntime!(Param) {
     void registerPluginComponents(InjectionContainer injector) {
         injector.register!(Plugin,PluginType);
         new PluginDefault.ModuleListener().register;
@@ -70,7 +107,7 @@ class PluginComponents(PluginType : Plugin,Param...) : RuntimeComponents!(Param)
 
 mixin template registerPlugin(P : Plugin,Param ...) {
     version(DXX_Plugin) {
-        mixin registerComponent!(PluginComponents!(P,Param));
+        mixin registerComponent!(PluginRuntime!(P,Param));
     }
 }
 
@@ -81,6 +118,9 @@ interface PluginActivator {
 
 interface Plugin {
 //    void init(PluginDescriptor* pluginData);
+    enum State {
+        UNINSTALLED,INSTALLED,LOADED,INITIALIZED,STARTED,STOPPED,DEINITIALIZED
+    }
     const(PluginDescriptor)* descr();
     void init();
     void deinit();
@@ -93,6 +133,9 @@ abstract class PluginDefault : Plugin {
     static bool instantiated = false;
 
     PluginActivator _activator;
+
+    ExtensionDesc[] extensions;
+    ExtensionPointDesc[] extensionPoints;
 
     static void setDescr(PluginDescriptor desc) {
         DESCR = desc;
@@ -120,6 +163,10 @@ abstract class PluginDefault : Plugin {
                 info("onInit");
             }
             event.mod.data!(PluginContext).desc = &DESCR;
+            //event.mod.data!(PluginContext).desc.extensionPoints = &extensionPoints;
+            //event.mod.data!(PluginContext).desc.extensions = &extensions;
+            event.mod.data!(PluginContext).pluginCreateInstance = &createInstance;
+            event.mod.data!(PluginContext).pluginDestroyInstance = &destroyInstance;
             getInstance.init;
         }
         override shared void onDeinit(Module.ModuleEvent* event) {
@@ -149,12 +196,22 @@ abstract class PluginDefault : Plugin {
                 getInstance.activator.activate(event.mod.data!PluginContext);
             }
         }
+        shared void* createInstance(string id) {
+            auto a = TypeInfo_Class.find(id).create;
+            // TODO use injector
+            return cast(void*)a;
+        }
+        shared void destroyInstance(void* t) {
+            destroy(t);
+        }
     }
 
     //shared static this() {
     //    new ModuleListener().register;
     //}
     this() {
+      DESCR.extensionPoints = &extensionPoints;
+      DESCR.extensions = &extensions;
     }
     override void init() {
         debug(Pugin) {
@@ -182,6 +239,7 @@ abstract class PluginDefault : Plugin {
     override const(PluginDescriptor)* descr() {
         return &DESCR;
     }
+
 }
 
 mixin template pluginMain() {
@@ -192,6 +250,5 @@ mixin template pluginMain() {
             mixin SimpleDllMain;
         } else {
         }
-    }    
+    }
 }
-

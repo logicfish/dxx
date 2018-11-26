@@ -7,7 +7,7 @@
 	"app" : "*"
     },
     "subConfigurations": {
-        "dxx:app": "dxx-plugin"
+        "app": "dxx-plugin"
     },
     "description": "DXX example module",
     "copyright": "Copyright © 2018, Mark",
@@ -16,6 +16,6 @@
     "versions" : ["DXX_Plugin","DXX_Module"],
     "targetPath": "bin",
     "sourceFiles-windows": [
-        "example_plugin.def"
+        "dxx_plugin.def"
     ]
 }

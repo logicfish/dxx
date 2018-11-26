@@ -123,6 +123,9 @@ abstract class JobBase : SyncNotificationSource, Job {
     T getProperty(T)(string k) {
         return injector.getParm(k);
     }   
+
+    this() {
+    }
 }
 
 class JobDelegate(alias F) : JobBase {

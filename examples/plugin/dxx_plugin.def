@@ -1,0 +1,8 @@
+LIBRARY dxx_plugin
+
+EXPORTS
+    init
+    uninit
+    load
+    unload
+    update

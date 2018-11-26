@@ -21,4 +21,9 @@ SOFTWARE.
 **/
 module dxx.util.url;
 
-//import url
+import dxx.util.stream;
+
+//Stream openAsStream() {
+//    return null;
+//}
+

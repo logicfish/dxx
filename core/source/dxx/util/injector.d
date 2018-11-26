@@ -21,8 +21,8 @@ SOFTWARE.
 **/
 module dxx.util.injector;
 
-private import std.algorithm : each;
-private import std.variant;
+//private import std.algorithm : each;
+//private import std.variant;
 private import std.experimental.logger;
 private import std.stdio;
 private import std.process : environment;
@@ -35,6 +35,9 @@ private import dxx.sys.constants;
 private import dxx.util.ini;
 //private import dxx.util.storage;
 private import dxx.util.config;
+
+
+alias component = aermicioi.aedi.component;
 
 //static Variant[string] readInjectorProperties(File* f) {
 //    Variant[string] res;
@@ -70,8 +73,8 @@ static void setInjectorProperty(T)(string k,T t,InjectionContainer i=InjectionCo
 }
 
 static auto newInjector(alias T,V...)(AggregateContainer c = null) {
-    if(InjectionContainer.INSTANCE is null) {    
-        new ContextInjector!(T,V)(c);        
+    if(InjectionContainer.INSTANCE is null) {
+        new ContextInjector!(T,V)(c);
     }
     return InjectionContainer.getInstance;
 }
@@ -86,7 +89,7 @@ static void terminateInjector() {
 
 //interface InjectionComponent {
 //    void registerComponent(InjectionContainer injector);
-//    
+//
 //}
 
 abstract class InjectionContainer {
@@ -101,7 +104,7 @@ abstract class InjectionContainer {
 
     @property
     AggregateContainer _container;
-        
+
     void services(T)(T parent) {
         auto s = singleton;
         auto p = prototype;
@@ -110,13 +113,13 @@ abstract class InjectionContainer {
         scanPrototype(p);
 
         parent.set(s,"singleton");
-        parent.set(p,"prototype");    
-        
-    }        
+        parent.set(p,"prototype");
+
+    }
     abstract void scanPrototype(PrototypeContainer);
     abstract void configureSingleton(SingletonContainer);
-    //abstract void configureGlobals(AggregateContainer _container);    
-    
+    //abstract void configureGlobals(AggregateContainer _container);
+
     this(AggregateContainer _c) {
         synchronized(InjectionContainer.classinfo) {
             if(!instantiated) {
@@ -153,10 +156,10 @@ abstract class InjectionContainer {
         with(container.configure("parameters")) {
             register!T(v,k);
         }
-    }    
+    }
     T getParam(T)(string k) {
         return _container.locate!T(k);
-    }   
+    }
     void terminate() {
         debug(Injector) {
             sharedLog.info("terminating");
@@ -199,7 +202,7 @@ final class ContextInjector(C...) : InjectionContainer {
     }
     override void configureSingleton(SingletonContainer) {
     }
-    
+
     auto config() {
         debug(Injector) {
             sharedLog.info("Injector config");
@@ -229,7 +232,7 @@ final class ContextInjector(C...) : InjectionContainer {
                     //register!uint;
                     //register!int;
                     register!long;
-                    
+
                     static foreach (fieldName ; c.fieldNames) {
                         {
                             mixin("alias f = c." ~ fieldName~";");
@@ -242,6 +245,12 @@ final class ContextInjector(C...) : InjectionContainer {
                         }
                     }
                 }
+                // Scan properties from the .ini file.
+                // Make them all strings.
+                iterateValuesF!(DXXConfig.keys)( (string fqn,string k,string v) {
+                    //properties[k]=v;
+                    register!string(k);
+                } );
             }
         }
     }
@@ -250,13 +259,13 @@ final class ContextInjector(C...) : InjectionContainer {
 unittest {
     class MyClass {
     }
-    
+
     @component
     class MyModule {
         @component
         public MyClass getMyClass() {
             return new MyClass;
-        }    
+        }
     }
     debug {
         sharedLog.info("Starting component unittest.");
@@ -271,7 +280,7 @@ unittest {
     alias param = Tuple!(
         string,"name",
         long,"age"
-    );    
+    );
     debug {
         sharedLog.info("Starting injector parameters unittest.");
     }
@@ -280,4 +289,3 @@ unittest {
     auto name = injector.resolve!string("name");
     auto age = injector.resolve!long("age");
 }
-

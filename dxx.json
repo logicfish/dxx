@@ -1,15 +1,21 @@
 {
     "dxx" : {
+        "config" : {
+            "pluginDirs" : "examples/plugin/bin"
+        },
         "workspace" : {
             "name" : "DXX Library"
         },
-        "plugins" : {
-            "example-plugin" : "./examples/example-plugin.json"
-        },
         "tool" : {
-            
+
         }
     },
     "name" : "test",
-    "age" : 22
+    "age" : 22,
+    "plugins" :
+        {
+            "name" : "dxx_plugin",
+            "pluginVersion" : "*"
+        }
+
 }

@@ -37,15 +37,7 @@ interface Components {
     public Logger getLogger();
     
     public ArgParser getArgParser();
-    
-    public WorkflowRunner getWorkflowRunner();
-
-    public PluginLoader getPluginLoader();
-    
-    //nothrow
-    //ref DefaultInjector injector();
-    
-    //static __gshared Components INSTANCE;
+        
 }
 
 mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
@@ -55,10 +47,7 @@ mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
         import dxx.util.injector;
         
         debug(Component) { sharedLog.info("RuntimeComponents register "~typeid(T).to!string); }
-        //auto _injector = newInjector!(T,Param);
         auto t = new T;
-        //t.registerAppDependencies(_injector);
-        //_injector.instantiate();
     }
 }
 
@@ -69,9 +58,7 @@ mixin template registerComponents(Param...) {
 
 @component
 class RuntimeComponents(Param...) : Components {
-    static WorkflowRunner workflowRunner;
 //    static ArgParser argParser;
-    //static __gshared ExtensionPointManager extensionPointManager;
 
     static __gshared InjectionContainer _injector;
     static bool instantiated = false;
@@ -124,17 +111,6 @@ class RuntimeComponents(Param...) : Components {
     		return new ArgParser;
         }
 
-        @component
-        override WorkflowRunner getWorkflowRunner() {
-            if(workflowRunner is null) {
-                workflowRunner = new WorkflowRunner;
-            }
-            return workflowRunner;
-        }
-        @component
-        override PluginLoader getPluginLoader() {
-            return new PluginLoader;
-        }
     }
 
     //@component
