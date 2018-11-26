@@ -1,8 +1,0 @@
-LIBRARY dxx_example-plugin
-
-EXPORTS
-    init
-    uninit
-    load
-    unload
-    update
