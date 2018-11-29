@@ -8,10 +8,9 @@
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
-      "core": "*",
+      "dxx:core": "*",
       "aedi": "~>0.5.0",
       "d-opts": "~>1.0.2",
-      "hunt" : "1.0.0-rc.2",
       "hunt-cache": "~>0.2.0"
     },
     "targetPath": "bin",

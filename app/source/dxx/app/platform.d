@@ -23,7 +23,7 @@ module dxx.app.platform;
 
 private import std.exception;
 
-private import aermicioi.aedi;
+//private import aermicioi.aedi;
 private import hunt.cache;
 
 private import dxx.util;
@@ -177,7 +177,7 @@ class PlatformJobBase : JobBase,PlatformJob {
         return cache.put!T(id);
     }
     void setProperty(T)(T t,string id) {
-        cache.set!T(id,t);
+        cache.put!T(id,t);
     }
 
 }

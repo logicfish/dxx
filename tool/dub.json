@@ -8,8 +8,7 @@
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
-      "core": "*",
-      "app": "*"
+      "dxx:app": "*"
     },
     "targetPath": "bin",
     "configurations" : [
