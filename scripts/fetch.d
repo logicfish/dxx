@@ -1,4 +1,4 @@
-#!/usr/bin/env dub
+#!/usr/bin/env dub --arch=x86_64
 /+ dub.sdl:
 	name "fetch"
 	dependency "scriptlike" version="~>0.10.2"

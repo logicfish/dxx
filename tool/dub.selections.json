@@ -7,9 +7,10 @@
 		"d-opts": "1.0.2",
 		"derelict-util": "3.0.0-beta.2",
 		"dredis": "0.0.9",
-		"dxx": "0.2.0+commit.2.g22921e8",
+		"dxx": "0.2.0+commit.3.g83e2d2e",
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
+		"gen-package-version": "1.0.5",
 		"hunt": "1.0.0-rc.3",
 		"hunt-cache": "0.2.1",
 		"isfreedesktop": "0.1.1",
@@ -26,7 +27,7 @@
 		"standardpaths": "0.8.1",
 		"taggedalgebraic": "0.10.12",
 		"tinyendian": "0.1.2",
-		"unit-threaded": "0.7.52",
+		"unit-threaded": "0.7.53",
 		"urld": "2.1.1",
 		"xdgpaths": "0.2.5"
 	}

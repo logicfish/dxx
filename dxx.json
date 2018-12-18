@@ -14,7 +14,7 @@
     "age" : 22,
     "plugins" :
         {
-            "name" : "dxx_plugin",
+            "name" : "plugin",
             "pluginVersion" : "*"
         }
 

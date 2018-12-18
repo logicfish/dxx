@@ -13,7 +13,7 @@
     "dependencies" : {
     },
     "preGenerateCommands": [
-        "dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
+        "dub fetch gen-package-version && dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
     ],
     "subPackages" : [
         "core",

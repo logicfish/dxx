@@ -1,5 +1,7 @@
 {
 	"fileVersion": 1,
 	"versions": {
+		"gen-package-version": "1.0.5",
+		"scriptlike": "0.9.7"
 	}
 }

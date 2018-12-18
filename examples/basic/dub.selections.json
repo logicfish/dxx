@@ -3,15 +3,14 @@
 	"versions": {
 		"aedi": "0.5.0",
 		"aedi-property-reader": "0.2.0",
-		"app": "~master",
-		"core": "~master",
 		"ctini": "0.2.1",
 		"d-opts": "1.0.2",
 		"derelict-util": "3.0.0-beta.2",
 		"dredis": "0.0.9",
+		"dxx": {"path":"../.."},
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
-		"hunt": "1.0.0-rc.2",
+		"hunt": "1.0.0-rc.3",
 		"hunt-cache": "0.2.1",
 		"isfreedesktop": "0.1.1",
 		"libinputvisitor": "1.2.2",
@@ -27,7 +26,7 @@
 		"standardpaths": "0.8.1",
 		"taggedalgebraic": "0.10.12",
 		"tinyendian": "0.1.2",
-		"unit-threaded": "0.7.52",
+		"unit-threaded": "0.7.53",
 		"urld": "2.1.1",
 		"xdgpaths": "0.2.5"
 	}

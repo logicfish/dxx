@@ -10,6 +10,7 @@
 		"dxx": "0.2.0+commit.2.g22921e8",
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
+		"gen-package-version": "1.0.5",
 		"hunt": "1.0.0-rc.3",
 		"hunt-cache": "0.2.1",
 		"isfreedesktop": "0.1.1",
