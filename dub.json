@@ -22,5 +22,17 @@
         "tool",
         "examples/basic",
         "examples/plugin"
+    ],
+    "configurations": [
+        {
+            "name": "shi_sha",
+            "targetName": "dale",
+            "targetType": "executable",
+            "targetPath": ".dub/build/shi_sha",
+            "mainSourceFile": "dale.d",
+            "dependencies": {
+                "dale": "~>0.0.1"
+            }
+        }
     ]
 }

@@ -5,6 +5,7 @@
 		"aedi-property-reader": "0.2.0",
 		"ctini": "0.2.1",
 		"d-opts": "1.0.2",
+		"dale": "0.0.1",
 		"derelict-util": "3.0.0-beta.2",
 		"dxx": {"path":".."},
 		"dyaml": "0.6.5",
@@ -21,7 +22,7 @@
 		"standardpaths": "0.8.1",
 		"taggedalgebraic": "0.10.12",
 		"tinyendian": "0.1.2",
-		"unit-threaded": "0.7.52",
+		"unit-threaded": "0.7.53",
 		"urld": "2.1.1",
 		"xdgpaths": "0.2.5"
 	}
