@@ -31,7 +31,8 @@
             "targetPath": ".dub/build/shi_sha",
             "mainSourceFile": "dale.d",
             "dependencies": {
-                "dale": "~>0.0.1"
+                "dale": "~>0.0.1",
+                "ctini": "~>0.2.1"
             }
         }
     ]

@@ -4,7 +4,7 @@
         "Mark"
     ],
     "dependencies": {
-        "app": "*",
+        "dxx:app": "*",
         "vibe-d:web": "~>0.8.4",
         "ircbod2" : "~>0.1.6"
     },
