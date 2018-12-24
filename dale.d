@@ -8,20 +8,16 @@ import std.process;
 import dxx;
 import ctini.ctini;
 
-enum CFG = IniConfig!("dxx.ini");
+enum CFG = IniConfig!("dale.ini");
+pragma(msg,CFG);
 
 immutable VERSION = packageVersion;
 
-immutable PROJECTS = [
-  "core","app","services","tool","examples/basic", "examples/plugin"
-];
-//immutable PROJECTS = DaleConfig.dale.projects;
+immutable PROJECTS = CFG.build.projects.split(',');
 
-immutable APPS = [
-  "tool","examples/plugin","examples/basic"
-];
+immutable APPS = CFG.build.apps.split(',');
 
-immutable ARCH = CFG.build.dub.arch;
+immutable ARCH = CFG.build.arch;
 
 void eachApp(T)() {
   foreach(a;APPS) {
@@ -43,8 +39,6 @@ void banner() {
 @(TASK)
 void test() {
     exec("dub", ["test","--arch=x86_64"]);
-    /* exec("dub", ["test","--arch=x86_64","--root=core"]);
-    exec("dub", ["test","--arch=x86_64","--root=app"]); */
     foreach(p;PROJECTS) {
         exec("dub", ["test","--arch="~ARCH,"--root="~p]);
     }
@@ -57,24 +51,19 @@ void build() {
     foreach(a;APPS) {
        exec("dub", ["build","--root="~a,"--arch="~ARCH]);
     }
-    /* exec("dub", ["build","--root=tool","--arch=x86_64"]);
-    exec("dub", ["build","--root=examples/basic","--arch=x86_64"]);
-    exec("dub", ["build","--root=examples/plugin","--arch=x86_64"]); */
 }
 
 @(TASK)
 void update() {
+    exec("git", ["pull"]);
+}
+
+@(TASK)
+void upgrade() {
     foreach(p;PROJECTS) {
         exec("dub", ["upgrade","--root="~p]);
     }
     exec("dub", ["upgrade","--root=."]);
-    /* exec("dub", ["update","--arch=x86_64"]);
-    exec("dub", ["update","--root=core","--arch=x86_64"]);
-    exec("dub", ["update","--root=app","--arch=x86_64"]);
-    exec("dub", ["update","--root=tool","--arch=x86_64"]);
-    exec("dub", ["update","--root=services","--arch=x86_64"]);
-    exec("dub", ["update","--root=examples/basic","--arch=x86_64"]);
-    exec("dub", ["update","--root=examples/plugin","--arch=x86_64"]); */
 }
 
 @(TASK)
@@ -82,7 +71,7 @@ void clean() {
   foreach(p;PROJECTS) {
       exec("dub", ["clean","--root="~p]);
   }
-    //exec("dub", ["clean"]);
+  exec("dub", ["clean","--root=."]);
 }
 
 /** Generate documentation */
@@ -94,10 +83,6 @@ void doc() {
 /** Run D-Scanner */
 @(TASK)
 void dscanner() {
-    /* eachProject!(
-      a=>exec("dub", ["run", "dscanner", "--root="~a, "--", "--styleCheck"])
-    )();
-    */
     exec("dscanner");
 }
 
