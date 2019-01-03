@@ -111,6 +111,8 @@ class SyncNotificationSource : NotificationSource {
     auto listenersAsync() {
       return _listenersAsync;
     }
+
+    protected
     nothrow
     void _send(T)(T* t) {
       (cast(shared)this).send(t);

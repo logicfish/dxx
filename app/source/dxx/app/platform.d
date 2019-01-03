@@ -22,8 +22,9 @@ SOFTWARE.
 module dxx.app.platform;
 
 private import std.exception;
+private import std.typecons;
 
-//private import aermicioi.aedi;
+private import aermicioi.aedi;
 private import hunt.cache;
 
 private import dxx.util;
@@ -35,6 +36,7 @@ private import dxx.app.document;
 private import dxx.app.component;
 private import dxx.app.workbench;
 private import dxx.app.extension;
+
 
 //interface DocumentResourceAdaptor {
     //DocumentType getDocType(FileResource);

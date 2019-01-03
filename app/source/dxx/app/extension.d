@@ -98,7 +98,8 @@ class ExtensionsManager : SyncNotificationSource {
     }
     void sendExtensionEvent(ExtensionEvent.Type type,string pluginId,ExtensionDesc* x) {
       auto e = new _Event(type,pluginId,x);
-      _send!ExtensionEvent(&e.ev);
+      //_send!ExtensionEvent(&e.ev);
+      throw new Exception("NYI");
     }
     void registerExtensionPoint(ExtensionPointDesc* xp,string pluginId) {
         //xpCache.put(pluginId ~ "." ~ xp.id,xp);

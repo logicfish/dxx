@@ -1,0 +1,16 @@
+{
+  "build" : {
+    "arch" : "x86_64",
+    "debug" : [ "Module","Loader","Plugin"],
+    "build" : "debug",
+    "projects" : [ "core","app","services" ],
+    "apps" : [ "examples/plugin","examples/basic" ]
+
+  },
+  "ut" : {
+    "debug" : [ "Module","Loader","Plugin"],
+    "build" : "debug",
+    "projects" : [ "core","app","services" ],
+    "apps" :  []
+  }
+}

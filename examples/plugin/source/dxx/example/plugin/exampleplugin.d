@@ -21,8 +21,15 @@ SOFTWARE.
 **/
 module dxx.example.plugin.exampleplugin;
 
+private import ctini.ctini;
+
 private import dxx.util;
 private import dxx.app.plugin;
+
+enum CFG = DXXConfig ~ IniConfig!"plugin.ini";
+
+mixin __Text!(CFG.plugin.lang);
+
 
 class ExamplePlugin : PluginDefault,PluginActivator {
     override void init() {

@@ -11,9 +11,9 @@
 		"derelict-util": "3.0.0-beta.2",
 		"diet-ng": "1.5.0",
 		"dredis": "0.0.9",
-		"dxx": "0.1.2",
+		"dxx": "0.2.1+commit.3.gfa1c9be",
 		"dyaml": "0.6.5",
-		"eventcore": "0.8.39",
+		"eventcore": "0.8.40",
 		"fswatch": "0.3.0",
 		"hunt": "1.0.0-rc.6",
 		"hunt-cache": "0.2.1",
@@ -40,7 +40,7 @@
 		"tinyendian": "0.1.2",
 		"unit-threaded": "0.7.53",
 		"urld": "2.1.1",
-		"vibe-core": "1.4.5",
+		"vibe-core": "1.4.6",
 		"vibe-d": "0.8.4",
 		"xdgpaths": "0.2.5"
 	}

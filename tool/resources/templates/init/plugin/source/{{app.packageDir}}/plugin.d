@@ -1,13 +1,13 @@
 /**
 {{pluginDoc}}
 **/
-module {{moduleName}};
+module {{app.packageName}}.plugin;
 
-{{pluginImports}}
+{{app.pluginImports}}
 
 private import dxx.util.plugin;
 
-class {{pluginClassName}} : {{pluginBaseClass}} {
+class {{app.pluginClassName}} : {{app.pluginBaseClass}} {
     override void activate(PluginContext* ctx) {
         // TODO ...
     }

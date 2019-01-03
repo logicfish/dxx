@@ -32,8 +32,9 @@
             "mainSourceFile": "dale.d",
             "dependencies": {
                 "dale": "~>0.0.1",
-                "ctini": "~>0.2.1"
-            }
+                "ctini": "~>0.2.1",
+                "aedi-property-reader": "~>0.2.0"
+          }
         }
     ]
 }

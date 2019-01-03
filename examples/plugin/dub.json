@@ -15,6 +15,7 @@
     "targetType": "dynamicLibrary",
     "versions" : ["DXX_Plugin","DXX_Module"],
     "targetPath": "bin",
+    "stringImportPaths" : [ "resources" ],
     "sourceFiles-windows": [
         "dxx_plugin.def"
     ]

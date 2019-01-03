@@ -21,6 +21,7 @@ SOFTWARE.
 **/
 module dxx.example.basic.app;
 
+private import ctini.ctini;
 private import aermicioi.aedi;
 
 private import std.stdio;
@@ -79,8 +80,6 @@ int main(string[] args) {
     auto age = (getInjectorProperty!uint("age"));
     MsgLog.info("age = " ~ age.to!string);
 
-    auto l = resolveInjector!PluginLoader();
-    assert(l);
     /*version(Posix) {
         l.load("examples/plugin/bin/libdxx_plugin.so");
     } else version(Windows) {
@@ -109,13 +108,15 @@ int main(string[] args) {
       foreach(path;paths.split(',')) {
         if(PluginLoader.pluginFileName(plugin.name,path).exists) {
           MsgLog.info("Load: "~plugin.name);
+          auto l = resolveInjector!PluginLoader();
+          assert(l);
           l.load(plugin.name,path);
+          l.update;
+          scope(exit)destroy(l);
         }
       }
     //}
 
-    l.update;
-    scope(exit)destroy(l);
     MsgLog.info("Done.");
     return 0;
 }

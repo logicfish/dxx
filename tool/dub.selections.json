@@ -8,7 +8,7 @@
 		"dale": "0.0.1",
 		"derelict-util": "3.0.0-beta.2",
 		"dredis": "0.0.9",
-		"dxx": "0.1.2",
+		"dxx": "0.2.1+commit.3.gfa1c9be",
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
 		"gen-package-version": "1.0.5",
@@ -30,6 +30,7 @@
 		"tinyendian": "0.1.2",
 		"unit-threaded": "0.7.53",
 		"urld": "2.1.1",
+		"vayne": "0.0.44",
 		"xdgpaths": "0.2.5"
 	}
 }

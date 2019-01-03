@@ -8,11 +8,30 @@
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
-      "dxx:app": "*"
+      "dxx:app": { "path" : "../.." },
+      "vayne" : "~>0.0.44"
     },
+    "subConfigurations": {
+        "dxx:app": "dxx-exec"
+    },
+    "preGenerateCommands": [
+        "dub fetch gen-package-version && dub run gen-package-version -- dxx.tools --root=$PACKAGE_DIR --src=source"
+    ],
     "targetPath": "bin",
     "configurations" : [
-        {
+      {
+          "name": "shi_sha",
+          "targetName": "dale",
+          "targetType": "executable",
+          "targetPath": ".dub/build/shi_sha",
+          "mainSourceFile": "dale.d",
+          "versions" : [ "DXX_Console","DXX_Developer" ],
+          "excludedSourceFiles" : [ "source/dxx/gui.d" ],
+          "dependencies": {
+              "dale": "~>0.0.1"
+        }
+      },
+      {
             "name": "dxx-console",
             "targetType": "executable",
             "targetName": "dxx",
