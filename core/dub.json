@@ -16,8 +16,6 @@
         "urld": "~>2.1.1",
         "d-opts": "~>1.0.2",
         "reloaded": "~master",
-        "pegged": "~master",
-        "metad" : "~master",
         "vayne" : "~>0.0.44"
     },
     "subConfigurations": {

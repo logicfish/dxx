@@ -16,7 +16,7 @@
 		"libinputvisitor": "1.2.2",
 		"libmemcached": "1.1.1",
 		"metad": "~master",
-		"pegged": "~master",
+		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
 		"reloaded": "~master",
 		"rocksdb": "0.0.7",

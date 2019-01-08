@@ -9,7 +9,7 @@
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
       "dxx": { "path" : "../"},
-      "dxx:app": { "path" : "../"}
+      "dxx:app": "*"
     },
     "subConfigurations": {
         "dxx": "dxx-lib"

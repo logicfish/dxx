@@ -228,7 +228,7 @@ class ModuleNotificationListener : NotificationListener {
         import core.stdc.stdio : printf;
         import std.experimental.logger;
         import std.exception;
-        import dxx.sys.constants;
+        import dxx.constants;
 
         extern(C):
         void load( void* userdata ) {

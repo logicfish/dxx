@@ -12,9 +12,10 @@
 	"targetName": "dxx-basic",
   "mainSourceFile": "source/dxx/example/basic/app.d",
 	"dependencies" : {
-		"dxx:app" : { "path" : "../.." }
+		"dxx" : { "path" : "../.." },
+		"dxx:app" : "*"
 	},
 	"subConfigurations": {
 			"dxx:app": "dxx-exec"
-	},
+	}
 }

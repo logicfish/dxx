@@ -215,9 +215,14 @@ void uninstall() {
 }
 
 @(TASK)
-void run() {
+void runexample() {
     deps(&examples);
     exec("examples/basic/bin/dxx-basic");
+}
+
+@(TASK)
+void run() {
+    exec("tool/bin/dxx");
 }
 
 //@(TASK)
