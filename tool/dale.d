@@ -3,11 +3,6 @@ import dl;
 private import aermicioi.aedi;
 private import ctini.ctini;
 
-private import std.getopt;
-private import std.conv;
-private import std.experimental.logger;
-private import std.meta;
-private import std.stdio;
 private import std.file;
 private import std.stdio;
 private import std.string;
@@ -21,10 +16,10 @@ private import dxx.app.platform;
 // Compile-time config
 enum DaleConfig = DXXConfig ~ IniConfig!("dale.ini");
 
-mixin __Text!(DaleConfig.build.lang);
-
 @component
 class ToolsDevModule : PlatformRuntime!() {
+  mixin __Text!(DaleConfig.build.lang);
+
   mixin registerComponent!ToolsDevModule;
 }
 
@@ -73,8 +68,8 @@ void prebuild() {
     deps(&banner);
     //exec("dub", ["fetch","gen-package-version"]);
     //exec("dub", ["fetch","vayne"]);
-    exec("dub", ["run","gen-package-version","--arch="~ARCH,"--build=release",
-        "--", "dxx.tools","--root=.","--src=source"]);
+    //exec("dub", ["run","gen-package-version","--arch="~ARCH,"--build=release",
+    //    "--", "dxx.tools","--root=.","--src=source"]);
 
     // project init templates
     exec("dub", ["run","vayne","--arch="~ARCH, "--",
@@ -109,7 +104,7 @@ void build() {
     deps(&prebuild);
     //deps(&test);
     exec("dub", [
-        "build","--arch="~ARCH,"--build="~BUILD,"config=dxx-tool-console"
+        "build","--arch="~ARCH,"--build="~BUILD,"--config=dxx-tool-console"
     ]);
     //foreach(a;APPS) {
     //   exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
@@ -123,7 +118,7 @@ void forcebuild() {
     deps(&forcetest);
     exec("dub", [
         "build","--root=.","--arch="~ARCH,"--force","--build="~BUILD,
-        "config=dxx-tool-console"
+        "--config=dxx-tool-console"
     ]);
 }
 
@@ -181,4 +176,10 @@ void uninstall() {
 void run() {
     deps(&build);
     exec("dub",["run","--root=.","--arch="~ARCH,"--","init"]);
+}
+
+//@(TASK)
+void main(string[] args) {
+    phony([&clean]);
+    mixin(yyyup!("args", "build"));
 }

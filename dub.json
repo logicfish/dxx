@@ -11,7 +11,7 @@
     "dependencies" : {
       "ctini": "~>0.2.1",
       "pegged": "~master",
-      "semver" : "~>0.3.2",
+      "semver" : "~>0.3.2"
     },
     "preGenerateCommands": [
         "dub fetch gen-package-version && dub run gen-package-version --arch=x86_64 --build=release -- dxx --root=$PACKAGE_DIR --src=source"

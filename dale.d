@@ -220,6 +220,31 @@ void run() {
     exec("examples/basic/bin/dxx-basic");
 }
 
+//@(TASK)
+void push() {
+  exec("git commit -m '<push>'");
+  exec("git push");
+}
+
+//@(TASK)
+void tag() {
+  exec("git tag -m '<tag>'");
+}
+
+//@(TASK)
+void bump() {
+  exec("git tag -m '<tag>'");
+}
+
+//@(TASK)
+void bumpminor() {
+  exec("git tag -m '<tag>'");
+}
+
+//@(TASK)
+void bumpmajor() {
+  exec("git tag -m '<tag>'");
+}
 
 void load(T : DocumentContainer!X, X...)(T container) {
 	with (container.configure) { // Create a configuration context for config container
