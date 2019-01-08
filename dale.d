@@ -1,12 +1,12 @@
-import dl;
+private import dl;
 
-import std.file;
-import std.stdio;
-import std.string;
-import std.process;
+private import std.file;
+private import std.stdio;
+private import std.string;
+private import std.process;
 
-import dxx;
-import ctini.ctini;
+private import dxx.packageVersion;
+private import ctini.ctini;
 
 private import aermicioi.aedi;
 private import aermicioi.aedi_property_reader;
@@ -109,14 +109,14 @@ void forcetest() {
 @(TASK)
 void build() {
     deps(&prebuild);
-    exec("dub", ["build","--arch="~ARCH,"--build="~BUILD]);
+    exec("dub", ["build","--arch="~ARCH,"--build="~BUILD,"--config=dxx-lib"]);
     foreach(a;PROJECTS) {
        exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
     }
 }
 
 @(TASK)
-void apps() {
+void examples() {
     foreach(a;APPS) {
        exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
     }
@@ -124,12 +124,19 @@ void apps() {
 
 @(TASK)
 void tool() {
+    deps(&build);
     exec("dub", ["build",
       "--root=tool",
       "--arch="~ARCH,
       "--build="~BUILD,
-      "--config=dxx-console"
+      "--config=dxx-tool-console"
       ]);
+      /* exec("dub", ["run",
+        "dale",
+        "--root=tool",
+        "--arch="~ARCH,
+        "--build="~BUILD
+        ]); */
       exec("tool/bin/dxx", ["init"]);
 }
 
@@ -157,6 +164,13 @@ void upgrade() {
     foreach(p;PROJECTS~APPS) {
         exec("dub", ["upgrade","--root="~p]);
     }
+    exec("dub", ["upgrade","--root=tool"]);
+}
+
+@(TASK)
+void boot() {
+  deps(&upgrade);
+  deps(&build);
 }
 
 @(TASK)
@@ -202,7 +216,7 @@ void uninstall() {
 
 @(TASK)
 void run() {
-    deps(&apps);
+    deps(&examples);
     exec("examples/basic/bin/dxx-basic");
 }
 

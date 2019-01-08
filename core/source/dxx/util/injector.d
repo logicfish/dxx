@@ -31,7 +31,7 @@ private import std.typecons;
 private import aermicioi.aedi;
 private import aermicioi.aedi_property_reader;
 
-private import dxx.sys.constants;
+private import dxx.constants;
 private import dxx.util.ini;
 //private import dxx.util.storage;
 private import dxx.util.config;

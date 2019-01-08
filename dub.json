@@ -6,14 +6,15 @@
     "description": "D language utility library and modular application framework",
     "copyright": "Copyright © 2018, Mark Fisher",
     "license": "MIT",
-    "targetType": "library",
-    "targetPath": "bin",
     "stringImportPaths" : [ "resources" ],
     "-ddoxTool": "scod",
     "dependencies" : {
+      "ctini": "~>0.2.1",
+      "pegged": "~master",
+      "semver" : "~>0.3.2",
     },
     "preGenerateCommands": [
-        "dub fetch gen-package-version && dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
+        "dub fetch gen-package-version && dub run gen-package-version --arch=x86_64 --build=release -- dxx --root=$PACKAGE_DIR --src=source"
     ],
     "subPackages" : [
         "core",
@@ -33,8 +34,14 @@
             "dependencies": {
                 "dale": "~>0.0.1",
                 "ctini": "~>0.2.1",
+                "pegged": "~master",
                 "aedi-property-reader": "~>0.2.0"
           }
+        },{
+            "name" : "dxx-lib",
+            "targetName": "dxx-lib",
+            "targetType": "library",
+            "targetPath": "bin"
         }
     ]
 }

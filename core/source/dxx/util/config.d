@@ -31,13 +31,12 @@ private import std.conv;
 private import std.traits;
 private import std.compiler;
 private import std.process : environment;
-private import std.file : getcwd,thisExePath;
 private import std.variant;
 
 private import core.runtime;
 
 private import dxx.packageVersion;
-private import dxx.sys.constants;
+private import dxx.constants;
 private import dxx.util.storage;
 //private import dxx.util.injector;
 private import dxx.util.ini;

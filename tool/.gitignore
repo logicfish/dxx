@@ -13,3 +13,4 @@ tools-test-*
 *.obj
 *.lst
 /bin/
+source/dxx/tools/packageVersion.d

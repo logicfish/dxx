@@ -8,14 +8,14 @@
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
-      "dxx:app": { "path" : "../.." },
-      "vayne" : "~>0.0.44"
+      "dxx": { "path" : "../"},
+      "dxx:app": { "path" : "../"}
     },
     "subConfigurations": {
-        "dxx:app": "dxx-exec"
+        "dxx": "dxx-lib"
     },
     "preGenerateCommands": [
-        "dub fetch gen-package-version && dub run gen-package-version -- dxx.tools --root=$PACKAGE_DIR --src=source"
+        "dub fetch gen-package-version && dub run gen-package-version --build=release --arch=x86_64 -- dxx.tools --root=$PACKAGE_DIR --src=source"
     ],
     "targetPath": "bin",
     "configurations" : [
@@ -29,10 +29,10 @@
           "excludedSourceFiles" : [ "source/dxx/gui.d" ],
           "dependencies": {
               "dale": "~>0.0.1"
-        }
+          },
       },
       {
-            "name": "dxx-console",
+            "name": "dxx-tool-console",
             "targetType": "executable",
             "targetName": "dxx",
             "mainSourceFile": "source/dxx/tool.d",
@@ -40,7 +40,7 @@
             "versions" : [ "DXX_Console" ]
         },
         {
-            "name": "dxx-gui",
+            "name": "dxx-tool-gui",
             "targetType": "executable",
             "targetName": "dxx-g",
             "mainSourceFile": "source/dxx/gui.d",

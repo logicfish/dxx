@@ -11,7 +11,7 @@
 		"dxx": {"path":"../.."},
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
-		"hunt": "1.0.0-rc.6",
+		"hunt": "1.0.0-rc.7",
 		"hunt-cache": "0.2.1",
 		"isfreedesktop": "0.1.1",
 		"libinputvisitor": "1.2.2",
@@ -29,6 +29,7 @@
 		"tinyendian": "0.1.2",
 		"unit-threaded": "0.7.53",
 		"urld": "2.1.1",
+		"vayne": "0.0.44",
 		"xdgpaths": "0.2.5"
 	}
 }

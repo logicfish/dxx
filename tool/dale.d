@@ -7,6 +7,11 @@ private import std.getopt;
 private import std.conv;
 private import std.experimental.logger;
 private import std.meta;
+private import std.stdio;
+private import std.file;
+private import std.stdio;
+private import std.string;
+private import std.process;
 
 private import dxx.util;
 private import dxx.app;
@@ -16,20 +21,11 @@ private import dxx.app.platform;
 // Compile-time config
 enum DaleConfig = DXXConfig ~ IniConfig!("dale.ini");
 
-mixin __Text!(DaleConfig.tools.lang);
+mixin __Text!(DaleConfig.build.lang);
 
 @component
 class ToolsDevModule : PlatformRuntime!() {
   mixin registerComponent!ToolsDevModule;
-}
-
-
-@(TASK)
-void banner() {
-    writefln("dxx %s", VERSION);
-    //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
-    writefln("arch=%s build=%s", ARCH,BUILD);
-    writefln("debug=%s", DEBUGS.join(","));
 }
 
 immutable VERSION = packageVersion;
@@ -66,51 +62,58 @@ immutable CONFIG=DaleConfig.build.config;
 
 @(TASK)
 void banner() {
-    writefln("dxx %s", VERSION);
+    writefln("dxx tool %s", VERSION);
     //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
     writefln("arch=%s build=%s", ARCH,BUILD);
-    writefln("debug=%s", DEBUGS.join(","));
+    //writefln("debug=%s", DEBUGS.join(","));
 }
 
 @(TASK)
 void prebuild() {
     deps(&banner);
-    exec("dub", ["fetch","gen-package-version"]);
-    exec("dub", ["fetch","vayne"]);
-    //exec("dub", ["run","gen-package-version","--arch="~ARCH,"--build=release", "--", "dxx.tools","--root=.","--src=source"]);
+    //exec("dub", ["fetch","gen-package-version"]);
+    //exec("dub", ["fetch","vayne"]);
+    exec("dub", ["run","gen-package-version","--arch="~ARCH,"--build=release",
+        "--", "dxx.tools","--root=.","--src=source"]);
 
     // project init templates
-    exec("dub", ["run","vayne","--arch="~ARCH, "--", "resources/"]);
+    exec("dub", ["run","vayne","--arch="~ARCH, "--",
+      "resources/templates/init/plugin/dub.json",
+      "resources/templates/init/plugin/plugin.def",
+      "resources/templates/init/plugin/dale.d"
+      ]);
 }
 
 @(TASK)
 void test() {
     deps(&prebuild);
     exec("dub", ["test","--arch="~ARCH,"--build="~BUILD]);
-    string[] param;
-    param ~= "test";
-    foreach(p;PROJECTS) {
+    //string[] param;
+    //param ~= "test";
+    //foreach(p;PROJECTS) {
         //exec("dub", ["test","--arch="~ARCH,"--root="~p]);
-        exec("dub",["test","--arch="~ARCH,"--root="~p,"--build="~BUILD]);
-    }
+        //exec("dub",["test","--arch="~ARCH,"--root="~p,"--build="~BUILD]);
+    //}
 }
 
 void forcetest() {
     deps(&prebuild);
     exec("dub", ["test","--arch="~ARCH,"--force","--build="~BUILD]);
-    foreach(p;PROJECTS) {
-        exec("dub", ["test","--arch="~ARCH,"--root="~p,"--force","--build="~BUILD]);
-    }
+    //foreach(p;PROJECTS) {
+    //    exec("dub", ["test","--arch="~ARCH,"--root="~p,"--force","--build="~BUILD]);
+    //}
 }
 
 @(TASK)
 void build() {
     deps(&prebuild);
     //deps(&test);
-    exec("dub", ["build","--arch="~ARCH,"--build="~BUILD]);
-    foreach(a;APPS) {
-       exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
-    }
+    exec("dub", [
+        "build","--arch="~ARCH,"--build="~BUILD,"config=dxx-tool-console"
+    ]);
+    //foreach(a;APPS) {
+    //   exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
+    //}
 }
 
 @(TASK)
@@ -118,7 +121,10 @@ void forcebuild() {
     deps(&clean);
     deps(&prebuild);
     deps(&forcetest);
-    exec("dub", ["build","--root=.","--arch="~ARCH,"--force","--build="~BUILD]);
+    exec("dub", [
+        "build","--root=.","--arch="~ARCH,"--force","--build="~BUILD,
+        "config=dxx-tool-console"
+    ]);
 }
 
 @(TASK)
@@ -174,5 +180,5 @@ void uninstall() {
 @(TASK)
 void run() {
     deps(&build);
-    exec("dub",["run","--root=.","--arch="~ARCH,"--","banner"]);
+    exec("dub",["run","--root=.","--arch="~ARCH,"--","init"]);
 }

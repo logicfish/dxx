@@ -4,7 +4,7 @@
         "Mark"
     ],
     "dependencies": {
-	"dxx:app" : "*"
+	     "dxx:app" : "*"
     },
     "subConfigurations": {
         "dxx:app": "dxx-plugin"

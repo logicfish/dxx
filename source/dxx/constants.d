@@ -2,24 +2,24 @@
 Copyright 2018 Mark Fisher
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.sys.constants;
+module dxx.constants;
 
 private import std.compiler;
 private import std.file;
@@ -104,7 +104,7 @@ struct RTConstants {
     const(string) libTimestamp = Constants.libTimestamp;
     const(string) libTimestampISO = Constants.libTimestampISO;
     const(string) libVersionRange = Constants.libVersionRange;
-    
+
     const(string) compilerName = Constants.compilerName;
     const(uint) compilerVersionMajor = Constants.compilerVersionMajor;
     const(uint) compilerVersionMinor = Constants.compilerVersionMinor;
@@ -112,7 +112,7 @@ struct RTConstants {
     const(string) compileTimestamp = Constants.compileTimestamp;
 
     const(string) hostOperatingSystem = Constants.hostOperatingSystem;
-    
+
     const(bool) unitTest = Constants.unitTest;
     const(string) buildType = Constants.buildType;
 
@@ -129,7 +129,7 @@ struct RTConstants {
         runtimeConstants.appDir = dirName(runtimeConstants.appFileName);
         runtimeConstants.curDir = getcwd;
         runtimeConstants.argString = Runtime.args.join(" ");
-         
+
         version(Windows) {
             version(DXX_Module) {
                 runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName,".dll");
@@ -138,16 +138,16 @@ struct RTConstants {
             }
         } else {
             runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName);
-        }    
+        }
     }
 
 
     // the following variables may be filled in by the application...
-    
+
     string userAppVersion; // user-defined app version string.
     string appName; // user-defined app name.
     string orgName; // user-defined org name.
-    
+
     shared void registerAppVersion(vers)() {
         userAppVersion = vers;
     }
@@ -161,7 +161,7 @@ struct RTConstants {
     static __gshared shared(RTConstants) runtimeConstants;
 
     alias constants = runtimeConstants;
-    
+
     unittest {
         assert(runtimeConstants.unitTest);
         debug {
@@ -184,15 +184,13 @@ struct RTConstants {
         assert(r.isValid);
         return r;
     }
-    const shared inout ref 
+    const shared inout ref
     auto semVer() {
         return SemVer(libVersion);
     }
-    const shared inout 
+    const shared inout
     bool checkVersion(SemVer v) {
         assert(v.isValid);
         return v.satisfies(libVersions);
     }
 };
-
-

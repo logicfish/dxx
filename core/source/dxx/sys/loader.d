@@ -2,21 +2,21 @@
 Copyright 2018 Mark Fisher
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
 module dxx.sys.loader;
@@ -26,7 +26,7 @@ private import std.experimental.logger;
 
 private import reloaded : Reloaded, ReloadedCrashReturn;
 
-private import dxx.sys.constants;
+private import dxx.constants;
 private import dxx.util.notify;
 private import dxx.util.log;
 
@@ -146,9 +146,9 @@ final class Module : SyncNotificationSource {
             return cast(T*)moduleData.modData;
         }
     }
-    
+
     private shared this() {}
-    
+
     private nothrow shared void sendModuleEvent(alias T)() {
         auto m = ModuleEvent(T,this);
         this.send!ModuleEvent(&m);
@@ -185,22 +185,22 @@ class ModuleNotificationListener : NotificationListener {
             sharedLog.info("Notification:",event.eventType);
         }
         final switch(event.eventType) {
-            case Module.ModuleEvent.Type.Init: 
-            onInit(event); 
+            case Module.ModuleEvent.Type.Init:
+            onInit(event);
             break;
             case Module.ModuleEvent.Type.Deinit:
-            onDeinit(event); 
+            onDeinit(event);
             unregister;
             break;
             case Module.ModuleEvent.Type.Load:
-            onLoad(event); 
+            onLoad(event);
             break;
             case Module.ModuleEvent.Type.Unload:
-            onUnload(event); 
+            onUnload(event);
             //unregister;
             break;
             case Module.ModuleEvent.Type.Update:
-            onUpdate(event); 
+            onUpdate(event);
             break;
         }
     }
@@ -224,12 +224,12 @@ class ModuleNotificationListener : NotificationListener {
 
 //mixin template moduleMain() {
     version(DXX_Module) {
-        
+
         import core.stdc.stdio : printf;
         import std.experimental.logger;
         import std.exception;
         import dxx.sys.constants;
-    
+
         extern(C):
         void load( void* userdata ) {
             debug(Module) { sharedLog.info("[module] load"); }
@@ -249,7 +249,7 @@ class ModuleNotificationListener : NotificationListener {
             debug(Module) { sharedLog.info("[module] init"); }
 
             auto moduleData = cast(shared(ModuleData)*)data;
-        
+
             assert(moduleData.hostRuntime);
 
             Module.getInstance.moduleData = moduleData;
@@ -257,7 +257,7 @@ class ModuleNotificationListener : NotificationListener {
             //enforce(moduleData.hostRuntime.checkVersion());
             //enforce(moduleData.hostRuntime.checkVersion(moduleData.moduleRuntime.semVer));
             enforce(moduleData.hostRuntime.checkVersion(RTConstants.constants.semVer));
-        
+
             Module.getInstance.init;
         }
         void uninit(void* userdata){
