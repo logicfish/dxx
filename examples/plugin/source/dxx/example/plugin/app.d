@@ -36,4 +36,4 @@ version(unittest) {
   mixin pluginMain;
 }
 
-mixin registerPlugin!ExamplePlugin;
+mixin registerPlugin!(PluginRuntime!(ExamplePlugin));

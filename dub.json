@@ -20,6 +20,7 @@
         "app",
         "services",
         "tool",
+        "tool/plugins/example",
         "examples/basic",
         "examples/plugin"
     ],
