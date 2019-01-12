@@ -39,26 +39,22 @@ private import dxx.util.config;
 
 alias component = aermicioi.aedi.component;
 
-//static Variant[string] readInjectorProperties(File* f) {
-//    Variant[string] res;
-//    return res;
-//}
-//
-//static void registerInjectorProperties(Variant[string] properties) {
-    //InjectionContainer._DEFAULT_CONTAINER.each!(c=>{
-    //    with(c.configure) {
-    //        properties.each!((k,v)=>{
-    //            if(v.type == typeid(string)) {
-    //            }
-    //        });
-    //    }
-    //});
-    //properties.keys.each!((k)=>{
-//	    if(v.type == typeid(string)) {
-	//    	InjectionContainer.register!string(k);
-//        }
-//    });
-//}
+/**
+ * A wrapper that creates injection tools for your project.
+ * The settings are passed as template parameters to the
+ * class LocalInjector which you instantiate using the
+ * static method newInjector.
+ * Only one instance of LocalInjector is created;
+ * subsequent invocations of newInjector will return
+ * the existing instance, and the parameters will be ignored.
+ * The parameters to newInjector are parsed:
+ * Class parameters are passed to the
+ * wrapped container using the "scan" method.
+ * Tuple parameters
+ * are parsed and converted into properties which
+ * are loaded at runtime from "dxx.json".
+ * TODO allow for the property filenames to be overridden.
+ **/
 
 static auto resolveInjector(alias T,Arg...)(Arg arg,InjectionContainer i=InjectionContainer.getInstance) {
     return i.resolve!T(arg);
@@ -73,24 +69,21 @@ static void setInjectorProperty(T)(string k,T t,InjectionContainer i=InjectionCo
 }
 
 static auto newInjector(alias T,V...)(AggregateContainer c = null) {
-    if(InjectionContainer.INSTANCE is null) {
-        new ContextInjector!(T,V)(c);
+    synchronized(InjectionContainer.classinfo) {
+      if(InjectionContainer.getInstance is null) {
+        new LocalInjector!(T,V)(c);
+      }
     }
     return InjectionContainer.getInstance;
 }
 
 static void terminateInjector() {
     synchronized(InjectionContainer.classinfo) {
-        if(InjectionContainer.INSTANCE) {
-            InjectionContainer.INSTANCE.terminate;
+        if(InjectionContainer.getInstance) {
+            InjectionContainer.getInstance.terminate;
         }
     }
 }
-
-//interface InjectionComponent {
-//    void registerComponent(InjectionContainer injector);
-//
-//}
 
 abstract class InjectionContainer {
 
@@ -176,7 +169,7 @@ abstract class InjectionContainer {
 }
 
 
-final class ContextInjector(C...) : InjectionContainer {
+final class LocalInjector(C...) : InjectionContainer {
     this(AggregateContainer c = null) {
         if(c is null) c = aggregate(config, "parameters");
         super(c);
@@ -207,14 +200,29 @@ final class ContextInjector(C...) : InjectionContainer {
         debug(Injector) {
             sharedLog.info("Injector config");
         }
-        auto cont = container(
-          argument,
-          env,
-          json("./dxx.json"),
-          json(RTConstants.constants.appDir ~ "/dxx.json")
-          //json("/etc/aedi-example/config.json"),
-          //configFiles
-           );
+        version(DXX_Developer) {
+          auto cont = container(
+            argument,
+            env,
+            json("./dxx-dev.json"),
+            json("./resources/dxx-dev.json"),
+            json(RTConstants.constants.appDir ~ "/dxx-dev.json"),
+            json("./dxx.json"),
+            json(RTConstants.constants.appDir ~ "/dxx.json")
+            //json("/etc/aedi-example/config.json"),
+            //configFiles
+             );
+        } else {
+          auto cont = container(
+            argument,
+            env,
+            json("./dxx.json"),
+            json(RTConstants.constants.appDir ~ "/dxx.json")
+            //json("/etc/aedi-example/config.json"),
+            //configFiles
+             );
+
+        }
         foreach (c; cont) {
             load(c);
         }
@@ -224,26 +232,50 @@ final class ContextInjector(C...) : InjectionContainer {
         with (container.configure) {
             static foreach(c;C) {
                 static if(isTuple!c) {
-                    debug(Injector) {
-                        pragma(msg,"scanning parameters: ");
-                        pragma(msg,c);
+                    template _reg(alias n,alias T) {
+                      void _reg() {
+                          static foreach (name ; T.fieldNames) {
+                            {
+                              enum fieldName = n ~ name;
+                              mixin("alias _f = c." ~ fieldName~";");
+                              alias fieldType = typeof(_f);
+                              debug(Injector) {
+                                  import std.conv;
+                                  //sharedLog.info("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
+                                  pragma(msg,"field");
+                                  pragma(msg,fieldType);
+                                  pragma(msg,fieldName);
+                              }
+                              static if(isTuple!fieldType) {
+                                _reg!(fieldName ~ ".",fieldType)();
+                              } else {
+                                //register!fieldType;
+                                register!fieldType(fieldName);
+                              }
+                            }
+                            }
+                      }
                     }
-                    register!string;
-                    //register!uint;
-                    //register!int;
-                    register!long;
 
-                    static foreach (fieldName ; c.fieldNames) {
+                    /*static foreach (fieldName ; c.fieldNames) {
                         {
                             mixin("alias f = c." ~ fieldName~";");
                             alias fieldType = typeof(f);
                             debug(Injector) {
                                 import std.conv;
-                                sharedLog.info("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
+                                //sharedLog.info("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
+                                pragma(msg,"field");
+                                pragma(msg,fieldType);
+                                pragma(msg,fieldName);
                             }
-                            register!fieldType(fieldName);
+                            static if(isTuple!fieldType) {
+                              _reg!(fieldType,fieldName);
+                            } else {
+                              register!fieldType(fieldName);
+                            }
                         }
-                    }
+                    }*/
+                    _reg!("",c)();
                 }
                 // Scan properties from the .ini file.
                 // Make them all strings.
@@ -288,4 +320,20 @@ unittest {
     assert(injector !is null);
     auto name = injector.resolve!string("name");
     auto age = injector.resolve!long("age");
+}
+
+unittest {
+    alias param = Tuple!(
+      Tuple!(
+        string,"name",
+        long,"age"
+        ),"param"
+    );
+    debug {
+        sharedLog.info("Starting injector parameters unittest.");
+    }
+    auto injector = newInjector!param;
+    assert(injector !is null);
+    auto name = injector.resolve!string("param.name");
+    auto age = injector.resolve!long("param.age");
 }

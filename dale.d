@@ -146,7 +146,7 @@ void forcebuild() {
     deps(&prebuild);
     exec("dub", ["build","--arch="~ARCH,"--build="~BUILD]);
     foreach(a;PROJECTS) {
-       exec("dub", ["test","--root="~a,"--arch="~ARCH,"--force","--build="~BUILD]);
+//       exec("dub", ["test","--root="~a,"--arch="~ARCH,"--force","--build="~BUILD]);
        exec("dub", ["build","--root="~a,"--arch="~ARCH,"--force","--build="~BUILD]);
     }
 }
@@ -185,6 +185,21 @@ void clean() {
 @(TASK)
 void doc() {
 //    exec("doxygen");
+    exec("dub", ["fetch","ddox"]);
+    foreach(p;PROJECTS) {
+        execStatus("dub", ["build","-b=ddox","--root="~p,"--arch="~ARCH]);
+    }
+    execStatus("dub", ["build","-b=ddox","--root=.","--arch="~ARCH]);
+    execStatus("dub", ["run","ddox","--arch="~ARCH,"--",
+        "filter","./docs.json",
+        "--ex","aermicioi",
+        "--ex","ctini",
+        "--ex","pegged",
+        "--ex","properd"
+      ]);
+      execStatus("dub", ["run","ddox","--arch="~ARCH,"--",
+        "generate-html","./docs.json","doc"
+      ]);
 }
 
 /** Run D-Scanner */

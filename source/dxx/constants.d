@@ -34,6 +34,11 @@ private import semver;
 
 private import dxx.packageVersion;
 
+/**
+ * Constants that represt the platform configuration.
+ * The class Constants constains enums or aliases,
+ * whereas RTConstants contains static strings.
+ **/
 class Constants {
     //enum {
     //    COMPILER_VERSION = std.compiler.name,
@@ -54,6 +59,7 @@ class Constants {
     //enum cpuID = core.cpuid.getCpuFeatures.vendorID;
     alias cpuCores = core.cpuid.coresPerCPU;
     alias cpuThreads = core.cpuid.threadsPerCPU;
+    //alias cpuID = core.cpuid.getCpuFeatures.vendorID;
 
     version (OSX) { enum hostOperatingSystem = "OSX"; }
     else version(MacOS) { enum hostOperatingSystem = "MacOS"; }
@@ -123,12 +129,14 @@ struct RTConstants {
     const(string) curDir;
     const(string) appBaseName;
     const(string) argString;
+    const(string)[] args;
 
     shared static this() {
         runtimeConstants.appFileName = thisExePath;
         runtimeConstants.appDir = dirName(runtimeConstants.appFileName);
         runtimeConstants.curDir = getcwd;
         runtimeConstants.argString = Runtime.args.join(" ");
+        runtimeConstants.args = Runtime.args.dup;
 
         version(Windows) {
             version(DXX_Module) {
@@ -141,10 +149,9 @@ struct RTConstants {
         }
     }
 
-
     // the following variables may be filled in by the application...
 
-    string userAppVersion; // user-defined app version string.
+    /* string userAppVersion; // user-defined app version string.
     string appName; // user-defined app name.
     string orgName; // user-defined org name.
 
@@ -155,8 +162,7 @@ struct RTConstants {
     shared void registerAppVars(T)() {
         orgName = T.organizationName;
         appName = T.applicationName;
-    }
-
+    } */
 
     static __gshared shared(RTConstants) runtimeConstants;
 

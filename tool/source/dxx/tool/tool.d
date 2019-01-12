@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.tool;
+module dxx.tool.tool;
 
 private import ctini.ctini;
 private import aermicioi.aedi;
@@ -32,11 +32,9 @@ private import std.meta;
 private import dxx.util;
 private import dxx.util.ini;
 private import dxx.app;
+private import dxx.tool;
 private import dxx.tools;
 private import dxx.app.platform;
-
-// Compile-time config
-enum ToolConfig = DXXConfig ~ IniConfig!("tool.ini");
 
 mixin __Text!(ToolConfig.tools.lang);
 

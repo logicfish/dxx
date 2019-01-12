@@ -8,7 +8,7 @@
 		"dale": "0.0.1",
 		"derelict-util": "3.0.0-beta.2",
 		"dredis": "0.0.9",
-		"dxx": {"path":"../"},
+		"dxx": {"path":"../../.."},
 		"dyaml": "0.6.5",
 		"fswatch": "0.3.0",
 		"hunt": "1.0.0-rc.8",

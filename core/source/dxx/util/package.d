@@ -8,4 +8,5 @@ public import dxx.util.log;
 public import dxx.util.messages;
 public import dxx.util.config;
 public import dxx.util.grammar;
+public import dxx.util.minitemplt;
 public import dxx.util.script;

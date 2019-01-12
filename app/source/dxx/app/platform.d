@@ -147,7 +147,7 @@ interface PlatformJob {
     void setProperty(T)(T t,string id);
 }
 
-class PlatformJobBase : JobBase,PlatformJob {
+abstract class PlatformJobBase : JobBase,PlatformJob {
     Workspace workspace;
     UCache cache;
 
@@ -172,8 +172,7 @@ class PlatformJobBase : JobBase,PlatformJob {
         processPlatformJob();
     }
 
-    void processPlatformJob() {
-    }
+    abstract void processPlatformJob();
 
     T getProperty(T)(string id) {
         return cache.put!T(id);

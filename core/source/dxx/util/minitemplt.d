@@ -21,77 +21,84 @@ SOFTWARE.
 **/
 module dxx.util.minitemplt;
 
+private import pegged.grammar;
+
 private import std.array;
 
-private import dxx.util.grammar;
+private import metad.compiler;
 
-template MiniTemplate(alias Compiler,alias TemplateGrammar) {
-    enum _GRAMMAR = "
-MiniTemplateGrammar(Template):
-    Doc <- Line+ :endOfInput
-    Line <- :LDelim ^Template :RDelim / Text
-    LDelim <- \"{{\"
-    RDelim <- \"}}\"
-    Text <- ~((!LDelim) Char )*
-    Char <- .
-    ";
+template MiniTemplate(alias idParser) {
+  struct MiniTemplateCompiler(ParseTree T,alias Parser=MiniTemplateCompiler) {
+    mixin Compiler!(T,Parser);
 
-    mixin(parseGrammar!_GRAMMAR);
+    mixin (compilerOverride!("MiniTemplateGrammar.Text","T.matches.join(\"\")"));
+    mixin (compilerOverride!("MiniTemplateGrammar.Inner","idParser!T()"));
 
-    alias GRAMMAR = MiniTemplateGrammar!TemplateGrammar;
+  }
+}
 
-    template __dataFile(string s) {
-        enum __dataFile = parseDataFile!(GRAMMAR,s);
-    }
-    template __data(string s) {
-        enum __data = parseData!(GRAMMAR,s);
-    }
+enum _GRAMMAR = q{
+MiniTemplateGrammar:
+Doc <- Line+ :endOfInput
+Line <- :LDelim Inner :RDelim / Text
+LDelim <- "{{"
+RDelim <- "}}"
+Text <- ~((!LDelim) Char )*
+Inner <- ~((!RDelim) Char )*
+Char <- .
+};
+mixin(grammar(_GRAMMAR));
 
-    static string execute(alias Data)() {
-        string n = "";
-        pragma(msg,"Compile: "~ Data.name);
-        switch(Data.name) {
-            case "MiniTemplate":
-            case "MiniTemplate.Doc":
-            case "MiniTemplate.Line":
-                static foreach(x;Data.children) n~=execute!x();
-                break;
-            case "MiniTemplate.Text":
-                n ~= Data.matches.join("");
-                break;
-            default:
-                n ~= Compiler!Data;
-                break;
-        }
-        return n;
+unittest {
+  static string v(ParseTree T)() {
+    pragma(msg,"** Value:"~ T.name);
+    pragma(msg,"** = "~ T.matches.join(""));
+    return "<" ~ T.matches.join("") ~ ">";
+  }
+    enum inputText = q{
+      {{MyValue}}.{{MyVal2}}
+    };
+    enum c= MiniTemplate!(v).MiniTemplateCompiler!(MiniTemplateGrammar(inputText)).compileNode;
+    assert(c == "<MyValue>.<MyVal2>");
+}
+
+template miniTemplateParser(alias idParser) {
+    auto miniTemplateParser(string txt) {
+        return MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar(txt)).compileNode();
     }
 }
 
-struct ExpandIdentifiers {
-    alias _COMPILER = MiniTemplate!(__compile,identifier);
-    alias execute = _COMPILER.execute;
-    alias compileFile(string fileName) = _COMPILER.__dataFile!fileName;
-    alias compileText(string txt) = _COMPILER.__data!txt; 
-
-    string[string] values;
-
-    static string __compile(alias Data)() {
-        string n = "";
-        pragma(msg,"Data "~ Data.name);
-        switch(Data.name) {
-            case "identifier":
-            n ~= values[Data.matches[0]];
-            break;
-            default:
-            break;
-        }
-        return n;
-    }
+template miniTemplate(alias idParser) {
+  static string __id(ParseTree T)() {
+    return idParser!(T.matches.join(""));
+  }
+  auto miniTemplate(string txt) {
+    auto data = MiniTemplateGrammar(txt);
+    return MiniTemplate!(__id).MiniTemplateCompiler!(data).compileNode();
+  }
 }
 
 unittest {
-    ExpandIdentifiers x;
-    enum data = q{
-    };
-    //auto c = x.__compile!(data);
+  static string v(ParseTree T)() {
+    pragma(msg,"++ Value:"~ T.name);
+    pragma(msg,"++ = "~ T.matches.join(""));
+    return "[" ~ T.matches.join("") ~ "]";
+  }
+  enum inputText = q{
+    {{MyValue.a.b.c}}.{{MyVal2.d.e.f}}
+  };
+  auto c = miniTemplateParser!(v,inputText);
+  assert(c == "[MyValue.a.b.c].[MyVal2.d.e.f]");
+}
+
+unittest {
+  static string v(string k)() {
+    pragma(msg,"v = "~ k);
+    return "[" ~ k ~ "]";
+  }
+  enum inputText = q{
+    123{{MyValue.a.b.c}}.{{MyVal2.d.e.f}}456
+  };
+  auto c = miniTemplate!(v,inputText);
+  assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
 }

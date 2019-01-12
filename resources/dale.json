@@ -4,13 +4,19 @@
     "debug" : [ "Module","Loader","Plugin"],
     "build" : "debug",
     "projects" : [ "core","app","services" ],
-    "apps" : [ "examples/plugin","examples/basic" ]
+    "apps" : [
+      "examples/plugin",
+      "examples/basic",
+      "tool/plugins/example"
+    ]
 
   },
   "ut" : {
     "debug" : [ "Module","Loader","Plugin"],
     "build" : "debug",
     "projects" : [ "core","app","services" ],
-    "apps" :  []
+    "apps" :  [
+      "toolexample"
+    ]
   }
 }

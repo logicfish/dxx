@@ -1,6 +1,16 @@
 /**
-Copyright 2018 Mark Fisher
+An application-local variant map of string keys.
+These are static properties loaded at compile-time
+from the file "dxx.ini".
+So it's a map of the platform info that we can use
+for example in a dynamic module to ensure compatibility.
+The ini properties are labelled DXXConfig.
+The local properties are first loaded from a config
+file at runtime, specified by a parameter in "dxx.ini"
 
+Copyright: Copyright 2018 Mark Fisher
+
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -38,32 +48,43 @@ private import core.runtime;
 private import dxx.packageVersion;
 private import dxx.constants;
 private import dxx.util.storage;
-//private import dxx.util.injector;
 private import dxx.util.ini;
 
-// Compile-time config
+// Compile-time config loaded from "dxx.ini"
 enum DXXConfig = IniConfig!("dxx.ini");
 
-// Runtime config
-final class AppConfig {
-    static __gshared AppConfig _appconfig;
+/**
+ * Singleton class containing the variant map.
+**/
+final class LocalConfig {
+    static __gshared LocalConfig _appconfig;
+    static __gshared Variant[string] properties;
 
     static void setRuntimeDefaults(ref Variant[string] properties) {
-        properties[DXXConfig.keys.packageVersion] = packageVersion;
-        properties[DXXConfig.keys.packageTimestamp] = packageTimestamp;
-        properties[DXXConfig.keys.packageTimestampISO] = packageTimestampISO;
+        properties[DXXConfig.keys.packageVersion] = Constants.libVersion;
+        properties[DXXConfig.keys.packageTimestamp] = Constants.libTimestamp;
+        properties[DXXConfig.keys.packageTimestampISO] = Constants.libTimestampISO;
         properties[DXXConfig.keys.compilerName] = Constants.compilerName;
         properties[DXXConfig.keys.compilerVersionMajor] = Constants.compilerVersionMajor.to!string;
         properties[DXXConfig.keys.compilerVersionMinor] = Constants.compilerVersionMinor.to!string;
-        properties[DXXConfig.keys.currentDir] = RTConstants.constants.curDir;
         properties[DXXConfig.keys.compileTimestamp] = Constants.compileTimestamp;
+
+        properties[DXXConfig.keys.hostOS] =  RTConstants.constants.argString;
+        properties[DXXConfig.keys.unitTest] =  RTConstants.constants.unitTest;
+        properties[DXXConfig.keys.buildType] =  RTConstants.constants.buildType;
+
+        properties[DXXConfig.keys.dxxModule] =  RTConstants.constants.dxxModule;
+
+        properties[DXXConfig.keys.currentDir] = RTConstants.constants.curDir;
         properties[DXXConfig.keys.appDir] = RTConstants.constants.appDir;
         //properties[DXXConfig.keys.applicationName] =
         properties[DXXConfig.keys.commandLine] =  RTConstants.constants.argString;
+        properties[DXXConfig.keys.appName] =  RTConstants.constants.appBaseName;
+        properties[DXXConfig.keys.appFileName] =  RTConstants.constants.appFileName;
+        properties[DXXConfig.keys.appBaseName] =  RTConstants.constants.appBaseName;
     }
 
     shared static this() {
-        Variant[string] properties;
         //sharedLog.info("Config initialising.");
         //MsgLog.info(DXXConfig.messages.MSG_CONFIG_INIT);
         File f;
@@ -138,18 +159,32 @@ final class AppConfig {
             }
         }
 
-        //setRuntimeDefaults(properties);
-        //registerInjectorProperties(properties);
+        setRuntimeDefaults(properties);
 
         if(_appconfig is null) {
-            _appconfig = new AppConfig;
+            _appconfig = new LocalConfig;
         }
     }
+
     auto static get(string s) {
-        return _appconfig.lookup(s);
+        if(s in properties) return properties[s];
+        else return Variant(null);
     }
-    auto lookup(string s) {
-        //return stringValues.get(s);
-        return "";
+
+    auto static get(s : string)() {
+        if(s in properties) return properties[s];
+        else return Variant(null);
+    }
+
+    auto static lookup(T)(string s) {
+        if(s in properties) {
+          return get(s).get!T;
+        } else return null;
+    }
+
+    auto static lookup(T,s : string)() {
+        if(s in properties) {
+          return get!(s).get!T;
+        } else return null;
     }
 }

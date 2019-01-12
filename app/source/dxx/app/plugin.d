@@ -105,9 +105,9 @@ class PluginRuntime(PluginType : Plugin,Param...) : PlatformRuntime!(Param) {
     }
 }
 
-mixin template registerPlugin(P : Plugin,Param ...) {
+mixin template registerPlugin(T : PluginRuntime!(P,Param),P : Plugin,Param ...) {
     version(DXX_Plugin) {
-        mixin registerComponent!(PluginRuntime!(P,Param));
+        mixin registerComponent!(T);
     }
 }
 

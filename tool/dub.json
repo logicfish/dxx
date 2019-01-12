@@ -26,7 +26,10 @@
           "targetPath": ".dub/build/shi_sha",
           "mainSourceFile": "dale.d",
           "versions" : [ "DXX_Console","DXX_Developer" ],
-          "excludedSourceFiles" : [ "source/dxx/gui.d" ],
+          "excludedSourceFiles" : [
+            "source/dxx/tool/gui.d",
+            "source/dxx/tool/tool.d"
+          ],
           "dependencies": {
               "dale": "~>0.0.1"
           },
@@ -35,17 +38,26 @@
             "name": "dxx-tool-console",
             "targetType": "executable",
             "targetName": "dxx",
-            "mainSourceFile": "source/dxx/tool.d",
-            "excludedSourceFiles" : [ "source/dxx/gui.d" ],
+            "mainSourceFile": "source/dxx/tool/tool.d",
+            "excludedSourceFiles" : [ "source/dxx/tool/gui.d" ],
             "versions" : [ "DXX_Console" ]
-        },
-        {
+      },
+      {
             "name": "dxx-tool-gui",
             "targetType": "executable",
             "targetName": "dxx-g",
-            "mainSourceFile": "source/dxx/gui.d",
-            "excludedSourceFiles": [ "source/dxx/tool.d" ],
+            "mainSourceFile": "source/dxx/tool/gui.d",
+            "excludedSourceFiles": [ "source/dxx/tool/tool.d" ],
             "versions" : [ "DXX_Gui" ]
-        }
+      },
+      {
+            "name": "dxx-tool-lib",
+            "targetType": "library",
+            "targetName": "dxx-tool",
+            "excludedSourceFiles" : [ "source/dxx/tool/gui.d",
+              "source/dxx/tool/tool.d"
+            ],
+            "versions" : [ "DXX_Console","DXX_Developer" ]
+      }
     ]
 }

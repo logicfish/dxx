@@ -1,7 +1,6 @@
 module dxx.tools;
 
-public import dxx.tools.packageVersion;
-public import dxx.app;
+public import dxx.app.workflow;
 public import dxx.tools.tool;
 public import dxx.tools.init;
 public import dxx.tools.lang;

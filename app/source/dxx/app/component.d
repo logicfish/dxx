@@ -35,9 +35,8 @@ private import dxx.app;
 
 interface Components {
     public Logger getLogger();
-    
     public ArgParser getArgParser();
-        
+
 }
 
 mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
@@ -45,7 +44,7 @@ mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
         import std.conv;
         import std.experimental.logger;
         import dxx.util.injector;
-        
+
         debug(Component) { sharedLog.info("RuntimeComponents register "~typeid(T).to!string); }
         auto t = new T;
     }
@@ -62,7 +61,7 @@ class RuntimeComponents(Param...) : Components {
 
     static __gshared InjectionContainer _injector;
     static bool instantiated = false;
-    
+
     this(this T)() {
         debug(Component) {
             import std.conv;
@@ -102,8 +101,8 @@ class RuntimeComponents(Param...) : Components {
     //			//string args = AppConfig.get(DXXConfig.keys.commandLine);
     //			//args.split(" ");
     //			//Argument[] arguments = resolveInjector!(Argument[])();
-    //			//arguments.each!(a => argParser.register(a)); 
-    //			
+    //			//arguments.each!(a => argParser.register(a));
+    //
     ////			auto args = Runtime.args;
     ////			argParser.parse(args);
     //    	}
@@ -113,12 +112,5 @@ class RuntimeComponents(Param...) : Components {
 
     }
 
-    //@component
-    //public ExtensionPointManager getExtensionPointManager() {
-    //    if(extensionPointManager is null) {
-    //        extensionPointManager = new ExtensionPointManager;
-    //    }
-    //    return extensionPointManager;
-    //}
 
 }

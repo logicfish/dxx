@@ -1,0 +1,8 @@
+LIBRARY example
+
+EXPORTS
+    init
+    uninit
+    load
+    unload
+    update

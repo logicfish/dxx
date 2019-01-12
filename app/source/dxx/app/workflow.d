@@ -2,21 +2,21 @@
 Copyright 2018 Mark Fisher
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
 module dxx.app.workflow;
@@ -42,26 +42,31 @@ interface WorkflowElement {
 
 interface Workflow {
     @property nothrow
-    ref inout (WorkflowElement[]) workflowElements() inout;
-    
+    ref inout (WorkflowElement[])
+    workflowElements() inout;
+
     @property nothrow
-    ref inout (string[]) args() inout;
-    
+    ref inout(string[])
+    args() inout;
+
     @property nothrow
-    ref inout (Variant[string]) param() inout;
+    ref inout(Variant[string])
+    param() inout;
 }
 
 abstract class WorkflowBase : Workflow {
     WorkflowElement[] _workflowElements;
     string[] _args;
     Variant[string] _param;
-    
+
     @property
-    ref inout (WorkflowElement[]) workflowElements() inout {
+    ref inout (WorkflowElement[])
+    workflowElements() inout {
         return _workflowElements;
     }
     @property
-    ref inout (string[]) args() inout {
+    ref inout (string[])
+    args() inout {
         return _args;
     }
     this(WorkflowElement[] elements,string[] args) {
@@ -69,7 +74,8 @@ abstract class WorkflowBase : Workflow {
         _args = args;
     }
     @property
-    ref inout (Variant[string]) param() inout {
+    ref inout (Variant[string])
+    param() inout {
         return _param;
     }
 }
@@ -83,7 +89,7 @@ final class DefaultWorkflow : WorkflowBase {
 final class WorkflowJob : PlatformJobBase {
     Workflow _workflow;
     WorkflowRunner _runner;
-    
+
     this(Workflow wf,WorkflowRunner r) {
         this._workflow = wf;
         this._runner = r;
@@ -120,6 +126,9 @@ final class WorkflowRunner {
         auto job = new WorkflowJob(wf,this);
         return job;
     }
+    Job createJob(WorkflowElement[] elements,string[] args) {
+      return createJob(new DefaultWorkflow(elements,args));
+    }
 }
 
 class WorkflowElementDelegate(alias D) : WorkflowElement {
@@ -132,7 +141,7 @@ class WorkflowElementDelegate(alias D) : WorkflowElement {
 
 unittest {
     import std.stdio;
-    
+
     class TestWorkflowElement : WorkflowElement {
         bool _done = false;
         override void setup(WorkflowJob job) {
@@ -147,7 +156,7 @@ unittest {
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
-    
+
     auto elem = new TestWorkflowElement;
     WorkflowElement[] e = [ elem ];
     auto wf = new DefaultWorkflow(e,arg);
@@ -157,7 +166,7 @@ unittest {
     assert(j.terminated);
     assert(j.status == Job.Status.TERMINATED);
     assert(elem._done);
-    
+
 }
 
 unittest {
@@ -177,7 +186,7 @@ unittest {
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
-    
+
     auto elem = new TestWorkflowElementException;
     WorkflowElement[] e = [ elem ];
     auto wf = new DefaultWorkflow(e,arg);
@@ -190,5 +199,3 @@ unittest {
     assert(j.thrownException !is null);
     assert(elem.terminated);
 }
-
-

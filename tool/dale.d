@@ -9,9 +9,12 @@ private import std.string;
 private import std.process;
 
 private import dxx.util;
+
 private import dxx.app;
-private import dxx.tools;
 private import dxx.app.platform;
+private import dxx.app.properties;
+
+private import dxx.tools.packageVersion;
 
 // Compile-time config
 enum DaleConfig = DXXConfig ~ IniConfig!("dale.ini");

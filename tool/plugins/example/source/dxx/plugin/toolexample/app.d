@@ -19,36 +19,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.util.messages;
+module dxx.plugin.toolexample.app;
 
-private import std.format;
-private import std.array : appender;
-private import std.typecons;
+private import aermicioi.aedi;
 
-private import dxx.util.ini;
-private import dxx.util.config;
+private import dxx.util;
+private import dxx.app;
 
-mixin template __Text(string lang = DXXConfig.app.lang) {
-    import ctini.ctini;
-    enum _Text = IniConfig!(lang ~ ".ini");
-    const(string) MsgText(alias K,Args...)(Args args) {
-        return MsgParam!(mixin("_Text.text."~K))(args);
-    }
-    const(string) getText(Args...)(const(string) k,Args args) {
-        static foreach (t ; _Text.text.fieldNames) {
-            if(t == k) return MsgText!t(args);
-        }
-        return k;
-    }
+private import dxx.plugin.toolexample.toolex;
+
+import dxx.sys.loader;
+//mixin moduleMain;
+
+version(unittest) {
+} else {
+  mixin pluginMain;
 }
 
-const(string) MsgParam(alias K,Args...)(Args args) {
-    auto writer = appender!string;
-    writer.formattedWrite(K, args);
-    return writer.data;
-}
-
-unittest {
-  mixin __Text;
-  assert(MsgText!(DXXConfig.messages.MSG_APP_NAME) == "DXX Library");
-}
+mixin registerPlugin!(PluginRuntime!(ExampleTool));

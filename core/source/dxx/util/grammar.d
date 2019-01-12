@@ -21,7 +21,7 @@ SOFTWARE.
 **/
 module dxx.util.grammar;
 
-public import pegged.grammar;
+private import pegged.grammar;
 
 private import dxx.util;
 
