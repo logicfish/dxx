@@ -34,15 +34,17 @@ private import dxx.tool;
 
 // Initialise empty project
 
+alias injector = localInjector;
+
 class InitTool : ToolBase {
 	override
 	int runTool(WorkflowJob job) {
         debug {
             MsgLog.info("InitTool run");
         }
-    	string[] types = job.injector.getArgument(ToolConfig.args.type).values;
+    	string[] types = injector.getArgument(ToolConfig.args.type).values;
 
-    	job.injector.getArgument(ToolConfig.args.define).values.each!((string a) {
+    	injector.getArgument(ToolConfig.args.define).values.each!((string a) {
     			string[] keyValue = a.split("=");
 	    		if(keyValue.length == 2) job.setProperty(keyValue[0],keyValue[1]);
 		    	else job.setProperty(keyValue[0],"true");
@@ -60,10 +62,10 @@ class InitTool : ToolBase {
     ArgParser registerArguments(ArgParser parser,WorkflowJob job) {
     	//auto parser = super.registerDefaultArgs();
     	Argument typeArg = new Argument().shortFlag('t').longFlag("type").requireParam();
-    	job.injector.registerArgument(typeArg,ToolConfig.args.type);
+    	injector.registerArgument(typeArg,ToolConfig.args.type);
 
     	Parameter param = new Parameter();
-    	job.injector.register!Parameter(param,ToolConfig.args.param);
+    	injector.register!Parameter(param,ToolConfig.args.param);
 
     	return parser.register(typeArg).register(param);
     }

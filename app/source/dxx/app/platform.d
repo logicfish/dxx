@@ -25,7 +25,6 @@ private import std.exception;
 private import std.typecons;
 
 private import aermicioi.aedi;
-private import hunt.cache;
 
 private import dxx.util;
 
@@ -53,7 +52,7 @@ interface PlatformComponents {
     public ExtensionsManager getExtensionsManager();
 }
 
-class Platform
+class DXXPlatform
 {
     static class ThreadLocal :
         URIResolver,
@@ -101,14 +100,14 @@ class Platform
         return _local;
     }
 
-    static __gshared Platform INSTANCE;
+    static __gshared DXXPlatform INSTANCE;
 
     static auto getInstance() {
         static bool instantiated = false;
         if(!instantiated) {
-            synchronized(Platform.classinfo) {
+            synchronized(DXXPlatform.classinfo) {
                 if(!INSTANCE) {
-                    INSTANCE=new Platform;
+                    INSTANCE=new DXXPlatform;
                 }
             }
             instantiated = true;
@@ -149,11 +148,9 @@ interface PlatformJob {
 
 abstract class PlatformJobBase : JobBase,PlatformJob {
     Workspace workspace;
-    UCache cache;
 
-    this(Workspace w = Platform.getInstance.getDefaultWorkbench.getWorkspace) {
+    this(Workspace w = DXXPlatform.getInstance.getDefaultWorkbench.getWorkspace) {
         super();
-        cache = UCache.CreateUCache();
         workspace = w;
     }
 
@@ -173,13 +170,6 @@ abstract class PlatformJobBase : JobBase,PlatformJob {
     }
 
     abstract void processPlatformJob();
-
-    T getProperty(T)(string id) {
-        return cache.put!T(id);
-    }
-    void setProperty(T)(T t,string id) {
-        cache.put!T(id,t);
-    }
 
 }
 
@@ -204,17 +194,17 @@ class PlatformRuntime(Param...) :
 
     @component
     override URIResolver getURIResolver() {
-        return Platform.getLocals();
+        return DXXPlatform.getLocals();
     }
 
     @component
     override ResourceValidator getResourceValidator() {
-        return Platform.getLocals;
+        return DXXPlatform.getLocals;
     }
 
     @component
     override ResourceContentProvider getResourceContentProvider() {
-        return Platform.getLocals;
+        return DXXPlatform.getLocals;
     }
 
     //@component
@@ -224,17 +214,17 @@ class PlatformRuntime(Param...) :
 
     @component
     override PluginLoader getPluginLoader() {
-        return Platform.getInstance.newPluginLoader;
+        return DXXPlatform.getInstance.newPluginLoader;
     }
 
     @component
     public ExtensionsManager getExtensionsManager() {
-        return Platform.getInstance.extensionsManager;
+        return DXXPlatform.getInstance.extensionsManager;
     }
 
     @component
     public WorkflowRunner getWorkflowRunner() {
-        return Platform.getLocals.getWorkflowRunner;
+        return DXXPlatform.getLocals.getWorkflowRunner;
     }
 
     void registerPlatformDependencies(InjectionContainer injector) {

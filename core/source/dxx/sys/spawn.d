@@ -3,8 +3,9 @@
 Taken from dlangide:
 https://github.com/buggins/dlangide/blob/master/src/dlangide/builders/extprocess.d
 
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -24,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /**
- *
+ * Load and execute external programs buffering stdio.
  **/
 module dxx.sys.spawn;
 

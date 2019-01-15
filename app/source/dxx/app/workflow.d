@@ -145,14 +145,14 @@ unittest {
     class TestWorkflowElement : WorkflowElement {
         bool _done = false;
         override void setup(WorkflowJob job) {
-            //writeln("TestWorkflowElement.setup");
+            writeln("TestWorkflowElement.setup");
         }
         override void process(WorkflowJob job) {
-            //writeln("TestWorkflowElement.process");
+            writeln("TestWorkflowElement.process");
             _done = true;
         }
         override void terminate(WorkflowJob job) {
-            //writeln("TestWorkflowElement.terminate");
+            writeln("TestWorkflowElement.terminate");
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
@@ -174,14 +174,14 @@ unittest {
     class TestWorkflowElementException : WorkflowElement {
         bool terminated = false;
         override void setup(WorkflowJob job) {
-            //writeln("TestWorkflowElement.setup");
+            writeln("TestWorkflowElement.setup");
         }
         override void process(WorkflowJob job) {
-            //writeln("TestWorkflowElementException.process");
+            writeln("TestWorkflowElementException.process");
             throw new Exception("workflow unittest");
         }
         override void terminate(WorkflowJob job) {
-            //writeln("TestWorkflowElement.terminate");
+            writeln("TestWorkflowElement.terminate");
             terminated = true;
         }
     }

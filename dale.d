@@ -205,7 +205,7 @@ void doc() {
 /** Run D-Scanner */
 @(TASK)
 void dscanner() {
-    exec("dscanner");
+    exec("dub",["run","--arch="~ARCH,"dscanner"]);
 }
 
 /** Static code validation */

@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -19,6 +20,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
+/**
+ * A wrapper that creates injection tools for your project.
+ * The settings are passed as template parameters to the
+ * class LocalInjector which you instantiate using the
+ * static method newInjector.
+ * Only one instance of LocalInjector is created;
+ * subsequent invocations of newInjector will return
+ * the existing instance, and the parameters will be ignored.
+ * The parameters to newInjector are parsed:
+ * Class parameters are passed to the
+ * wrapped container using the "scan" method.
+ * Tuple parameters
+ * are parsed and converted into properties which
+ * are loaded at runtime from "dxx.json".
+ * TODO allow for the property filenames to be overridden.
+ **/
 module dxx.util.injector;
 
 //private import std.algorithm : each;
@@ -36,25 +53,8 @@ private import dxx.util.ini;
 //private import dxx.util.storage;
 private import dxx.util.config;
 
-
 alias component = aermicioi.aedi.component;
-
-/**
- * A wrapper that creates injection tools for your project.
- * The settings are passed as template parameters to the
- * class LocalInjector which you instantiate using the
- * static method newInjector.
- * Only one instance of LocalInjector is created;
- * subsequent invocations of newInjector will return
- * the existing instance, and the parameters will be ignored.
- * The parameters to newInjector are parsed:
- * Class parameters are passed to the
- * wrapped container using the "scan" method.
- * Tuple parameters
- * are parsed and converted into properties which
- * are loaded at runtime from "dxx.json".
- * TODO allow for the property filenames to be overridden.
- **/
+alias localInjector = InjectionContainer.INSTANCE;
 
 static auto resolveInjector(alias T,Arg...)(Arg arg,InjectionContainer i=InjectionContainer.getInstance) {
     return i.resolve!T(arg);

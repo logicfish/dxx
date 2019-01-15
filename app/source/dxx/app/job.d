@@ -25,6 +25,8 @@ private import std.exception;
 
 private import core.thread;
 
+private import hunt.cache;
+
 private import dxx.util;
 private import dxx.app;
 
@@ -51,18 +53,16 @@ interface Job : NotificationSource {
     ref inout(Exception) thrownException() inout;
 
     nothrow
-    void execute(InjectionContainer injector=InjectionContainer.getInstance);
+    void execute();
 
-    //void join();
-	//void setProperty(string k,string v);
-	//string getProperty(string k);
 }
 
 abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
     Exception _thrownException;
-    InjectionContainer _injector;
-    
+
+    UCache cache;
+
     @property pure @safe nothrow @nogc
     const(Status) status() const {
         return _status;
@@ -81,16 +81,11 @@ abstract class JobBase : SyncNotificationSource, Job {
     ref inout(Exception) thrownException() inout {
         return _thrownException;
     }
-    @property @safe nothrow
-    ref inout(InjectionContainer) injector() inout {
-    	return _injector;
-    }
 
     nothrow
-    void execute(InjectionContainer injector=InjectionContainer.getInstance) {
+    void execute() {
         try {
             enforce(_status == Status.NOT_STARTED);
-            _injector = injector; 
             setup;
             status(Status.STARTED);
             process;
@@ -109,22 +104,22 @@ abstract class JobBase : SyncNotificationSource, Job {
             Thread.sleep( dur!("msecs")( 10 ) );
         }
     }
-    
+
     void setup() {}
 
     abstract void process();
-    
-    nothrow void terminate() {}
-    
-    void setProperty(T)(string k,T v) {
-        injector.setParam(v,k);
-    }    
 
-    T getProperty(T)(string k) {
-        return injector.getParm(k);
-    }   
+    nothrow void terminate() {}
+
+    T getProperty(T)(string id) {
+        return cache.put!T(id);
+    }
+    void setProperty(T)(T t,string id) {
+        cache.put!T(id,t);
+    }
 
     this() {
+      cache = UCache.CreateUCache();
     }
 }
 

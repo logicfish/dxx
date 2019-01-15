@@ -26,8 +26,9 @@ private import eph.args;
 private import dxx.app.workflow;
 private import dxx.tool;
 private import dxx.tools;
-//private import dxx.tool.tool;
 private import dxx.util.injector;
+
+alias injector = localInjector;
 
 struct ToolOptions {
     string organisation;
@@ -73,12 +74,12 @@ abstract class ToolBase : WorkflowElement, Tool {
     ArgParser registerArguments(ArgParser parser,WorkflowJob job) {
     	return parser;
     }
-	int runTool(WorkflowJob job);
 
+	  int runTool(WorkflowJob job);
     ArgParser registerDefaultArgs(WorkflowJob job) {
-		auto parser = job.injector.resolve!ArgParser;
-       	Argument defArg = new Argument().shortFlag('D').longFlag("def").requireParam();
-    	job.injector.registerArgument(defArg,ToolConfig.args.define);
-    	return registerArguments(parser.register(defArg),job);
+		    auto parser = injector.resolve!ArgParser;
+        Argument defArg = new Argument().shortFlag('D').longFlag("def").requireParam();
+        injector.registerArgument(defArg,ToolConfig.args.define);
+        return registerArguments(parser.register(defArg),job);
     }
 }
