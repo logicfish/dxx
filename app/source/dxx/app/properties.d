@@ -6,6 +6,15 @@ local injector. If the key is still not found, then a
 static variant map comprising default values is consulted.
 If the key is still not found, the methods return null.
 
+The lookup methods are nothrow.
+
+The __gshared property_defaults array is not synchronized and
+should be initialised once by the application.
+
+The expand method takes a string and replaces
+occurences of "{{fullyQualifiedIdentifier}}"
+with the value obtained by looking up the id.
+
 Copyright: Copyright 2018 Mark Fisher
 
 License:
@@ -61,12 +70,23 @@ class Properties {
       return lookup!T(k);
     }
 
-    nothrow
-    static string lookupString(string k) {
+    private nothrow static
+    string lookupString(string k) {
       return lookup!string(k);
     }
-    static string expand(string v)() {
-      return miniTemplate!(lookupString)(v);
+    template expand(string v) {
+      alias expand = miniTemplate!(lookupString,v);
+    }
+    template expand(alias F) {
+      nothrow static
+      string lookupStringF(string k) {
+        auto n = lookup!string(k);
+        if(n is null) return F(k);
+        else return n;
+      }
+      auto epand(string v) {
+        return miniTemplate!(lookupStringF)(v);
+      }
     }
 }
 

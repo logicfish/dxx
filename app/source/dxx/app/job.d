@@ -39,51 +39,52 @@ interface Job : NotificationSource {
         THROWN_EXCEPTION
     }
     struct JobStatusEvent {
-      Job job;
+      shared(Job) job;
       Status status;
     }
 
-    @property pure @safe nothrow @nogc
+    @property pure @safe nothrow @nogc shared
     const(Status) status() const;
 
-    @property pure @safe nothrow @nogc
+    @property pure @safe nothrow @nogc shared
     bool terminated() const;
 
-    @property pure @safe nothrow @nogc
-    ref inout(Exception) thrownException() inout;
+    @property pure @safe nothrow @nogc shared
+    ref inout(shared(Exception))
+    thrownException() inout;
 
-    nothrow
+    nothrow shared
     void execute();
 
 }
 
 abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
-    Exception _thrownException;
+    shared(Exception) _thrownException;
 
     UCache cache;
 
-    @property pure @safe nothrow @nogc
+    @property pure @safe nothrow @nogc shared
     const(Status) status() const {
         return _status;
     }
-    @property nothrow
+    @property nothrow shared
     void status(Status s) {
       _status = s;
       auto e = JobStatusEvent(this,s);
       (cast(shared)this).send!JobStatusEvent(&e);
     }
-    @property pure @safe nothrow @nogc
+    @property pure @safe nothrow @nogc shared
     bool terminated() const {
         return (status == Status.TERMINATED) || (status == Status.THROWN_EXCEPTION);
     }
-    @property @safe nothrow
-    ref inout(Exception) thrownException() inout {
+    @property @safe nothrow shared
+    ref inout(shared(Exception)) thrownException() inout {
         return _thrownException;
     }
 
     nothrow
-    void execute() {
+    void execute() shared {
         try {
             enforce(_status == Status.NOT_STARTED);
             setup;
@@ -92,27 +93,32 @@ abstract class JobBase : SyncNotificationSource, Job {
             status = Status.TERMINATED;
         } catch(Exception e) {
             MsgLog.warning("Exception: " ~ e.message);
-            _thrownException = e;
+            _thrownException = cast(shared(Exception))e;
             status = Status.THROWN_EXCEPTION;
         } finally {
             terminate;
         }
     }
 
-    static void join(const(Job) j) {
+    static void join(shared(Job) j) {
         while(!j.terminated) {
             Thread.sleep( dur!("msecs")( 10 ) );
         }
     }
 
-    void setup() {}
+    void setup() shared {}
 
-    abstract void process();
+    abstract void process() shared;
 
-    nothrow void terminate() {}
+    nothrow void terminate() shared {}
 
+    T getPropertyLocal(T)(string id) {
+        auto a = cache.get!T(id);
+        if(a !is null) return a;
+        return Properties.lookup!T(id);
+    }
     T getProperty(T)(string id) {
-        return cache.put!T(id);
+        return cache.get!T(id);
     }
     void setProperty(T)(T t,string id) {
         cache.put!T(id,t);

@@ -52,7 +52,15 @@ interface PlatformComponents {
     public ExtensionsManager getExtensionsManager();
 }
 
-class DXXPlatform
+struct PlatformJobEvent {
+  enum Status {
+    Setup,Process,Terminate
+  };
+  Status status;
+  shared(PlatformJob) job;
+}
+
+class DXXPlatform : SyncNotificationSource
 {
     static class ThreadLocal :
         URIResolver,
@@ -102,7 +110,8 @@ class DXXPlatform
 
     static __gshared DXXPlatform INSTANCE;
 
-    static auto getInstance() {
+    static
+    auto getInstance() {
         static bool instantiated = false;
         if(!instantiated) {
             synchronized(DXXPlatform.classinfo) {
@@ -139,6 +148,20 @@ class DXXPlatform
     PluginLoader newPluginLoader() {
       return new _PluginLoader();
     }
+
+    static nothrow
+    void sendJobEvent(
+        PlatformJobEvent.Status status)
+        (shared(PlatformJob) j)
+    {
+        try {
+          PlatformJobEvent event = PlatformJobEvent(status,j);
+          auto p = cast(shared(DXXPlatform))getInstance;
+          p.send!PlatformJobEvent(&event);
+        } catch(Exception e) {
+          MsgLog.warning(e.message);
+        }
+    }
 }
 
 interface PlatformJob {
@@ -147,29 +170,30 @@ interface PlatformJob {
 }
 
 abstract class PlatformJobBase : JobBase,PlatformJob {
-    Workspace workspace;
+    Workbench workbench;
 
-    this(Workspace w = DXXPlatform.getInstance.getDefaultWorkbench.getWorkspace) {
+    this(Workbench w = DXXPlatform.getInstance.getDefaultWorkbench) {
         super();
-        workspace = w;
+        workbench = w;
     }
 
-    //@property nothrow
-    //ref inout (Variant[string]) param() inout {
-    //    return _param;
-    //}
-    override void setup() {
-        //Workspace.lock;
+    override shared
+    void setup() {
+      DXXPlatform.sendJobEvent!(PlatformJobEvent.Status.Setup)(this);
     }
-    override void terminate() {
-        //Workspace.unlock;
+    override shared
+    void terminate() {
+      DXXPlatform.sendJobEvent!(PlatformJobEvent.Status.Terminate)(this);
     }
 
-    override void process() {
+    override shared
+    void process() {
+        DXXPlatform.sendJobEvent!(PlatformJobEvent.Status.Process)(this);
         processPlatformJob();
     }
 
-    abstract void processPlatformJob();
+    abstract shared
+    void processPlatformJob();
 
 }
 

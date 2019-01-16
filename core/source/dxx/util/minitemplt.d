@@ -87,7 +87,7 @@ unittest {
   enum inputText = q{
     {{MyValue.a.b.c}}.{{MyVal2.d.e.f}}
   };
-  auto c = miniTemplateParser!(v,inputText);
+  enum c = miniTemplateParser!(v,inputText);
   assert(c == "[MyValue.a.b.c].[MyVal2.d.e.f]");
 }
 
@@ -99,6 +99,6 @@ unittest {
   enum inputText = q{
     123{{MyValue.a.b.c}}.{{MyVal2.d.e.f}}456
   };
-  auto c = miniTemplate!(v,inputText);
+  enum c = miniTemplate!(v,inputText);
   assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
 }

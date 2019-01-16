@@ -105,19 +105,25 @@ final class WorkflowJob : PlatformJobBase {
         return _runner;
     }
 
-    override void setup() {
+    override shared
+    void setup() {
         super.setup;
-        workflow.workflowElements.each!(e=>e.setup(this));
+        auto wf = cast(Workflow)_workflow;
+        wf.workflowElements.each!(e=>e.setup(cast(WorkflowJob)this));
     }
 
-    override void processPlatformJob() {
-        workflow.workflowElements.each!(e=>e.process(this));
+    override shared
+    void processPlatformJob() {
+        auto wf = cast(Workflow)_workflow;
+        wf.workflowElements.each!(e=>e.process(cast(WorkflowJob)this));
     }
 
     nothrow
-    override void terminate() {
+    override shared
+    void terminate() {
         super.terminate;
-        workflow.workflowElements.each!(e=>e.terminate(this));
+        auto wf = cast(Workflow)_workflow;
+        wf.workflowElements.each!(e=>e.terminate(cast(WorkflowJob)this));
     }
 }
 
