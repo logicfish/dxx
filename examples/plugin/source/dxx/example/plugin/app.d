@@ -30,7 +30,7 @@ private import dxx.example.plugin.exampleplugin;
 
 import dxx.sys.loader;
 
-mixin moduleMain;
+//mixin moduleMain;
 
 version(unittest) {
 } else {
