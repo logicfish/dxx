@@ -21,9 +21,11 @@ SOFTWARE.
 **/
 module dxx.util.url;
 
-import dxx.util.stream;
+private import url : URL;
+//private import dxx.util.stream;
+
+public alias url = URL;
 
 //Stream openAsStream() {
 //    return null;
 //}
-

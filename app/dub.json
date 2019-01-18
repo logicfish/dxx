@@ -11,7 +11,7 @@
       "dxx" : { "path" : "../" },
       "dxx:core": "*",
       "aedi": "~>0.5.0",
-      "d-opts": "~>1.0.2",
+      "reloaded": "~master",
       "hunt-cache": "~>0.2.2"
     },
     "targetPath": "bin",

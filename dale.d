@@ -98,6 +98,7 @@ void test() {
     }
 }
 
+@(TASK)
 void forcetest() {
     deps(&prebuild);
     exec("dub", ["test","--arch="~ARCH,"--force","--build="~BUILD]);

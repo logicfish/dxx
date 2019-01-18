@@ -22,7 +22,7 @@ SOFTWARE.
 module dxx.app.component;
 
 private import aermicioi.aedi;
-private import eph.args;
+//private import eph.args;
 
 private import core.runtime;
 
@@ -35,7 +35,7 @@ private import dxx.app;
 
 interface Components {
     public Logger getLogger();
-    public ArgParser getArgParser();
+    //public ArgParser getArgParser();
 
 }
 
@@ -92,7 +92,7 @@ class RuntimeComponents(Param...) : Components {
         override Logger getLogger() {
             return sharedLog;
         }
-        @component
+        /* @component
         override ArgParser getArgParser() {
     //    	if(argParser is null) {
     //			argParser = new ArgParser;
@@ -109,7 +109,7 @@ class RuntimeComponents(Param...) : Components {
     //    	return argParser;
     		return new ArgParser;
         }
-
+ */
     }
 
 

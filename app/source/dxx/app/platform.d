@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -27,7 +28,6 @@ private import std.typecons;
 private import aermicioi.aedi;
 
 private import dxx.util;
-
 private import dxx.app;
 
 private import dxx.app.resource;
@@ -124,12 +124,12 @@ class DXXPlatform : SyncNotificationSource
         return INSTANCE;
     }
 
-    //static Workspace getDefaultWorkspace() {
-    //    return resolveInjector!(Workspace)("app.workspace");
-    //}
-    static Workbench getDefaultWorkbench() {
-        return resolveInjector!(Workbench)("app.workbench");
+    static Workspace getDefaultWorkspace() {
+        return resolveInjector!(Workspace)("app.workspace");
     }
+    /* static Workbench getDefaultWorkbench() {
+        return resolveInjector!(Workbench)("app.workbench");
+    } */
 
     ExtensionsManager extensionsManager;
 
@@ -162,9 +162,14 @@ class DXXPlatform : SyncNotificationSource
           MsgLog.warning(e.message);
         }
     }
+    static void executeJob(Job job) {
+      auto j = cast(shared(Job))job;
+      j.execute;
+    }
+
 }
 
-interface PlatformJob {
+interface PlatformJob : Job {
     T getProperty(T)(string id);
     void setProperty(T)(T t,string id);
 }
@@ -172,7 +177,7 @@ interface PlatformJob {
 abstract class PlatformJobBase : JobBase,PlatformJob {
     Workbench workbench;
 
-    this(Workbench w = DXXPlatform.getInstance.getDefaultWorkbench) {
+    this(Workbench w = resolveInjector!(Workbench)("app.workbench")) {
         super();
         workbench = w;
     }

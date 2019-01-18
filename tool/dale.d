@@ -60,9 +60,9 @@ immutable CONFIG=DaleConfig.build.config;
 
 @(TASK)
 void banner() {
-    writefln("dxx tool %s", VERSION);
+    MsgLog.info("dxx tool %s", VERSION);
     //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
-    writefln("arch=%s build=%s", ARCH,BUILD);
+    MsgLog.info("arch=%s build=%s", ARCH,BUILD);
     //writefln("debug=%s", DEBUGS.join(","));
 }
 

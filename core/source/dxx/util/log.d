@@ -58,22 +58,22 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
         }
         LogNotification* p = cast(LogNotification*)_p;
         assert(p);
-        
+
         //switch(p.logLevel) {
         //    case LogLevel.trace:
-        //        logger.trace!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        logger.trace!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);
         //        break;
         //    case LogLevel.warning:
-        //        logger.warning!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        logger.warning!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);
         //        break;
         //    case LogLevel.error:
-        //        logger.error!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        logger.error!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);
         //        break;
         //    case LogLevel.info:
-        //        logger.info!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        logger.info!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);
         //        break;
         //    case LogLevel.fatal:
-        //        logger.fatal!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);        
+        //        logger.fatal!(p.line,p.file,p.funcName,p.prettyFuncName,p.moduleName)(p.msg);
         //        break;
         //}
     }
@@ -93,12 +93,12 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
         _MSGLOG.removeNotificationListener(t);
     }
 
-    nothrow 
+    nothrow
     static void sendLogNotification(LogNotification n) {
         _MSGLOG.send!(LogNotification)(&n);
     }
 
-    nothrow 
+    nothrow
     static void trace(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
             string prettyFuncName = __PRETTY_FUNCTION__,
@@ -111,15 +111,15 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[module]");
                 }
             }
-            logger.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);        
+            logger.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception e) {
             //debug { // nothrow
             //    sharedLog.error(e);
             //}
         }
-        
+
     }
-    nothrow 
+    nothrow
     static void warning(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
             string prettyFuncName = __PRETTY_FUNCTION__,
@@ -136,7 +136,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
         } catch (Exception) {
         }
     }
-    nothrow 
+    nothrow
     static void error(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
             string prettyFuncName = __PRETTY_FUNCTION__,
@@ -153,7 +153,7 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
         } catch (Exception) {
         }
     }
-    nothrow 
+    nothrow
     static void info(int line = __LINE__, string file = __FILE__,
             string funcName = __FUNCTION__,
             string prettyFuncName = __PRETTY_FUNCTION__,
@@ -165,7 +165,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[module]");
                 }
             }
-            sendLogNotification(LogNotification(LogLevel.info,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            string n;
+            static foreach (a; args) {
+              n ~= a.to!string;
+            }
+            sendLogNotification(LogNotification(LogLevel.info,line,file,funcName,prettyFuncName,moduleName,n));
             logger.info!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
         }

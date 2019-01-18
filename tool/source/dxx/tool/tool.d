@@ -111,7 +111,7 @@ version (DXX_Developer) {
 
       WorkflowRunner runner = resolveInjector!WorkflowRunner;
       auto job = runner.createJob(wf);
-      job.execute;
+      DXXPlatform.executeJob(job);
 
       return 0;
   }

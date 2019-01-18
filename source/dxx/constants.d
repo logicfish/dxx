@@ -105,6 +105,8 @@ class Constants {
     //}
 };
 
+alias runtimeConstants = RTConstants.runtimeConstants;
+
 struct RTConstants {
     const(string) libVersion = Constants.libVersion;
     const(string) libTimestamp = Constants.libTimestamp;

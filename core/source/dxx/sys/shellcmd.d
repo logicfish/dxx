@@ -22,23 +22,36 @@ SOFTWARE.
 module dxx.sys.shellcmd;
 
 private import std.path;
+private import std.conv;
+private import std.exception;
 
-//version(Win64) {
-version(Windows) {
-  //version(WinPTY) {
-    enum winpty = "winpty";
-  //} else {
-  //  enum winpty = "";
-  //}
-  enum dubopt = " --arch=x86_64 ";
-  enum dmdopt = " -m64 ";
-  enum _dub = winpty ~ " dub";
-  enum _rdmd = "rdmd -Iscriptlike-0.10.2/scriptlike/src" ~ pathSeparator ~ "source";
-  enum _git = winpty ~ " git";
-} else {
-    enum dubopt = "";
-    enum dmdopt = "";
-    enum _dub = "dub";
-    enum _rdmd = "rdmd -Iscriptlike-0.10.2/scriptlike/src" ~ pathSeparator ~ "source";
-    enum _git = "git";
+private import dxx.util;
+private import dxx.sys.spawn;
+private import dxx;
+
+class LoggingWriter : TextWriter {
+  string prefix;
+  this(string p) {
+    prefix = p;
+  }
+  void writeText(dstring text) {
+    MsgLog.info(MsgParam!("[%s]: %s")(prefix,text));
+  }
+}
+
+void shellCmd(string cmd,string[] param) {
+    auto exec = cmd.findExecutablePath;
+    //auto stdOutWriter = new ProtectedTextStorage();
+    auto stdOutWriter = new LoggingWriter(cmd);
+    auto stdErrWriter = new LoggingWriter(cmd);
+    auto proc = new ExternalProcess();
+    proc.run(exec,param,runtimeConstants.curDir,stdOutWriter,stdErrWriter);
+    proc.wait();
+    enforce(proc.state == ExternalProcessState.Stopped);
+    enforce(proc.result == 0);
+    //return proc.result;
+}
+
+unittest {
+  MsgLog.info(shellCmd("dub",["describe"]));
 }

@@ -2,6 +2,7 @@ module dxx.util;
 
 public import dxx.util.notify;
 public import dxx.util.ini;
+public import dxx.util.url;
 public import dxx.util.storage;
 public import dxx.util.injector;
 public import dxx.util.log;
