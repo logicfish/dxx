@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.example.plugin.app;
+//module dxx.example.plugin.app;
 
 private import aermicioi.aedi;
 
@@ -29,7 +29,8 @@ private import dxx.app;
 private import dxx.example.plugin.exampleplugin;
 
 import dxx.sys.loader;
-//mixin moduleMain;
+
+mixin moduleMain;
 
 version(unittest) {
 } else {
