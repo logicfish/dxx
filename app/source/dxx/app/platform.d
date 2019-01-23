@@ -175,30 +175,33 @@ interface PlatformJob : Job {
 }
 
 abstract class PlatformJobBase : JobBase,PlatformJob {
-    Workbench workbench;
+    shared(Workbench) workbench;
 
-    this(Workbench w = resolveInjector!(Workbench)("app.workbench")) {
+     this(Workbench w = resolveInjector!(Workbench)("app.workbench")) shared {
         super();
-        workbench = w;
+        workbench = cast(shared(Workbench))w;
+    }
+    this() shared {
+        super();
     }
 
-    override shared
-    void setup() {
+    override
+    void setup() shared {
       DXXPlatform.sendJobEvent!(PlatformJobEvent.Status.Setup)(this);
     }
-    override shared
-    void terminate() {
+    override
+    void terminate() shared {
       DXXPlatform.sendJobEvent!(PlatformJobEvent.Status.Terminate)(this);
     }
 
-    override shared
-    void process() {
+    override
+    void process() shared {
         DXXPlatform.sendJobEvent!(PlatformJobEvent.Status.Process)(this);
         processPlatformJob();
     }
 
-    abstract shared
-    void processPlatformJob();
+    abstract
+    void processPlatformJob() shared;
 
 }
 

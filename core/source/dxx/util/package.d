@@ -10,4 +10,4 @@ public import dxx.util.messages;
 public import dxx.util.config;
 public import dxx.util.grammar;
 public import dxx.util.minitemplt;
-public import dxx.util.script;
+//public import dxx.util.script;

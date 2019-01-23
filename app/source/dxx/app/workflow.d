@@ -90,9 +90,10 @@ final class WorkflowJob : PlatformJobBase {
     Workflow _workflow;
     WorkflowRunner _runner;
 
-    this(Workflow wf,WorkflowRunner r) {
-        this._workflow = wf;
-        this._runner = r;
+    this(Workflow wf,WorkflowRunner r) shared {
+        super();
+        this._workflow = cast(shared(Workflow))wf;
+        this._runner = cast(shared(WorkflowRunner))r;
     }
 
     @property nothrow
@@ -128,11 +129,11 @@ final class WorkflowJob : PlatformJobBase {
 }
 
 final class WorkflowRunner {
-    Job createJob(Workflow wf) {
-        auto job = new WorkflowJob(wf,this);
+    shared(Job) createJob(Workflow wf) {
+        auto job = new shared(WorkflowJob)(wf,this);
         return job;
     }
-    Job createJob(WorkflowElement[] elements,string[] args) {
+    shared(Job) createJob(WorkflowElement[] elements,string[] args=[]) {
       return createJob(new DefaultWorkflow(elements,args));
     }
 }
@@ -151,14 +152,14 @@ unittest {
     class TestWorkflowElement : WorkflowElement {
         bool _done = false;
         override void setup(WorkflowJob job) {
-            writeln("TestWorkflowElement.setup");
+            //writefln("TestWorkflowElement.setup");
         }
         override void process(WorkflowJob job) {
-            writeln("TestWorkflowElement.process");
+            //writefln("TestWorkflowElement.process");
             _done = true;
         }
         override void terminate(WorkflowJob job) {
-            writeln("TestWorkflowElement.terminate");
+            //writefln("TestWorkflowElement.terminate");
         }
     }
     string[] arg = [ "arg0","arg1","arg2" ];
@@ -180,14 +181,14 @@ unittest {
     class TestWorkflowElementException : WorkflowElement {
         bool terminated = false;
         override void setup(WorkflowJob job) {
-            writeln("TestWorkflowElement.setup");
+            /* writeln("TestWorkflowElement.setup"); */
         }
         override void process(WorkflowJob job) {
-            writeln("TestWorkflowElementException.process");
+            /* writeln("TestWorkflowElementException.process"); */
             throw new Exception("workflow unittest");
         }
         override void terminate(WorkflowJob job) {
-            writeln("TestWorkflowElement.terminate");
+            /* writeln("TestWorkflowElement.terminate"); */
             terminated = true;
         }
     }

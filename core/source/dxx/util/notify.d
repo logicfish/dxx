@@ -160,10 +160,13 @@ class SyncNotificationSource : NotificationSource {
     }
 }
 
+
 unittest {
+  import std.stdio;
     shared(bool) done = false;
     class TestNotificationListener : NotificationListener {
         override shared void handleNotification(void* t) {
+            writefln("handleNotification");
             done = true;
         }
     }
@@ -182,10 +185,12 @@ unittest {
 
 unittest {
     import core.thread;
+    import std.stdio;
 
     shared(bool) done = false;
     class TestNotificationListener : NotificationListener,ASyncNotificationListener {
         override shared void handleNotification(void* t) {
+            writefln("handleNotification");
             done = true;
         }
     }
@@ -205,11 +210,13 @@ unittest {
 }
 
 unittest {
+  import std.stdio;
     class TestHandler {
         bool done = false;
     }
     class TestNotificationListener : NotificationListener {
         override shared void handleNotification(void* t) {
+            writefln("handleNotification");
             assert(t);
             auto a = cast(TestHandler*)t;
             assert(a);

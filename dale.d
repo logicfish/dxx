@@ -15,61 +15,71 @@ enum CFG = IniConfig!("dale.ini");
 
 immutable VERSION = packageVersion;
 
-//immutable PROJECTS = CFG.build.projects.split(',');
-//immutable UT_PROJECTS = CFG.build.projects.split(',');
-//immutable APPS = CFG.build.apps.split(',');
-
-//immutable ARCH = CFG.build.arch;
-//immutable DEBUGS = CFG.build.debugs;
-//immutable CONFIG = CFG.build.config;
-//immutable BUILD = CFG.build.build;
-
-template __lookup(T,string v) {
-  auto __lookup() {
+template _(T) {
+  auto _(string v) {
     return __c.locate!T(v);
   }
 }
 
+auto __(string v) {
+  return _!string(v);
+}
+auto ___(string v) {
+  return _!(string[])(v);
+}
+
 template APPS() {
-  auto APPS() { return __c.locate!(string[])("build.apps"); }
+  alias APPS=()=>___("build.apps");
 }
 
 template PROJECTS() {
-  auto PROJECTS() { return __c.locate!(string[])("build.projects"); }
+  alias PROJECTS=()=>___("build.projects");
 }
 
-//template UTAPPS() {
-//  auto UTAPPS() { return __c.locate!(string[])("ut.apps"); }
-//}
+/* template UTAPPS() {
+  auto UTAPPS() { return __c.locate!(string[])("ut.apps"); }
+}*/
 
 template UTPROJECTS() {
-  auto UTPROJECTS() { return __c.locate!(string[])("ut.projects"); }
+  alias UTPROJECTS=()=>___("ut.projects");
 }
-
-template ARCH() {
-  auto ARCH() { return __c.locate!string("build.arch"); }
-}
-template BUILD() {
-  auto BUILD() { return __c.locate!string("build.build"); }
-}
-template DEBUGS() {
-  auto DEBUGS() { return __c.locate!(string[])("build.debug"); }
-}
-template CONFIG() {
-  auto CONFIG() { return __c.locate!string("build.config"); }
-}
-template UTDEBUGS() {
+/*template UTDEBUGS() {
   auto UTDEBUGS() { return __c.locate!(string[])("ut.debug"); }
 }
-template CONFIG() {
+template UTCONFIG() {
   auto UTCONFIG() { return __c.locate!string("ut.config"); }
+}*/
+
+template ARCH() {
+  alias ARCH=()=>__("build.arch");
+}
+template BUILD() {
+  alias BUILD=()=>__("build.build");
+}
+template DEBUGS() {
+  alias DEBUGS=()=>___("build.debug");
+}
+/*template CONFIG() {
+  alias CONFIG=()=>__("build.config");
+}*/
+template FORCE() {
+  alias FORCE=()=>__("build.force");
 }
 
 
-
-auto buildParam(string p) {
-
+string[] buildDubArgs(string cmd)(string root=".") {
+  string[] args;
+  args ~= [
+    cmd,
+    "--arch="~ARCH,
+    "--build="~BUILD,
+    //"--config="~CONFIG,
+    "--force="~FORCE,
+    "--root="~root
+  ];
+  return args;
 }
+
 
 @(TASK)
 void banner() {
@@ -89,67 +99,47 @@ void prebuild() {
 @(TASK)
 void test() {
     deps(&prebuild);
-    exec("dub", ["test","--arch="~ARCH,"--build="~BUILD]);
-    string[] param;
-    param ~= "test";
+    exec("dub", buildDubArgs!"test" ~ ["--config=dxx-lib"]);
     foreach(p;UTPROJECTS) {
-        //exec("dub", ["test","--arch="~ARCH,"--root="~p]);
-        exec("dub",["test","--arch="~ARCH,"--root="~p,"--build="~BUILD]);
-    }
-}
-
-@(TASK)
-void forcetest() {
-    deps(&prebuild);
-    exec("dub", ["test","--arch="~ARCH,"--force","--build="~BUILD]);
-    foreach(p;UTPROJECTS) {
-        exec("dub", ["test","--arch="~ARCH,"--root="~p,"--force","--build="~BUILD]);
+        exec("dub",buildDubArgs!"test"(p));
     }
 }
 
 @(TASK)
 void build() {
     deps(&prebuild);
-    exec("dub", ["build","--arch="~ARCH,"--build="~BUILD,"--config=dxx-lib"]);
+    exec("dub", buildDubArgs!"build" ~ ["--config=dxx-lib"]);
     foreach(a;PROJECTS) {
-       exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
+       exec("dub", buildDubArgs!"build"(a));
     }
 }
 
 @(TASK)
 void examples() {
     foreach(a;APPS) {
-       exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
+      exec("dub", buildDubArgs!"build"(a));
     }
 }
 
 @(TASK)
 void tool() {
     deps(&build);
-    exec("dub", ["build",
+    exec("dub",
+        buildDubArgs!"build"("tool") ~ ["--config=dxx-tool-console"]
+    );
+    /* exec("dub", ["build",
       "--root=tool",
       "--arch="~ARCH,
       "--build="~BUILD,
       "--config=dxx-tool-console"
-      ]);
+      ]); */
       /* exec("dub", ["run",
         "dale",
         "--root=tool",
         "--arch="~ARCH,
         "--build="~BUILD
         ]); */
-      exec("tool/bin/dxx", ["init"]);
-}
-
-@(TASK)
-void forcebuild() {
-    deps(&clean);
-    deps(&prebuild);
-    exec("dub", ["build","--arch="~ARCH,"--build="~BUILD]);
-    foreach(a;PROJECTS) {
-//       exec("dub", ["test","--root="~a,"--arch="~ARCH,"--force","--build="~BUILD]);
-       exec("dub", ["build","--root="~a,"--arch="~ARCH,"--force","--build="~BUILD]);
-    }
+      exec("tool/bin/dxx", ["--help"]);
 }
 
 @(TASK)
@@ -206,7 +196,8 @@ void doc() {
 /** Run D-Scanner */
 @(TASK)
 void dscanner() {
-    exec("dub",["run","--arch="~ARCH,"dscanner"]);
+    exec("dub",["run","--arch="~ARCH,"--force","dscanner",
+    "--","-S","source"]);
 }
 
 /** Static code validation */
@@ -231,6 +222,11 @@ void uninstall() {
 }
 
 @(TASK)
+void info() {
+  exec("git", ["tag", "-l"]);
+}
+
+@(TASK)
 void runexample() {
     deps(&examples);
     exec("examples/basic/bin/dxx-basic");
@@ -249,7 +245,9 @@ void push() {
 
 //@(TASK)
 void tag() {
-  exec("git tag -m '<tag>'");
+  auto tag = __c.locate!string("build.tag");
+  exec("git tag -m "~tag~" -a "~tag);
+  exec("git push --tags");
 }
 
 //@(TASK)

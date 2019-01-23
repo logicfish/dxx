@@ -220,3 +220,11 @@ class ModuleNotificationListener : NotificationListener {
         }
     }
 }
+version(DXX_Module) {
+  extern(C):
+  void load( void* userdata );
+  void unload(void* userdata);
+  void init(void* data);
+  void uninit(void* userdata);
+  void update();
+}

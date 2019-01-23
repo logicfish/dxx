@@ -62,18 +62,16 @@ unittest {
     assert(c == "<MyValue>.<MyVal2>");
 }
 
-template miniTemplateParser(alias idParser) {
-    auto miniTemplateParser(string txt) {
-        return MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar(txt)).compileNode();
-    }
+template miniTemplateParser(alias idParser,string txt) {
+    enum miniTemplateParser = MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar(txt)).compileNode();
 }
 
-template miniTemplate(alias idParser) {
+template miniTemplate(alias idParser,string txt) {
   static string __id(ParseTree T)() {
-    return idParser!(T.matches.join(""));
+    return idParser!(T.matches.join(""))();
   }
-  auto miniTemplate(string txt) {
-    auto data = MiniTemplateGrammar(txt);
+  auto miniTemplate() {
+    enum data = MiniTemplateGrammar(txt);
     return MiniTemplate!(__id).MiniTemplateCompiler!(data).compileNode();
   }
 }

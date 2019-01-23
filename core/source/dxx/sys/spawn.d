@@ -469,6 +469,7 @@ string findExecutablePath(string executableName) {
         if (!executableName.endsWith(".exe"))
             executableName = executableName ~ ".exe";
     }
+    if(exists(executableName) && isFile(executableName)) return executableName;
     string currentExeDir = dirName(thisExePath());
     string inCurrentExeDir = absolutePath(buildNormalizedPath(currentExeDir, executableName));
     if (exists(inCurrentExeDir) && isFile(inCurrentExeDir))

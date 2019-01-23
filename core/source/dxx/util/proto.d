@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -19,41 +20,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-module dxx.sys.shellcmd;
+module dxx.util.proto;
 
-private import std.path;
-private import std.conv;
-private import std.exception;
+import dxx.util;
 
-private import dxx.util;
-private import dxx.sys.spawn;
-private import dxx;
-
-class LoggingWriter : TextWriter {
-  string prefix;
-  this(string p) {
-    prefix = p;
+mixin template Proto(Arg...) {
+  //
+  template _(alias T,alias ID) {
+    T _(string id=ID) {
+      return null;
+    }
+    T _(string id,T t) {
+      return t;
+    }
+    T _(T t) {
+      return t;
+    }
   }
-  void writeText(dstring text) {
-    MsgLog.info(MsgParam!("[%s]: %s")(prefix,text));
+
+  auto __(string id) {
+    return _!(string,id);
   }
-}
 
-auto shellCmd(string cmd,string[] param) {
-    auto exec = cmd.findExecutablePath;
-    auto stdOutWriter = new ProtectedTextStorage();
-    //auto stdOutWriter = new LoggingWriter(cmd);
-    auto stdErrWriter = new LoggingWriter(cmd);
-    auto proc = new ExternalProcess();
-    proc.run(exec,param,runtimeConstants.curDir,stdOutWriter,stdErrWriter);
-    proc.wait();
-    enforce(proc.state == ExternalProcessState.Stopped);
-    enforce(proc.result == 0);
-    //return proc.result;
-    return stdOutWriter.readText();
-}
+  auto ___(string id) {
+    return _!(string[],id);
+  }
 
-unittest {
-  //MsgLog.info(shellCmd("dub",["describe"]));
-//  shellCmd("dub",["describe"]);
+  auto _q(string id) {
+    return expand(__(id));
+  }
+  auto __q(string id) {
+    return ___(id).map!(x=>expand(x));
+  }
+
+
 }

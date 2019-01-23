@@ -11,8 +11,8 @@
       "dxx" : { "path" : "../" },
       "dxx:core": "*",
       "aedi": "~>0.5.0",
-      "reloaded": "~master",
-      "hunt-cache": "~>0.2.2"
+      "hunt-cache": "~>0.2.2",
+      "vayne" : "~>0.0.44"
     },
     "targetPath": "bin",
     "targetType": "library",

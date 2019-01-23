@@ -70,8 +70,17 @@ class Properties {
       return lookup!T(k);
     }
 
-    private nothrow static
-    string lookupString(string k) {
+    nothrow
+    static auto resolve(T)() {
+        try {
+          return resolveInjector!T;
+        } catch(Exception e) {
+        }
+        return null;
+    }
+
+    nothrow static
+    auto lookupString(string k)() {
       return lookup!string(k);
     }
     template expand(string v) {
@@ -79,23 +88,25 @@ class Properties {
     }
     template expand(alias F) {
       nothrow static
-      string lookupStringF(string k) {
-        auto n = lookup!string(k);
+      auto lookupStringF(k : string)() {
+        auto n = lookup!(string,k);
         if(n is null) return F(k);
         else return n;
       }
       auto epand(string v) {
-        return miniTemplate!(lookupStringF)(v);
+        return miniTemplate!(lookupStringF,v);
       }
     }
 }
 
 unittest {
+  import dxx;
   auto n = Properties.lookup!string(DXXConfig.keys.appName);
   assert(n ==  RTConstants.constants.appBaseName);
 }
 
 unittest {
-  auto n = Properties.expand("{{"~DXXConfig.keys.appName~"}}");
+  import dxx;
+  auto n = Properties.expand!("{{"~DXXConfig.keys.appName~"}}");
   assert(n ==  RTConstants.constants.appBaseName);
 }

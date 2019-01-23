@@ -124,8 +124,8 @@ abstract class JobBase : SyncNotificationSource, Job {
         cache.put!T(id,t);
     }
 
-    this() {
-      cache = UCache.CreateUCache();
+    this() shared {
+      cache = cast(shared(UCache))UCache.CreateUCache();
     }
 }
 

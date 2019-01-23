@@ -81,7 +81,7 @@ class WorkbenchJob : PlatformJobBase {
 
 class WorkbenchJobDefault : WorkbenchJob {
   Job job;
-  this(Job j) {
+  shared this(shared(Job) j) {
     this.job = j;
   }
   override shared
