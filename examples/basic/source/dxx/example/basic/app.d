@@ -74,7 +74,8 @@ int main(string[] args) {
     MsgLog.info(MsgText!(CFG.basicMessages.MSG_APP_BANNER));
 //    MsgLog.info("name = " ~ getInjectorProperty!string("name"));
 //    MsgLog.info("age = " ~ (getInjectorProperty!uint("age")).to!string);
-    string n =  getInjectorProperty!string("name");
+    //string n =  getInjectorProperty!string("name");
+    string n =  Properties.__("name");
     MsgLog.info("name = " ~ n);
     //sharedLog.info("name = " ~ getInjectorProperty!string("name"));
     auto age = (getInjectorProperty!uint("age"));

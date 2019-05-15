@@ -1,0 +1,8 @@
+LIBRARY {{pluginName}}
+
+EXPORTS
+    init
+    uninit
+    load
+    unload
+    update

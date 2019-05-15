@@ -10,10 +10,11 @@
     "-ddoxTool": "scod",
     "dependencies" : {
       "ctini": "~>0.2.1",
-      "semver" : "~>0.3.2"
+      "semver" : "~>0.3.2",
+      "scriptlike" : "~>0.10.2"
     },
     "preGenerateCommands": [
-        "dub fetch gen-package-version && dub run gen-package-version --arch=x86_64 --build=release -- dxx --root=$PACKAGE_DIR --src=source"
+        "dub run gen-package-version --arch=x86_64 --build=release --nodeps -- dxx --root=$PACKAGE_DIR --src=source"
     ],
     "subPackages" : [
         "core",

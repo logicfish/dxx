@@ -162,9 +162,9 @@ class DXXPlatform : SyncNotificationSource
           MsgLog.warning(e.message);
         }
     }
-    static void executeJob(Job job) {
-      auto j = cast(shared(Job))job;
-      j.execute;
+    static void executeJob(shared(Job) job) {
+      //auto j = cast(shared(Job))job;
+      job.execute;
     }
 
 }

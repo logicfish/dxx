@@ -1,0 +1,36 @@
+{
+    "name": "{{app.pluginID}}",
+    "authors": [
+        "{{app.pluginAuthor}}"
+    ],
+    "dependencies": {
+        "dxx:app" : "{{app.dxxPackageVersionRange}}"
+    },
+    "subConfigurations": {
+        "dxx:app": "dxx-exec"
+    },
+    "configurations" : [
+      {
+          "name": "shi_sha",
+          "targetName": "dale",
+          "targetType": "executable",
+          "targetPath": ".dub/build/shi_sha",
+          "mainSourceFile": "dale.d",
+          "versions" : [ "DXX_Console","DXX_Developer" ],
+          "dependencies": {
+              "dale": "~>0.0.1"
+          },
+          "excludedSourceFiles" : [
+            "{{app.mainSourceFile}}"
+          ],
+      },
+    "description": "{{dxx.tool.packageDesc}}",
+    "copyright": "{{dxx.tool.packageCopyright}}",
+    "license": "{{dxx.tool.packageLicense}}",
+    "versions": [ "DXX_Module","DXX_Plugin" ],
+    "targetType": "dynamicLibrary",
+    "targetPath": "bin",
+    "sourceFiles": [
+        "plugin.def"
+    ],
+}

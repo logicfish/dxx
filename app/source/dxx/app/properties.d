@@ -39,6 +39,7 @@ SOFTWARE.
 module dxx.app.properties;
 
 private import std.variant;
+private import std.algorithm;
 
 private import dxx.util;
 
@@ -62,7 +63,11 @@ class Properties {
             }
           }
         }
-        return null;
+        static if(typeid(T) is typeid(bool)) {
+          return false;
+        } else {
+          return null;
+        }
     }
 
     nothrow
@@ -80,23 +85,43 @@ class Properties {
     }
 
     nothrow static
-    auto lookupString(string k)() {
+    auto idParser(string k) {
       return lookup!string(k);
     }
-    template expand(string v) {
-      alias expand = miniTemplate!(lookupString,v);
+    nothrow static
+    auto expand(string v) {
+      //return miniInterpreter!(idParser)(v);
+      return v;
     }
-    template expand(alias F) {
+    /*template expand(alias F) {
       nothrow static
       auto lookupStringF(k : string)() {
         auto n = lookup!(string,k);
         if(n is null) return F(k);
         else return n;
       }
-      auto epand(string v) {
+      auto expand(string v) {
         return miniTemplate!(lookupStringF,v);
       }
+    }*/
+    /*static string opDispatch(string s)() {
+        return lookupString(s);
+    }*/
+    static T opIndex(T)(string s) {
+      return _!T(s);
     }
+    // helpers
+    static auto _(T)(string v) {
+      return Properties.lookup!T(v);
+    }
+
+    static auto __(string v) {
+      return expand(_!string(v));
+    }
+    static auto ___(string v) {
+      return _!(string[])(v).map!(x=>expand(x));
+    }
+
 }
 
 unittest {
@@ -108,5 +133,23 @@ unittest {
 unittest {
   import dxx;
   auto n = Properties.expand!("{{"~DXXConfig.keys.appName~"}}");
+  assert(n ==  RTConstants.constants.appBaseName);
+}
+
+unittest {
+  import dxx;
+  auto n = Properties.expand!("XX{{"~DXXConfig.keys.appName~"}}XX");
+  assert(n ==  "XX"~RTConstants.constants.appBaseName~"XX");
+}
+
+unittest {
+  import dxx;
+  auto n = Properties.expand!("XX{{"~DXXConfig.keys.appName~"}}XX{{"~DXXConfig.keys.appName~"}}");
+  assert(n ==  "XX"~RTConstants.constants.appBaseName~"XX"~RTConstants.constants.appBaseName~"XX");
+}
+
+unittest {
+  import dxx;
+  auto n = Properties.__(DXXConfig.keys.appName);
   assert(n ==  RTConstants.constants.appBaseName);
 }

@@ -131,26 +131,25 @@ abstract class InjectionContainer {
     }
 
     void register(T...)(const(string) arg) {
-        with(_container.configure("prototype")) {
-            register!T(arg);
-        }
+        //with(_container.configure("prototype")) {
+            _container.configure("prototype").register!T(arg);
+        //}
     }
     void register(T...)() {
-        with(_container.configure("prototype")) {
-            register!T();
-        }
+        //with(_container.configure("prototype")) {
+            _container.configure("prototype").register!T();
+        //}
     }
     void register(T)(ref T t,const(string) arg) {
-        with(_container.configure("singleton")) {
-            register!T(t,arg);
-        }
+        //with(_container.configure("singleton")) {
+            _container.configure("singleton").register!T(t,arg);
+        //}
     }
-    void setParam(T)(string k,T v) {
-        with(container.configure("parameters")) {
-            register!T(v,k);
-        }
-    }
+
     T getParam(T)(string k) {
+        debug(Injector) {
+            sharedLog.info("getParam ",k);
+        }
         return _container.locate!T(k);
     }
     void terminate() {
@@ -204,20 +203,19 @@ final class LocalInjector(C...) : InjectionContainer {
           auto cont = container(
             argument,
             env,
-            json("./dxx-dev.json"),
+            //json("./dxx-dev.json"),
             json("./resources/dxx-dev.json"),
-            json(RTConstants.constants.appDir ~ "/dxx-dev.json"),
+            json(RTConstants.constants.appDir ~ "/../resources/dxx-dev.json"),
             json("./dxx.json"),
-            json(RTConstants.constants.appDir ~ "/dxx.json")
-            //json("/etc/aedi-example/config.json"),
-            //configFiles
+            //json("./resource/dxx.json"),
+            json(RTConstants.constants.appDir ~ "/../dxx.json")
              );
         } else {
           auto cont = container(
             argument,
             env,
             json("./dxx.json"),
-            json(RTConstants.constants.appDir ~ "/dxx.json")
+            json(RTConstants.constants.appDir ~ "/../dxx.json")
             //json("/etc/aedi-example/config.json"),
             //configFiles
              );
@@ -250,10 +248,11 @@ final class LocalInjector(C...) : InjectionContainer {
                                 _reg!(fieldName ~ ".",fieldType)();
                               } else {
                                 //register!fieldType;
+                                //setParam!fieldType(fieldName);
                                 register!fieldType(fieldName);
                               }
                             }
-                            }
+                          }
                       }
                     }
 
@@ -311,10 +310,11 @@ unittest {
 unittest {
     alias param = Tuple!(
         string,"name",
-        long,"age"
+        long,"age",
+        string[string],"properties"
     );
     debug {
-        sharedLog.info("Starting injector parameters unittest.");
+        sharedLog.info("Starting injector tuple parameters unittest.");
     }
     auto injector = newInjector!param;
     assert(injector !is null);
@@ -323,14 +323,14 @@ unittest {
 }
 
 unittest {
-    alias param = Tuple!(
-      Tuple!(
-        string,"name",
-        long,"age"
-        ),"param"
-    );
+    struct Param {
+      string name;
+      long age;
+      string[string] properties;
+    }
+    alias param = Tuple!(Param,"param");
     debug {
-        sharedLog.info("Starting injector parameters unittest.");
+        sharedLog.info("Starting injector struct parameters unittest.");
     }
     auto injector = newInjector!param;
     assert(injector !is null);

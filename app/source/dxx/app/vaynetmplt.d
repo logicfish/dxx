@@ -23,6 +23,9 @@ module dxx.app.vaynetmplt;
 
 private import std.conv;
 private import std.functional;
+private import std.stdio;
+private import std.array;
+static import std.file;
 
 private import vayne.compiler;
 private import vayne.lib;
@@ -31,7 +34,15 @@ private import vayne.vm;
 
 private import dxx.util.log;
 
-void render(OutputStreamT, string FileName, Vars...)(OutputStreamT o__, string language__) {
+void renderVayneToFile(string inFile,Vars...)(string outputFile) {
+		auto f = File(outputFile,"w");
+		renderVayne!(typeof(f),inFile,Vars)(f,"en");
+}
+void renderVayneAppender(string inFile,Vars...)(Appender!string output) {
+		renderVayne!(typeof(output),inFile,Vars)(output,"en");
+}
+
+void renderVayne(OutputStreamT, string FileName, Vars...)(OutputStreamT o__, string language__) {
 	alias VayneVM = VM!();
 	VayneVM vm;
 

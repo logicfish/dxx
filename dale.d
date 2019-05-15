@@ -1,15 +1,17 @@
 private import dl;
 
-private import std.file;
-private import std.stdio;
-private import std.string;
-private import std.process;
-
 private import dxx.packageVersion;
 private import ctini.ctini;
 
 private import aermicioi.aedi;
 private import aermicioi.aedi_property_reader;
+
+private import scriptlike;
+
+/* private import std.file;
+private import std.stdio;
+private import std.string;
+private import std.process; */
 
 enum CFG = IniConfig!("dale.ini");
 
@@ -66,6 +68,9 @@ template FORCE() {
   alias FORCE=()=>__("build.force");
 }
 
+template NODEPS() {
+  alias NODEPS=()=>__("build.nodeps");
+}
 
 string[] buildDubArgs(string cmd)(string root=".") {
   string[] args;
@@ -75,7 +80,8 @@ string[] buildDubArgs(string cmd)(string root=".") {
     "--build="~BUILD,
     //"--config="~CONFIG,
     "--force="~FORCE,
-    "--root="~root
+    "--root="~root,
+    "--nodeps="~NODEPS
   ];
   return args;
 }
@@ -87,12 +93,14 @@ void banner() {
     //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
     writefln("arch=%s build=%s", ARCH,BUILD);
     writefln("debug=%s", DEBUGS.join(","));
+    writefln("nodeps=%s", NODEPS);
+    writefln("force=%s", FORCE);
 }
 
 @(TASK)
 void prebuild() {
     deps(&banner);
-    exec("dub", ["fetch","gen-package-version"]);
+    //tryExec("dub", ["fetch","gen-package-version"]);
     //exec("dub", ["fetch","vayne"]);
 }
 
@@ -139,13 +147,21 @@ void tool() {
         "--arch="~ARCH,
         "--build="~BUILD
         ]); */
-      exec("tool/bin/dxx", ["--help"]);
+      //exec("tool/bin/dxx", ["--help"]);
+}
+
+@(TASK)
+void _dxx() {
+  auto args = buildDubArgs!("run");
+  args ~= [ "--root=/e/workspaces/dxxworkspace/dxx/tool",
+    "--config=dxx-tool-console" ];
+  exec("dub",args);
 }
 
 @(TASK)
 void update() {
     deps(&prebuild);
-    exec("git", ["pull"]);
+//    exec("git", ["pull"]);
 }
 
 @(TASK)
@@ -176,7 +192,7 @@ void clean() {
 @(TASK)
 void doc() {
 //    exec("doxygen");
-    exec("dub", ["fetch","ddox"]);
+    //tryExec("dub", ["fetch","ddox"]);
     foreach(p;PROJECTS) {
         execStatus("dub", ["build","-b=ddox","--root="~p,"--arch="~ARCH]);
     }
@@ -210,14 +226,14 @@ void lint() {
 /** Lint, and then install artifacts */
 @(TASK)
 void install() {
-    auto cwd = getcwd();
+    auto cwd = getcwd().to!string;
     exec("dub", ["add-local", cwd]);
 }
 
 /** Uninstall artifacts */
 @(TASK)
 void uninstall() {
-    auto cwd = getcwd();
+    auto cwd = getcwd().to!string;
     wait(execMut("dub", ["remove-local", cwd]).pid);
 }
 
@@ -234,20 +250,21 @@ void runexample() {
 
 @(TASK)
 void run() {
+  deps(&tool);
     exec("tool/bin/dxx");
 }
 
 //@(TASK)
 void push() {
-  exec("git commit -m '<push>'");
-  exec("git push");
+  //exec("git","commit -m '<push>'");
+  //exec("git push");
 }
 
-//@(TASK)
+@(TASK)
 void tag() {
-  auto tag = __c.locate!string("build.tag");
-  exec("git tag -m "~tag~" -a "~tag);
-  exec("git push --tags");
+  auto tag = __("build.tag");
+  exec("git",["tag","-m",tag,"-a",tag]);
+  exec("git",["push","--tags"]);
 }
 
 //@(TASK)
@@ -277,6 +294,7 @@ void load(T : DocumentContainer!X, X...)(T container) {
     register!(string)("build.config");
     register!(string[])("build.projects");
     register!(string[])("build.apps");
+    register!(string)("build.tag");
     //register!Component("");
     //register!Component("json");
     register!string("ut.arch"); // Define `protocol` property of type `string`

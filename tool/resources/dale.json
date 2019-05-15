@@ -3,6 +3,8 @@
     "arch" : "x86_64",
     "debug" : [ "Module","Loader","Plugin"],
     "config" : "dxx-console",
-    "build" : "debug"    
+    "build" : "debug",
+    "force" : "true",
+    "nodeps" : "true"
   }
 }

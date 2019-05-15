@@ -10,13 +10,14 @@
     "dependencies": {
       "dxx": { "path" : "../"},
       "dxx:app": "*",
-      "d-opts": "~>1.0.2"
+      "d-opts": "~>1.0.2",
+      "scriptlike" : "~>0.10.2"
     },
     "subConfigurations": {
         "dxx": "dxx-lib"
     },
     "preGenerateCommands": [
-        "dub fetch gen-package-version && dub run gen-package-version --build=release --arch=x86_64 -- dxx.tools --root=$PACKAGE_DIR --src=source"
+        "dub run gen-package-version --build=release --arch=x86_64 --nodeps -- dxx.tools --root=$PACKAGE_DIR --src=source"
     ],
     "targetPath": "bin",
     "configurations" : [
@@ -33,7 +34,7 @@
           ],
           "dependencies": {
               "dale": "~>0.0.1"
-          },
+          }
       },
       {
             "name": "dxx-tool-console",
@@ -55,10 +56,11 @@
             "name": "dxx-tool-lib",
             "targetType": "library",
             "targetName": "dxx-tool",
-            "excludedSourceFiles" : [ "source/dxx/tool/gui.d",
+            "excludedSourceFiles" : [
+              "source/dxx/tool/gui.d",
               "source/dxx/tool/tool.d"
             ],
-            "versions" : [ "DXX_Console","DXX_Developer" ]
+            "versions" : [ "DXX_Console" ]
       }
     ]
 }

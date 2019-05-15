@@ -69,13 +69,13 @@ auto iterateSections(alias fields,alias Func)() {
     }
     iterateTupleTree!(fields,__f)();
 }
-auto iterateValues(alias fields,alias Func)() {
+auto iterateValues(alias fields,alias Func,string fqn=null)() {
     static void __f(bool isSection,string k,alias v,string fqn)() {
         static if (!isSection) {
             Func!(fqn,k,v)();
         }
     }
-    iterateTupleTree!(fields,__f)();
+    iterateTupleTree!(fields,__f,fqn)();
 }
 auto iterateValuesF(alias fields,Func)(Func f) {
     void __f(string k,string v,string fqn) {

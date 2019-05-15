@@ -1,0 +1,57 @@
+{
+    "name": "{{app.appName}}",
+    "authors": [
+        {{* a;app.appAuthor}}
+          "{{a}}",
+        {{/}}
+    ],
+    "dependencies": {
+        "dxx" : "{{app.dxxPackageVersionRange}}",
+        "dxx:app": "*",
+        {{* dep,vers;app.appDependencies }}
+          "{{dep}}" : "{{vers}}",
+        {{/}}
+    },
+    "description": "{{app.appDesc}}",
+    "copyright": "{{app.appCopyright}}",
+    "license": "{{app.appLicense}}",
+    "versions": [ "DXX_Library" ],
+    "targetType": "library",
+    "targetPath": "bin",
+    "stringImportPaths" : [ "resources" ],
+    "subConfigurations": {
+        "dxx": "dxx-lib"
+        {{* name,subconf;app.appSubConfigurations}}
+          "{{name}}" : "{{subconf}}",
+        {{/}}
+    },
+    "preGenerateCommands": [
+        "dub fetch gen-package-version && dub run gen-package-version --build=release --arch=x86_64 -- dxx.tools --root=$PACKAGE_DIR --src=source",
+        {{* cmd;app.preGenerateCommands}}
+          {{cmd}},
+        {{/}}
+    ],
+    "configurations" : [
+      {
+          "name": "shi_sha",
+          "targetName": "dale",
+          "targetType": "executable",
+          "targetPath": ".dub/build/shi_sha",
+          "mainSourceFile": "dale.d",
+          "versions" : [ "DXX_Console","DXX_Developer" ],
+          "dependencies": {
+              "dale": "~>0.0.1"
+          }
+      },
+      {
+            "name": "lib",
+            "targetType": "library",
+            "targetName": "{{app.appTargetName}}",
+            "versions" : [
+              "DXX_Library",
+              {{* vers;app.appVersions}}
+                "{{vers}}"
+              {{/}}
+             ]
+      }
+}

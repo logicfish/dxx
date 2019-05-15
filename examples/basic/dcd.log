@@ -1,7 +1,0 @@
-2018-08-16T17:28:21.188:C:\Users\Mark\AppData\Local\dub\packages\dsymbol-0.2.9\dsymbol\src\dsymbol\conversion\first.d:visit:411 Could not resolve location of module 'dxx\app'
-2018-08-16T17:28:22.347:C:\Users\Mark\AppData\Local\dub\packages\dsymbol-0.2.9\dsymbol\src\dsymbol\conversion\first.d:visit:411 Could not resolve location of module 'ldc\intrinsics'
-2018-08-16T17:28:23.267:C:\Users\Mark\AppData\Local\dub\packages\dsymbol-0.2.9\dsymbol\src\dsymbol\conversion\first.d:visit:490 Could not resolve location of module 'core\sys\netbsd\sys\mman'
-2018-08-16T17:28:23.268:C:\Users\Mark\AppData\Local\dub\packages\dsymbol-0.2.9\dsymbol\src\dsymbol\conversion\first.d:visit:490 Could not resolve location of module 'core\sys\darwin\sys\mman'
-2018-08-16T17:46:57.158:C:\Users\Mark\AppData\Local\dub\packages\dsymbol-0.2.9\dsymbol\src\dsymbol\conversion\first.d:visit:411 Could not resolve location of module 'dxx\app'
-2018-08-16T17:46:57.158:C:\Users\Mark\AppData\Local\dub\packages\dcd-0.9.1\dcd\src\server\autocomplete.d:getSymbolsByTokenChain:906 Could not find declaration of DefaultInjector from position 170
-2018-08-16T17:46:57.160:C:\Users\Mark\AppData\Local\dub\packages\dcd-0.9.1\dcd\src\server\autocomplete.d:getDoc:158 Could not find symbol

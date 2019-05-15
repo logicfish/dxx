@@ -24,30 +24,30 @@ module dxx.util.minitemplt;
 private import pegged.grammar;
 
 private import std.array;
+private import std.typecons;
 
 private import metad.compiler;
-
-template MiniTemplate(alias idParser) {
-  struct MiniTemplateCompiler(ParseTree T,alias Parser=MiniTemplateCompiler) {
-    mixin Compiler!(T,Parser);
-
-    mixin (compilerOverride!("MiniTemplateGrammar.Text","T.matches.join(\"\")"));
-    mixin (compilerOverride!("MiniTemplateGrammar.Inner","idParser!T()"));
-
-  }
-}
+private import metad.interp;
 
 enum _GRAMMAR = q{
 MiniTemplateGrammar:
 Doc <- Line+ :endOfInput
 Line <- :LDelim Inner :RDelim / Text
-LDelim <- "{{"
-RDelim <- "}}"
 Text <- ~((!LDelim) Char )*
 Inner <- ~((!RDelim) Char )*
 Char <- .
+LDelim <- "{{"
+RDelim <- "}}"
 };
 mixin(grammar(_GRAMMAR));
+
+template MiniTemplate(alias idParser) {
+  struct MiniTemplateCompiler(ParseTree T,alias Parser=MiniTemplateCompiler) {
+    mixin Compiler!(T,Parser);
+    mixin (compilerOverride!("MiniTemplateGrammar.Text","T.matches.join(\"\")"));
+    mixin (compilerOverride!("MiniTemplateGrammar.Inner","idParser!T()"));
+  }
+}
 
 unittest {
   static string v(ParseTree T)() {
@@ -66,7 +66,7 @@ template miniTemplateParser(alias idParser,string txt) {
     enum miniTemplateParser = MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar(txt)).compileNode();
 }
 
-template miniTemplate(alias idParser,string txt) {
+template miniTemplate(alias idParser,alias txt) {
   static string __id(ParseTree T)() {
     return idParser!(T.matches.join(""))();
   }
@@ -91,6 +91,67 @@ unittest {
 
 unittest {
   static string v(string k)() {
+    pragma(msg,"v = "~ k);
+    return "[" ~ k ~ "]";
+  }
+  enum inputText = q{
+    123{{MyValue.a.b.c}}.{{MyVal2.d.e.f}}456
+  };
+  enum c = miniTemplate!(v,inputText);
+  assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
+}
+
+template MiniInterpreter(T) {
+    static auto MiniInterpreter(T idParser,ParseTree t) {
+      string delegate(ParseTree)[string] nodes;
+      nodes["GRAMMAR.LDelim"] = f=>"";
+      nodes["GRAMMAR.RDelim"] = f=>"";
+      nodes["GRAMMAR.Text"] = f=>f.matches.join("");
+      nodes["GRAMMAR.Inner"] = (f)=>idParser(f.matches.join(""));
+      return Interpreter(nodes,t);
+    }
+}
+
+unittest {
+  static string v(ParseTree T) {
+    pragma(msg,"** Value:"~ T.name);
+    pragma(msg,"** = "~ T.matches.join(""));
+    return "<" ~ T.matches.join("") ~ ">";
+  }
+    enum inputText = q{
+      {{MyValue}}.{{MyVal2}}
+    };
+    auto c = MiniInterpreter(v,MiniTemplateGrammar(inputText));
+    assert(c == "<MyValue>.<MyVal2>");
+}
+
+template miniInterpreter(alias idParser) {
+  static string __id(ParseTree t) {
+    return idParser(t.matches.join(""));
+  }
+  auto miniInterpreter(string txt) {
+    auto data = MiniTemplateGrammar(txt);
+    //auto compiler = MiniInterpreter!(__id).MiniTemplateInterpreter!(data).interp();
+    return MiniInterpreter!(typeof(&__id),data)(&__id);
+    //return I.MiniTemplateInterperter!(data).interpNode();
+    //return compiler();
+  }
+}
+unittest {
+  static string v(ParseTree T) {
+    //pragma(msg,"++ Value:"~ T.name);
+    //pragma(msg,"++ = "~ T.matches.join(""));
+    return "[" ~ T.matches.join("") ~ "]";
+  }
+  enum inputText = q{
+    {{MyValue.a.b.c}}.{{MyVal2.d.e.f}}
+  };
+  auto c = miniInterperter!(v)(inputText);
+  assert(c == "[MyValue.a.b.c].[MyVal2.d.e.f]");
+}
+
+unittest {
+  static string v(string k) {
     pragma(msg,"v = "~ k);
     return "[" ~ k ~ "]";
   }

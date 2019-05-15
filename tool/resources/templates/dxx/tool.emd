@@ -1,0 +1,5 @@
+--path=views diamond view.dd $1 $2
+--path=controllers diamond viewcontroller.d --file=$1controller $1 $2
+--path=controllers/package.d --append d import.d controllers.$1controller
+--path=models d class.d $1 models.$1 $2
+--path=models/package.d --append d import.d models.$1

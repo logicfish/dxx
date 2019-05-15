@@ -4,12 +4,15 @@
     "debug" : [ "Module","Loader","Plugin"],
     "build" : "debug",
     "force" : "false",
+    "nodeps" : "true",
     "projects" : [ "core","app","services" ],
+    "tag":"v0.4.0",
     "apps" : [
       "examples/plugin",
       "examples/basic",
       "tool/plugins/example"
-    ]
+    ],
+    "vayneDirs" : []
 
   },
   "ut" : {

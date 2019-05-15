@@ -12,7 +12,6 @@
         "ctini" : "~>0.2.1",
         "urld": "~>2.1.1",
         "standardpaths": "~>0.8.1",
-        "aedi": "~>0.5.0",
         "aedi-property-reader": "~>0.2.0",
         "reloaded": "~master",
         "metad" : "~>0.0.2"

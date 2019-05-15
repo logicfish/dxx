@@ -1,14 +1,14 @@
 options {
-    module = "dxx.tool.workflow";
+    module = "dxx.wf";
     pluginName = "<unknown-Plugin>";
 }
 
-workflow dxx.tool.init {
+workflow init {
     dxx.tool.createBuildFiles {}
-    dxx.tool.createPlugin {}    
+    dxx.tool.createPlugin {}
 }
 
-workflow dxx.tool.install {
+workflow install {
     dxx.tool.pull {
     }
     dxx.tool.dub {
@@ -20,13 +20,13 @@ workflow dxx.tool.install {
     }
 }
 
-workflow dxx.tool.update {
+workflow update {
     dxx.tool.createBuildFiles {}
-    
+
 }
 
-workflow dxx.tool.cfg {
+workflow cfg {
 }
 
-workflow dxx.tool.lang {
+workflow lang {
 }
