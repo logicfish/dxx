@@ -3,8 +3,8 @@
     "arch" : "x86_64",
     "debug" : [ "Module","Loader","Plugin"],
     "build" : "debug",
-    "force" : "false",
-    "nodeps" : "true",
+    "force" : "true",
+    "nodeps" : "false",
     "projects" : [ "core","app","services" ],
     "tag":"v0.4.0",
     "apps" : [

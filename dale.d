@@ -6,12 +6,12 @@ private import ctini.ctini;
 private import aermicioi.aedi;
 private import aermicioi.aedi_property_reader;
 
-private import scriptlike;
+//private import scriptlike;
 
-/* private import std.file;
+private import std.file;
 private import std.stdio;
 private import std.string;
-private import std.process; */
+private import std.process;
 
 enum CFG = IniConfig!("dale.ini");
 
@@ -38,20 +38,9 @@ template PROJECTS() {
   alias PROJECTS=()=>___("build.projects");
 }
 
-/* template UTAPPS() {
-  auto UTAPPS() { return __c.locate!(string[])("ut.apps"); }
-}*/
-
 template UTPROJECTS() {
   alias UTPROJECTS=()=>___("ut.projects");
 }
-/*template UTDEBUGS() {
-  auto UTDEBUGS() { return __c.locate!(string[])("ut.debug"); }
-}
-template UTCONFIG() {
-  auto UTCONFIG() { return __c.locate!string("ut.config"); }
-}*/
-
 template ARCH() {
   alias ARCH=()=>__("build.arch");
 }
@@ -61,9 +50,7 @@ template BUILD() {
 template DEBUGS() {
   alias DEBUGS=()=>___("build.debug");
 }
-/*template CONFIG() {
-  alias CONFIG=()=>__("build.config");
-}*/
+
 template FORCE() {
   alias FORCE=()=>__("build.force");
 }
@@ -100,8 +87,9 @@ void banner() {
 @(TASK)
 void prebuild() {
     deps(&banner);
-    //tryExec("dub", ["fetch","gen-package-version"]);
-    //exec("dub", ["fetch","vayne"]);
+//        "dub run gen-package-version --arch=x86_64 -- dxx --root=$PACKAGE_DIR --src=source"
+//    wait(execMut("dub", ["run","gen-package-version","--arch="~ARCH,"--build=release","--nodeps",
+//      "--", "dxx","--root=.","--src=source"]).pid);
 }
 
 @(TASK)
@@ -286,23 +274,18 @@ void load(T : DocumentContainer!X, X...)(T container) {
 	with (container.configure) { // Create a configuration context for config container
 		register!string("build.arch"); // Define `protocol` property of type `string`
 		register!string("build.build");
-		//register!string("resource");
-		//register!ushort("port");
-		//register!(string[string])("arguments"); // Define `arguments` property of type `string[string]`
-		//register!(size_t[])("nope-an-array");
+
     register!(string[])("build.debug");
     register!(string)("build.config");
     register!(string[])("build.projects");
     register!(string[])("build.apps");
     register!(string)("build.tag");
-    //register!Component("");
-    //register!Component("json");
+
     register!string("ut.arch"); // Define `protocol` property of type `string`
 		register!string("ut.build");
     register!(string[])("ut.debug");
     register!(string)("ut.config");
     register!(string[])("ut.projects");
-    //register!(string[])("ut.apps");
 	}
 }
 

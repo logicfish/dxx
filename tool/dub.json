@@ -10,15 +10,11 @@
     "dependencies": {
       "dxx": { "path" : "../"},
       "dxx:app": "*",
-      "d-opts": "~>1.0.2",
-      "scriptlike" : "~>0.10.2"
+      "d-opts": "~>1.0.2"
     },
     "subConfigurations": {
         "dxx": "dxx-lib"
     },
-    "preGenerateCommands": [
-        "dub run gen-package-version --build=release --arch=x86_64 --nodeps -- dxx.tools --root=$PACKAGE_DIR --src=source"
-    ],
     "targetPath": "bin",
     "configurations" : [
       {

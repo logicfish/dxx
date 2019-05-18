@@ -5,8 +5,7 @@
     ],
     "dependencies": {
         "dxx:app": "*",
-        "vibe-d:web": "~>0.8.4",
-        "ircbod2" : "~>0.1.6"
+        "vibe-d:web": "~>0.8.4"
     },
     "targetType": "library",
     "targetPath": "bin",

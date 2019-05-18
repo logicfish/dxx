@@ -18,10 +18,11 @@ SOFTWARE.
 **/
 module dxx.services.net.irc;
 
-import ircbod.client, ircbod.message;
+//import ircbod.client, ircbod.message;
 
 import dxx.util;
 
+/*
 class IRCClientService : SyncNotificationSource {
 
     IRCClient bot;
@@ -57,3 +58,4 @@ class IRCClientService : SyncNotificationSource {
         bot.run();
 }
 }
+*/
