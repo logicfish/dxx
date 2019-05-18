@@ -3,7 +3,7 @@
     "arch" : "x86_64",
     "debug" : [ "Module","Loader","Plugin"],
     "build" : "debug",
-    "force" : "true",
+    "force" : "false",
     "nodeps" : "false",
     "projects" : [ "core","app","services" ],
     "tag":"v0.4.0",

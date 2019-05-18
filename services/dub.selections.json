@@ -3,6 +3,7 @@
 	"versions": {
 		"aedi": "0.5.0",
 		"aedi-property-reader": "0.2.0",
+		"backtrace-d": "0.1.2",
 		"botan": "1.12.10",
 		"botan-math": "1.0.3",
 		"ctini": "0.2.1",
@@ -24,7 +25,7 @@
 		"metad": "0.1.0+commit.1.g6099c41",
 		"mir-linux-kernel": "1.0.1",
 		"openssl": "1.1.6+1.0.1g",
-		"pegged": "~master",
+		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
 		"reloaded": "~master",
 		"rocksdb": "0.0.7",

@@ -95,6 +95,15 @@ abstract class JobBase : SyncNotificationSource, Job {
             MsgLog.warning("Exception: " ~ e.message);
             _thrownException = cast(shared(Exception))e;
             status = Status.THROWN_EXCEPTION;
+            version(Posix) {
+              debug {
+                import backtrace;
+                printPrettyTrace(stderr);
+              }
+            }
+            version(Windows) {
+                MsgLog.trace(e.info);
+            }
         } finally {
             terminate;
         }

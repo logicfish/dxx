@@ -11,7 +11,7 @@
 		"fswatch": "0.3.0",
 		"isfreedesktop": "0.1.1",
 		"metad": "0.1.0+commit.1.g6099c41",
-		"pegged": "~master",
+		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
 		"reloaded": "~master",
 		"sdlang-d": "0.10.5",

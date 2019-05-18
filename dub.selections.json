@@ -6,7 +6,7 @@
 		"ctini": "0.2.1",
 		"dale": "0.0.1",
 		"dyaml": "0.6.5",
-		"pegged": "~master",
+		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
 		"sdlang-d": "0.10.5",
 		"semver": "0.3.2",

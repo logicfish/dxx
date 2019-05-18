@@ -3,6 +3,7 @@
 	"versions": {
 		"aedi": "0.5.0",
 		"aedi-property-reader": "0.2.0",
+		"backtrace-d": "0.1.2",
 		"ctini": "0.2.1",
 		"dale": "0.0.1",
 		"derelict-util": "3.0.0-beta.2",
@@ -15,7 +16,7 @@
 		"isfreedesktop": "0.1.1",
 		"libmemcached": "1.1.2",
 		"metad": "0.1.0+commit.1.g6099c41",
-		"pegged": "~master",
+		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
 		"reloaded": "~master",
 		"sdlang-d": "0.10.5",

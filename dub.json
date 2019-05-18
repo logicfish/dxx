@@ -21,6 +21,9 @@
         "examples/basic",
         "examples/plugin"
     ],
+    "preGenerateCommands": [
+        "dub run gen-package-version --arch=x86_64 --build=release --nodeps -- dxx --root=$PACKAGE_DIR --src=source"
+    ],
     "configurations": [
         {
             "name": "shi_sha",
