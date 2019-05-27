@@ -13,7 +13,7 @@
         "urld": "~>2.1.1",
         "standardpaths": "~>0.8.1",
         "aedi-property-reader": "~>0.2.0",
-        "reloaded": "~master",
+        "reloaded": "~>0.1.4",
         "metad" : "~>0.1.0"
     },
     "subConfigurations": {

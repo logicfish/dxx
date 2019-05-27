@@ -4,18 +4,19 @@
     "debugs" : [ "Module","Loader","Plugin","Injector"],
     "config" : "dxx-tool-console",
     "buildType" : "debug",
-    "build" : "debug",
-    "force" : "true",
-    "nodeps" : "true",
+    "force" : "false",
+    "nodeps" : "false"
+  },
+  "generate" : {
     "vayneDirs" : [
-      "templates/dxx/autogen",
-      "templates/dxx/model/application",
-      "templates/dxx/model/generator",
-      "templates/dxx/model/runtime",
-      "templates/dxx/targets/library",
-      "templates/dxx/targets/shell",
-      "templates/dxx/targets/plugin",
-      "templates/dxx/targets/host",
+      "resources/templates/dxx/autogen",
+      "resources/templates/model/application",
+      "resources/templates/model/generator",
+      "resources/templates/model/runtime",
+      "resources/templates/targets/library",
+      "resources/templates/targets/shell",
+      "resources/templates/targets/plugin",
+      "resources/templates/targets/host"
     ]
   }
 }

@@ -1,1 +1,8 @@
-{}
+{
+  "init" : {
+    "target" : "init-target"
+  },
+  "project" : {
+    
+  }
+}

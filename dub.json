@@ -10,7 +10,8 @@
     "-ddoxTool": "scod",
     "dependencies" : {
       "ctini": "~>0.2.1",
-      "semver" : "~>0.3.2"
+      "semver" : "~>0.3.2",
+      "aedi-property-reader": "~>0.2.0"
     },
     "subPackages" : [
         "core",

@@ -22,7 +22,6 @@ SOFTWARE.
 module dxx.app.component;
 
 private import aermicioi.aedi;
-//private import eph.args;
 
 private import core.runtime;
 
@@ -35,8 +34,6 @@ private import dxx.app;
 
 interface Components {
     public Logger getLogger();
-    //public ArgParser getArgParser();
-
 }
 
 mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
@@ -84,32 +81,11 @@ class RuntimeComponents(Param...) : Components {
     }
 
     public {
-        //@component
-        //override RuntimeModule getRuntimeComponents() {
-        //    return INSTANCE;
-        //}
+
         @component
         override Logger getLogger() {
             return sharedLog;
         }
-        /* @component
-        override ArgParser getArgParser() {
-    //    	if(argParser is null) {
-    //			argParser = new ArgParser;
-    //			Parameter param = new Parameter();
-    //			argParser.register(param);
-    //			//string args = AppConfig.get(DXXConfig.keys.commandLine);
-    //			//args.split(" ");
-    //			//Argument[] arguments = resolveInjector!(Argument[])();
-    //			//arguments.each!(a => argParser.register(a));
-    //
-    ////			auto args = Runtime.args;
-    ////			argParser.parse(args);
-    //    	}
-    //    	return argParser;
-    		return new ArgParser;
-        }
- */
     }
 
 

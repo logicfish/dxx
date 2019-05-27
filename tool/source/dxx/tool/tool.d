@@ -23,11 +23,13 @@ module dxx.tool.tool;
 
 private import ctini.ctini;
 private import aermicioi.aedi;
+private import eph.args;
 
 private import std.getopt;
 private import std.conv;
 private import std.experimental.logger;
 private import std.meta;
+private import std.typecons;
 
 private import dxx.util;
 private import dxx.util.ini;
@@ -38,12 +40,32 @@ private import dxx.app.platform;
 
 mixin __Text!(ToolConfig.tools.lang);
 
+alias ToolsParam = Tuple!(
+  Tuple!(
+    Tuple!(
+      string,"interactive"
+    ),"cons"
+  ), "cmd",
+  //Tuple!(
+  //  string,"target"
+  //), "init",
+  Tuple!(
+    string,"projectType",
+    string[],"dependencies"
+  ), "project"
+);
+
+static assert (isTuple!ToolsParam);
+
+interface ToolsModuleInterface {
+  public ArgParser getArgParser();
+}
+
 @component
-class ToolsModule : PlatformRuntime!() {
+class ToolsModule : PlatformRuntime!(
+  ToolsParam
+),ToolsModuleInterface {
     static void registerTool(alias Cmd : string,T : Tool)(InjectionContainer injector) {
-        //debug {
-        //    sharedLog.trace("ToolsModule registerTool "~Cmd);
-        //}
         injector.register!T("tool.cmd."~Cmd);
     }
     override void registerPlatformDependencies(InjectionContainer injector) {
@@ -64,6 +86,11 @@ class ToolsModule : PlatformRuntime!() {
         //CfgTool.registerArguments(injector);
     }
     mixin registerComponent!ToolsModule;
+
+    @component
+    override ArgParser getArgParser() {
+        return new ArgParser;
+    }
 };
 
 

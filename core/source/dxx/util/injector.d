@@ -174,16 +174,8 @@ final class LocalInjector(C...) : InjectionContainer {
         super(c);
     }
     override void scanPrototype(PrototypeContainer p) {
-        debug(Injector) {
-            sharedLog.info("scanPrototype");
-        }
         static foreach(c;C) {
-            debug(Injector) {
-                import std.conv;
-                sharedLog.info("Scanning prototype: " ~ typeid(c).to!string);
-            }
-            static if(isTuple!c) {
-            } else {
+            static if(isTuple!c is false) {
                 debug(Injector) {
                     pragma(msg,"scanning prototype: ");
                     pragma(msg,c);
@@ -206,16 +198,16 @@ final class LocalInjector(C...) : InjectionContainer {
             //json("./dxx-dev.json"),
             json("./resources/dxx-dev.json"),
             json(RTConstants.constants.appDir ~ "/../resources/dxx-dev.json"),
-            json("./dxx.json"),
+            //json("./dxx.json"),
             //json("./resource/dxx.json"),
-            json(RTConstants.constants.appDir ~ "/../dxx.json")
+            //json(RTConstants.constants.appDir ~ "/../dxx.json")
              );
         } else {
           auto cont = container(
             argument,
             env,
-            json("./dxx.json"),
-            json(RTConstants.constants.appDir ~ "/../dxx.json")
+            json("./resources/dxx.json"),
+            json(RTConstants.constants.appDir ~ "/../resources/dxx.json")
             //json("/etc/aedi-example/config.json"),
             //configFiles
              );

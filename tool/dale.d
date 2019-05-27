@@ -3,19 +3,20 @@ import dl;
 private import aermicioi.aedi;
 private import ctini.ctini;
 
-private import scriptlike;
-//private import std.file;
-//private import std.path;
+private import std.file;
+private import std.path;
 private import std.conv;
 private import std.stdio;
 private import std.string;
 private import std.process;
+private import std.array;
 
 private import dxx.util;
 
 private import dxx.app;
 private import dxx.app.platform;
-private import dxx.app.properties;
+private import dxx.app.devprops;
+//private import dxx.app.properties;
 private import dxx.app.vaynetmplt;
 
 private import dxx.tools.packageVersion;
@@ -27,65 +28,35 @@ alias ToolsDevParam = Tuple!(
   Tuple!(
     //string[],"projects",
     //string[],"apps",
-    string[],"vayneDirs",
     string[],"debugs",
     string,"buildType",
     string,"arch",
     string,"config",
     string,"force",
     string,"nodeps"
-  ), "build"
+  ), "build",
+  Tuple!(
+    string[],"vayneDirs"
+  ),"generate"
 );
 
 @component
 class ToolsDevModule : PlatformRuntime!(ToolsDevParam) {
   mixin __Text!(DaleConfig.build.lang);
-
-  //mixin registerComponent!(ToolsDevModule,ToolsDevParam);
   mixin registerComponent!(ToolsDevModule);
 }
 
 immutable VERSION = packageVersion;
 
-//immutable PROJECTS = CFG.build.projects.split(',');
-//immutable APPS = CFG.build.apps.split(',');
 
-//immutable ARCH = DaleConfig.build.arch;
-/*immutable DEBUGS = DaleConfig.build.debugs.split(',');
-immutable CONFIG = DaleConfig.build.config;
-immutable BUILD = DaleConfig.build.buildType;
-immutable VAYNEDIRS = DaleConfig.build.vayneDirs.split(',');*/
 
-template ARCH() {
-  alias ARCH=()=>Properties.__("build.arch");
-}
-template BUILD() {
-  alias BUILD=()=>Properties.__("build.buildType");
-}
-template DEBUGS() {
-  alias DEBUGS=()=>Properties.___("build.debugs");
-}
-template CONFIG() {
-  alias CONFIG=()=>Properties.__("build.config");
-}
-template FORCE() {
-  alias FORCE=()=>Properties._!bool("build.force");
-}
-template NODEPS() {
-  alias NODEPS=()=>Properties._!bool("build.nodeps");
-}
 template VAYNEDIRS() {
-  alias VAYNEDIRS=()=>Properties.___("build.vayneDirs");
-}
-template CWD() {
-  alias CWD=()=>Properties.__(DXXConfig.keys.currentDir);
-}
-template APPDIR() {
-  alias APPDIR=()=>Properties.__(DXXConfig.keys.appDir);
+  alias VAYNEDIRS=()=>Properties.___("generate.vayneDirs");
 }
 template TOOLDIR() {
   alias TOOLDIR=()=>APPDIR ~ "/..";
 }
+
 
 
 @(TASK)
@@ -103,6 +74,7 @@ void banner() {
 @(TASK)
 void prebuild() {
     deps(&banner);
+    deps(&generate);
     /*if(!NODEPS) {
       tryExec("dub", ["fetch","gen-package-version"]);
       tryExec("dub", ["fetch","vayne"]);
@@ -112,7 +84,7 @@ void prebuild() {
 }
 @(TASK)
 void generate() {
-    deps(&prebuild);
+    //deps(&pregenerate);
 
     // loop through each file and run vayne...
 
@@ -153,45 +125,68 @@ void generate() {
     enum autoGenFile = srcGenDir~"/autogen.d";
 
     writeln("APPID: "~appID);
-    Path(srcGenDir).tryRemovePath;
-    Path(srcGenDir).tryMkdirRecurse;
+    //srcGenDir.rmdir;
+    srcGenDir.mkdirRecurse;
+
+    struct Generator {
+        string id;
+        string[string] templates;
+    }
+
+    //static Generator[string] generators;
 
     // for each vayneDir
-    Variant[string] autogenVars;
-    static Variant[string] generators;
+    //Variant[string] vars;
+    //vars["generators"] = generators;
+    //vars["appid"] = ""~appID;
+    //autogenVars["templateFiles"]=templateFiles;
+    struct Vars {
+        string appid = appID;
+        Generator[string] generators;
+    }
+    static Vars vars;
+
+    static string _id;
     void processGenerators(alias fields)() {
         static void __f(string fqn,string k,alias v)() {
             writeln(k ~ " == " ~ v.to!string ~ " : " ~ fqn);
-            string id;
             static if (k == "id") {
-              id = v;
+              MsgLog.info("Generator "~v);
+              _id = v;
             }
             static if (k == "dir") {
-              Variant[string] gen;
-              Variant[] templates;
-              foreach(e;v.dirEntries(SpanMode.breadth)) {
+              //Variant[string] gen;
+              //Generator gen;
+              //Variant[] templates;
+              string[string] templates;
+              foreach(string e;v.dirEntries(SpanMode.breadth)) {
                 if(!e.isDir && e.extension == ".vayne") {
-                  /*string[string] templ;
-                  templ["name"] = v;
-                  templ["outFile"] = e.stripExt;*/
-                  auto templ =
-                      Tuple!(string,"name",string,"outFile")
-                        (v,e.stripExt);
-                  templates ~= Variant(templ);
+                  //auto templ =
+                  //    Tuple!(string,"name",string,"outFile")
+                  //      (v,e.stripExt);
+                  //templates ~= Variant(templ);
+                  //templates[v]=Path(e.stripExt).asNormalizedPath.replace('\\','/');
+                  version(Windows) {
+                    templates[v]=e.stripExtension.buildNormalizedPath.replace("\\","/");
+                  } else {
+                    templates[v]=e.stripExtension.buildNormalizedPath;
+                  }
+                  //MsgLog.info("Template "~_id~ " " ~v~" "~Path(e.stripExt).asNormalizedPath);
                 }
               }
-              gen["id"] = id;
-              gen["templates"] = templates;
-              generators[id] = gen;
+              //gen["id"] = id;
+              //gen["templates"] = templates;
+              //gen.id = id;
+              //gen.templates = templates;
+              vars.generators[_id] = Generator(_id,templates);
+              //vars.generators[id] = gen;
             }
         }
         iterateValues!(fields,__f,"generators")();
     }
 
     processGenerators!(DaleConfig.generators)();
-    autogenVars["generators"] = generators;
-    //autogenVars["templateFiles"]=templateFiles;
-    renderVayneToFile!(DaleConfig.build.autogenTemplate,autogenVars)("source/gen/"~appID~"/autogen.d");
+    renderVayneToFile!(DaleConfig.build.autogenTemplate,vars)(autoGenFile);
 }
 
 @(TASK)
@@ -219,7 +214,7 @@ void build() {
     deps(&prebuild);
     //deps(&test);
     exec("dub", [
-        "build","--arch="~ARCH,"--build="~BUILD,"--config="~CONFIG,"--nodeps="~NODEPS
+        "build","--arch="~ARCH,"--build="~BUILD,"--config="~CONFIG,"--nodeps="~NODEPS,"--force="~FORCE
     ]);
     //foreach(a;APPS) {
     //   exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
@@ -257,13 +252,25 @@ void clean() {
 /** Generate documentation */
 @(TASK)
 void doc() {
-//    exec("doxygen");
+  execStatus("dub", [ "build","-b=ddox","--force","--arch="~ARCH,"--config="~CONFIG]);
+  execStatus("dub", [ "run", "ddox", "--arch="~ARCH, "--",
+    "filter","./docs.json",
+    "--ex","aermicioi",
+    "--ex","ctini",
+    "--ex","pegged",
+    "--ex","properd"
+    ]);
+  execStatus("dub", buildDubArgs!"run"(".")~["ddox", "--",
+    "generate-html","./docs.json","doc"
+  ]);
 }
 
 /** Run D-Scanner */
 @(TASK)
 void dscanner() {
-    exec("dscanner");
+  execStatus("dub", buildDubArgs!"run"(".")~["dscanner", "--",
+    "-S","source"
+  ]);
 }
 
 /** Static code validation */

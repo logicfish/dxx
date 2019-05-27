@@ -132,19 +132,19 @@ unittest {
 
 unittest {
   import dxx;
-  auto n = Properties.expand!("{{"~DXXConfig.keys.appName~"}}");
+  auto n = Properties.expand("{{"~DXXConfig.keys.appName~"}}");
   assert(n ==  RTConstants.constants.appBaseName);
 }
 
 unittest {
   import dxx;
-  auto n = Properties.expand!("XX{{"~DXXConfig.keys.appName~"}}XX");
+  auto n = Properties.expand("XX{{"~DXXConfig.keys.appName~"}}XX");
   assert(n ==  "XX"~RTConstants.constants.appBaseName~"XX");
 }
 
 unittest {
   import dxx;
-  auto n = Properties.expand!("XX{{"~DXXConfig.keys.appName~"}}XX{{"~DXXConfig.keys.appName~"}}");
+  auto n = Properties.expand("XX{{"~DXXConfig.keys.appName~"}}XX{{"~DXXConfig.keys.appName~"}}XX");
   assert(n ==  "XX"~RTConstants.constants.appBaseName~"XX"~RTConstants.constants.appBaseName~"XX");
 }
 

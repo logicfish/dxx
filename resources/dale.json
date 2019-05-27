@@ -1,7 +1,7 @@
 {
   "build" : {
     "arch" : "x86_64",
-    "debug" : [ "Module","Loader","Plugin"],
+    "debugs" : [ "Module","Loader","Plugin"],
     "build" : "debug",
     "force" : "false",
     "nodeps" : "false",
@@ -16,7 +16,7 @@
 
   },
   "ut" : {
-    "debug" : [ "Module","Loader","Plugin"],
+    "debugs" : [ "Module","Loader","Plugin"],
     "build" : "debug",
     "projects" : [ "core","app","services" ],
     "apps" :  [

@@ -1,10 +1,8 @@
 private import dl;
 
 private import dxx.packageVersion;
+private import dxx.devconst;
 private import ctini.ctini;
-
-private import aermicioi.aedi;
-private import aermicioi.aedi_property_reader;
 
 //private import scriptlike;
 
@@ -12,66 +10,11 @@ private import std.file;
 private import std.stdio;
 private import std.string;
 private import std.process;
+private import std.conv;
 
 enum CFG = IniConfig!("dale.ini");
 
 immutable VERSION = packageVersion;
-
-template _(T) {
-  auto _(string v) {
-    return __c.locate!T(v);
-  }
-}
-
-auto __(string v) {
-  return _!string(v);
-}
-auto ___(string v) {
-  return _!(string[])(v);
-}
-
-template APPS() {
-  alias APPS=()=>___("build.apps");
-}
-
-template PROJECTS() {
-  alias PROJECTS=()=>___("build.projects");
-}
-
-template UTPROJECTS() {
-  alias UTPROJECTS=()=>___("ut.projects");
-}
-template ARCH() {
-  alias ARCH=()=>__("build.arch");
-}
-template BUILD() {
-  alias BUILD=()=>__("build.build");
-}
-template DEBUGS() {
-  alias DEBUGS=()=>___("build.debug");
-}
-
-template FORCE() {
-  alias FORCE=()=>__("build.force");
-}
-
-template NODEPS() {
-  alias NODEPS=()=>__("build.nodeps");
-}
-
-string[] buildDubArgs(string cmd)(string root=".") {
-  string[] args;
-  args ~= [
-    cmd,
-    "--arch="~ARCH,
-    "--build="~BUILD,
-    //"--config="~CONFIG,
-    "--force="~FORCE,
-    "--root="~root,
-    "--nodeps="~NODEPS
-  ];
-  return args;
-}
 
 
 @(TASK)
@@ -270,46 +213,8 @@ void bumpmajor() {
   exec("git tag -m '<tag>'");
 }
 
-void load(T : DocumentContainer!X, X...)(T container) {
-	with (container.configure) { // Create a configuration context for config container
-		register!string("build.arch"); // Define `protocol` property of type `string`
-		register!string("build.build");
-
-    register!(string[])("build.debug");
-    register!(string)("build.config");
-    register!(string[])("build.projects");
-    register!(string[])("build.apps");
-    register!(string)("build.tag");
-
-    register!string("ut.arch"); // Define `protocol` property of type `string`
-		register!string("ut.build");
-    register!(string[])("ut.debug");
-    register!(string)("ut.config");
-    register!(string[])("ut.projects");
-	}
-}
-
-static Container __c;
-
 //@(TASK)
 void main(string[] args) {
-    auto c = container(
-      //singleton,
-      //prototype,
-      argument,
-      env,
-      //xml("config.xml"),
-      json("resources/dale.json"),
-      json("resources/dale-default.json"),
-      //yaml("config.yaml"),
-      //sdlang("config.sdlang")
-    );
-
-	  foreach (subcontainer; c) {
-		    subcontainer.load;
-    }
-    __c = c;
-
     phony([&clean]);
     mixin(yyyup!("args", "build"));
 }
