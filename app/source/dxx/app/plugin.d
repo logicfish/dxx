@@ -92,8 +92,12 @@ class PluginLoader {
 
 class PluginRuntime(PluginType : Plugin,Param...) : PlatformRuntime!(Param) {
     void registerPluginComponents(InjectionContainer injector) {
-        injector.register!(Plugin,PluginType);
+        debug(Plugin) {
+            import std.experimental.logger;
+            sharedLog.info("registerPluginComponents()");
+        }
         new PluginDefault.ModuleListener().register;
+        injector.register!(Plugin,PluginType);
     }
     override void registerAppDependencies(InjectionContainer injector) {
         debug(Plugin) {
@@ -173,7 +177,6 @@ abstract class PluginDefault : Plugin {
             debug(Plugin) {
                 info("onDeinit");
             }
-            unregister;
         }
         override shared void onLoad(Module.ModuleEvent* event) {
             debug(Plugin) {
@@ -206,9 +209,6 @@ abstract class PluginDefault : Plugin {
         }
     }
 
-    //shared static this() {
-    //    new ModuleListener().register;
-    //}
     this() {
       DESCR.extensionPoints = &extensionPoints;
       DESCR.extensions = &extensions;

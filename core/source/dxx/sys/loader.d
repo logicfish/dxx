@@ -117,28 +117,21 @@ final class Module : SyncNotificationSource {
 
     private static __gshared shared(Module) INSTANCE;
     static bool instantiated = false;
+
     static auto getInstance() {
         if(!instantiated) {
             synchronized(Module.classinfo) {
                 if(!INSTANCE) {
+                    INSTANCE = new shared(Module);
                     debug(Module) {
                         sharedLog.info("new instance.");
                     }
-                    INSTANCE = new shared(Module);
                 }
             }
             instantiated = true;
         }
         return INSTANCE;
     }
-
-    //version(DXX_Module) {
-    //    shared static this() {
-    //        if(INSTANCE is null) {
-    //            INSTANCE = new shared(Module);
-    //        }
-    //    }
-    //}
 
     template data(alias T) {
         //alias data = moduleData.data!T;
@@ -197,7 +190,6 @@ class ModuleNotificationListener : NotificationListener {
             break;
             case Module.ModuleEvent.Type.Unload:
             onUnload(event);
-            //unregister;
             break;
             case Module.ModuleEvent.Type.Update:
             onUpdate(event);
