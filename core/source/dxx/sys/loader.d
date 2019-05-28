@@ -65,13 +65,13 @@ class Loader {
     }
     void update() {
         debug(Loader) {
-            sharedLog.info("load " ~ path);
+            sharedLog.info("update " ~ path);
         }
         script.update;
     }
     void update(void* data) {
         debug(Loader) {
-            sharedLog.info("updated " ~ path);
+            sharedLog.info("update");
         }
         this.moduleData.modData = cast(shared(void*))data;
         update;

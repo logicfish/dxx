@@ -28,7 +28,7 @@ public/
 # Code coverage
 *.lst
 
-source/dxx/packageVersion.d
+source/{{app.id}}/packageVersion.d
 
 *.dlangidews
 *.wssettings
@@ -38,7 +38,7 @@ source/dxx/packageVersion.d
 
 compile_commands.json
 
-./source/dxx/packageVersion.d
+./source/{{app.id}}/packageVersion.d
 bin/
 *.un~
 *.un~

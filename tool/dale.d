@@ -108,13 +108,8 @@ void generate() {
       }
     }
     string[] dubArgs = [
-      "run","vayne","--arch="~ARCH, "--"
+      "run","vayne","--arch="~ARCH, "--", "-j","resources"
     ];
-    /* exec("dub", [,
-      //"resources/templates/init/plugin/dub.json",
-      //"resources/templates/init/plugin/plugin.def",
-      //"resources/templates/init/plugin/dale.d"
-      ]); */
     exec("dub",dubArgs ~ vaynePaths);
 
     // now create generator functions for each vayneDir entry
@@ -133,13 +128,6 @@ void generate() {
         string[string] templates;
     }
 
-    //static Generator[string] generators;
-
-    // for each vayneDir
-    //Variant[string] vars;
-    //vars["generators"] = generators;
-    //vars["appid"] = ""~appID;
-    //autogenVars["templateFiles"]=templateFiles;
     struct Vars {
         string appid = appID;
         Generator[string] generators;
@@ -155,31 +143,29 @@ void generate() {
               _id = v;
             }
             static if (k == "dir") {
-              //Variant[string] gen;
-              //Generator gen;
-              //Variant[] templates;
+              MsgLog.info("Generator dir "~v);
               string[string] templates;
-              foreach(string e;v.dirEntries(SpanMode.breadth)) {
-                if(!e.isDir && e.extension == ".vayne") {
-                  //auto templ =
-                  //    Tuple!(string,"name",string,"outFile")
-                  //      (v,e.stripExt);
-                  //templates ~= Variant(templ);
-                  //templates[v]=Path(e.stripExt).asNormalizedPath.replace('\\','/');
-                  version(Windows) {
-                    templates[v]=e.stripExtension.buildNormalizedPath.replace("\\","/");
-                  } else {
-                    templates[v]=e.stripExtension.buildNormalizedPath;
+              void process_dir(string dir) {
+                foreach(string e;dir.dirEntries(SpanMode.depth)) {
+                  if(e.isDir) {
+                    MsgLog.info("Generator subdir "~e);
+                    process_dir(e);
+                  } else if(e.extension == ".vayne") {
+                    //auto templ =
+                    //    Tuple!(string,"name",string,"outFile")
+                    //      (v,e.stripExt);
+                    version(Windows) {
+                      e = e.buildNormalizedPath.replace("\\","/");
+                    } else {
+                      e = e.buildNormalizedPath;
+                    }
+                    templates[e]=e.stripExtension;
+                    MsgLog.trace("Template "~_id~ " " ~v~" "~e);
                   }
-                  //MsgLog.info("Template "~_id~ " " ~v~" "~Path(e.stripExt).asNormalizedPath);
                 }
               }
-              //gen["id"] = id;
-              //gen["templates"] = templates;
-              //gen.id = id;
-              //gen.templates = templates;
+              process_dir(v);
               vars.generators[_id] = Generator(_id,templates);
-              //vars.generators[id] = gen;
             }
         }
         iterateValues!(fields,__f,"generators")();

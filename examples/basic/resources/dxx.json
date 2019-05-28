@@ -1,0 +1,16 @@
+{
+    "name" : "DXX-basic",
+    "dxx" : {
+        "config" : {
+            "pluginDirs" : "examples/plugin/bin"
+        },
+        "workspace" : {
+                "name" : "Default workspace"
+        },
+        "plugin" : {
+            "name" : "plugin",
+            "path" : "examples/plugin/bin",
+            "pluginVersion" : "*"
+        }
+      }
+}

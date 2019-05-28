@@ -35,7 +35,8 @@
             "dependencies": {
                 "dale": "~>0.0.1",
                 "aedi-property-reader": "~>0.2.0"
-          }
+            },
+            "versions" : [ "DXX_Bootstrap" ]
         },{
             "name" : "dxx-lib",
             "targetName": "dxx-lib",

@@ -43,7 +43,10 @@ class Example {
 alias BasicParam = Tuple!(
         string,"name",
         uint,"age",
-        PluginDef,"plugins"
+        Tuple!(
+        //  PluginDef[string],"plugins"
+          PluginDef, "plugin"
+        ),"dxx"
 );
 
 /*
@@ -101,9 +104,10 @@ int main(string[] args) {
       }
     }*/
 
-    //auto plugins = getInjectorProperty!(PluginDef[])("plugins");
-    auto plugin = getInjectorProperty!(PluginDef)("plugins");
+    //auto plugins = getInjectorProperty!(PluginDef[])("dxx.plugins");
+    auto plugin = getInjectorProperty!(PluginDef)("dxx.plugin");
     //auto plugin=Tuple!(string,"name")("dxx_plugin");
+    MsgLog.info("plugin = " ~ plugin.name);
 
     //foreach(plugin;plugins) {
       foreach(path;paths.split(',')) {
@@ -113,7 +117,8 @@ int main(string[] args) {
           assert(l);
           l.load(plugin.name,path);
           l.update;
-          scope(exit)destroy(l);
+          //scope(exit)destroy(l);
+          destroy(l);
         }
       }
     //}

@@ -34,7 +34,7 @@
           "excludedSourceFiles" : [
             "source/dxx/tool/gui.d",
             "source/dxx/tool/tool.d",
-            "gen/dxxtool/autogen.d"
+            "source/gen/dxxtool/autogen.d"
           ],
           "dependencies": {
               "dale": "~>0.0.1"

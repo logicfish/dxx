@@ -1,4 +1,4 @@
-LIBRARY dxx_plugin
+LIBRARY plugin
 
 EXPORTS
     init

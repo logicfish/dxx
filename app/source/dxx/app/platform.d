@@ -208,6 +208,7 @@ abstract class PlatformJobBase : JobBase,PlatformJob {
 struct PluginDef {
     public string name;
     public string pluginVersion;
+    public string path;
     //public string[string] properties;
 }
 

@@ -1,0 +1,11 @@
+{
+  "build" : {
+    "arch" : "{{build.arch}}",
+    "debugs" : [ "Module","Loader","Plugin","Injector"],
+    "config" : "dxx-tool-console",
+    "buildType" : "debug",
+    "force" : "false",
+    "nodeps" : "false"    
+  }
+
+}

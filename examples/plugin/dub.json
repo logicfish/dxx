@@ -9,6 +9,7 @@
     "subConfigurations": {
         "dxx:app": "dxx-plugin"
     },
+    "debugs" : [ "Plugin","Loader","Module" ],
     "description": "DXX example module",
     "copyright": "Copyright © 2018, Mark",
     "license": "MIT",

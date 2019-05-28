@@ -23,8 +23,7 @@ module dxx.devconst;
 
 public import dxx.constants;
 
-version(DXX_Developer) {
-} else {
+version(DXX_Bootstrap) {
   private import aermicioi.aedi;
   private import aermicioi.aedi_property_reader;
 
@@ -69,6 +68,9 @@ version(DXX_Developer) {
   template DEBUGS() {
     alias DEBUGS=()=>___("build.debugs");
   }
+  template VERSIONS() {
+    alias VERSIONS=()=>___("build.versions");
+  }
 
   template FORCE() {
     alias FORCE=()=>__("build.force");
@@ -84,6 +86,7 @@ version(DXX_Developer) {
   		register!string("build.build");
 
       register!(string[])("build.debugs");
+      register!(string[])("build.versions");
       register!(string)("build.config");
       register!(string[])("build.projects");
       register!(string[])("build.apps");
@@ -94,6 +97,7 @@ version(DXX_Developer) {
       register!string("ut.arch"); // Define `protocol` property of type `string`
   		register!string("ut.build");
       register!(string[])("ut.debugs");
+      register!(string[])("ut.versions");
       register!(string)("ut.config");
       register!(string[])("ut.projects");
   	}
@@ -123,13 +127,23 @@ version(DXX_Developer) {
     string[] args;
     args ~= [
       cmd,
-      "--arch="~ARCH,
-      "--build="~BUILD,
-      //"--config="~CONFIG,
-      "--force="~FORCE,
-      "--root="~root,
-      "--nodeps="~NODEPS
+      "--root="~root
     ];
+    static if ("build" == cmd || "run" == cmd || "test" == cmd) {
+      args ~= [
+        "--arch="~ARCH,
+        "--build="~BUILD,
+        //"--config="~CONFIG,
+        "--force="~FORCE,
+        "--nodeps="~NODEPS
+      ];
+      foreach(dbg;DEBUGS) {
+          args ~= [ "--debug="~dbg ];
+      }
+      foreach(vers;VERSIONS) {
+          args ~= [ "--version="~vers ];
+      }
+    }
     return args;
   }
 }

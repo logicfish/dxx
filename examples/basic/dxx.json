@@ -1,8 +1,0 @@
-{
-  "name" : "DXX-basic",
-    "dxx" : {
-        "config" : {
-            "pluginDirs" : "examples/plugin/bin"
-        }
-    }
-}

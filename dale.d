@@ -55,6 +55,7 @@ void build() {
 
 @(TASK)
 void examples() {
+    deps(&build);
     foreach(a;APPS) {
       exec("dub", buildDubArgs!"build"(a));
     }
@@ -176,7 +177,7 @@ void info() {
 @(TASK)
 void runexample() {
     deps(&examples);
-    exec("examples/basic/bin/dxx-basic");
+    exec("examples/basic/bin/dxx-basic",["--age=10","--name='My Name'"]);
 }
 
 @(TASK)

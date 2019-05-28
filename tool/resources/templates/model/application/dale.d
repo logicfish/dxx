@@ -18,7 +18,7 @@ private import dxx.app.vaynetmplt;
 
 private import dxx.{{vars.appid}}.packageVersion;
 
-private import gen.dxxtool.autogen.d;
+private import gen.dxxtool.autogen;
 
 private import dxx.devconst;
 private import ctini.ctini;

@@ -29,6 +29,7 @@ private import std.typecons;
 private import metad.compiler;
 private import metad.interp;
 
+/*
 enum _GRAMMAR = q{
 MiniTemplateGrammar:
 Doc <- Line+ :endOfInput
@@ -38,6 +39,15 @@ Inner <- ~((!RDelim) Char )*
 Char <- .
 LDelim <- "{{"
 RDelim <- "}}"
+};
+*/
+enum _GRAMMAR = q{
+MiniTemplateGrammar(LDelim,RDelim):
+Doc <- Line+ :endOfInput
+Line <- :LDelim Inner :RDelim / Text
+Text <- ~((!LDelim) Char )*
+Inner <- ~((!RDelim) Char )*
+Char <- .
 };
 mixin(grammar(_GRAMMAR));
 
@@ -62,8 +72,8 @@ unittest {
     assert(c == "<MyValue>.<MyVal2>");
 }
 
-template miniTemplateParser(alias idParser,string txt) {
-    enum miniTemplateParser = MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar(txt)).compileNode();
+template miniTemplateParser(alias idParser,string txt,alias LDelim="{{",alias RDelim="}}") {
+    enum miniTemplateParser = MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar!(LDelim,RDelim)(txt)).compileNode();
 }
 
 template miniTemplate(alias idParser,alias txt) {
@@ -121,16 +131,16 @@ unittest {
     enum inputText = q{
       {{MyValue}}.{{MyVal2}}
     };
-    auto c = MiniInterpreter(v,MiniTemplateGrammar(inputText));
+    auto c = MiniInterpreter(v,MiniTemplateGrammar!("{{","}}")(inputText));
     assert(c == "<MyValue>.<MyVal2>");
 }
 
-template miniInterpreter(alias idParser) {
+template miniInterpreter(alias idParser,alias LDelim="{{",alias RDelim="}}") {
   static string __id(ParseTree t) {
     return idParser(t.matches.join(""));
   }
   auto miniInterpreter(string txt) {
-    auto data = MiniTemplateGrammar(txt);
+    auto data = MiniTemplateGrammar!(LDelim,RDelim)(txt);
     //auto compiler = MiniInterpreter!(__id).MiniTemplateInterpreter!(data).interp();
     return MiniInterpreter!(typeof(&__id),data)(&__id);
     //return I.MiniTemplateInterperter!(data).interpNode();
@@ -158,6 +168,18 @@ unittest {
   enum inputText = q{
     123{{MyValue.a.b.c}}.{{MyVal2.d.e.f}}456
   };
-  enum c = miniTemplate!(v,inputText);
+  auto c = miniInterpreter!(v)(inputText);
+  assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
+}
+
+unittest {
+  static string v(string k) {
+    pragma(msg,"v = "~ k);
+    return "[" ~ k ~ "]";
+  }
+  enum inputText = q{
+    123{MyValue.a.b.c}.{MyVal2.d.e.f}456
+  };
+  auto c = miniInterpreter!(v,"{","}")(inputText);
   assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
 }
