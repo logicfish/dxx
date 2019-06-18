@@ -92,9 +92,11 @@ abstract class JobBase : SyncNotificationSource, Job {
             _thrownException = cast(shared(Exception))e;
             status = Status.THROWN_EXCEPTION;
             version(Posix) {
-              debug {
-                import backtrace;
+              import backtrace;
+              import std.stdio;
+              try {
                 printPrettyTrace(stderr);
+              } catch(Throwable t) {
               }
             }
             version(Windows) {

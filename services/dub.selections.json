@@ -14,8 +14,8 @@
 		"dxx": "0.4.2",
 		"dyaml": "0.6.5",
 		"eventcore": "0.8.43",
-		"fswatch": "0.3.0",
-		"hunt": "1.2.1",
+		"fswatch": "0.5.0",
+		"hunt": "1.2.3",
 		"hunt-cache": "0.4.1",
 		"isfreedesktop": "0.1.1",
 		"libasync": "0.8.4",
@@ -27,7 +27,7 @@
 		"openssl": "1.1.6+1.0.1g",
 		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
-		"reloaded": "0.1.4+commit.9.ga9de2ec",
+		"reloaded": "0.1.5",
 		"sdlang-d": "0.10.5",
 		"semver": "0.3.2",
 		"standardpaths": "0.8.1",
@@ -37,7 +37,7 @@
 		"unit-threaded": "0.7.55",
 		"urld": "2.1.1",
 		"vayne": "0.0.45",
-		"vibe-core": "1.6.3-alpha.2",
+		"vibe-core": "1.7.0-beta.1",
 		"vibe-d": "0.8.6-alpha.2",
 		"xdgpaths": "0.2.5"
 	}
