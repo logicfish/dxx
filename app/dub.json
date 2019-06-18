@@ -10,10 +10,12 @@
     "dependencies": {
       "dxx" : { "path" : "../" },
       "dxx:core": "*",
-      "backtrace-d" : "~>0.1.2",
       "aedi": "~>0.5.0",
       "hunt-cache": "~>0.5.0",
       "vayne" : "~>0.0.45"
+    },
+    "dependencies-posix" : {
+      "backtrace-d" : "~>0.1.2"
     },
     "targetPath": "bin",
     "targetType": "library",
