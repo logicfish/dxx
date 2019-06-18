@@ -75,6 +75,11 @@ class WorkbenchJob : PlatformJobBase {
     scope(exit)workbench.unlock(this);
     processWorkbenchJob;
   }
+  override
+  void setup() shared {
+    DXXPlatform.clearLocalCache;
+    super.setup;
+  }
   abstract shared
   void processWorkbenchJob();
 }

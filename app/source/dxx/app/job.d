@@ -25,8 +25,6 @@ private import std.exception;
 
 private import core.thread;
 
-private import hunt.cache;
-
 private import dxx.util;
 private import dxx.app;
 
@@ -61,8 +59,6 @@ interface Job : NotificationSource {
 abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
     shared(Exception) _thrownException;
-
-    UCache cache;
 
     @property pure @safe nothrow @nogc shared
     const(Status) status() const {
@@ -121,21 +117,6 @@ abstract class JobBase : SyncNotificationSource, Job {
 
     nothrow void terminate() shared {}
 
-    T getPropertyLocal(T)(string id) {
-        auto a = cache.get!T(id);
-        if(a !is null) return a;
-        return Properties.lookup!T(id);
-    }
-    T getProperty(T)(string id) {
-        return cache.get!T(id);
-    }
-    void setProperty(T)(T t,string id) {
-        cache.put!T(id,t);
-    }
-
-    this() shared {
-      cache = cast(shared(UCache))UCache.CreateUCache();
-    }
 }
 
 class JobDelegate(alias F) : JobBase {

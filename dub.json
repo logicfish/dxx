@@ -16,8 +16,8 @@
     "subPackages" : [
         "core",
         "app",
-        "services",
         "tool",
+        "services",
         "tool/plugins/example",
         "examples/basic",
         "examples/plugin"
@@ -42,6 +42,16 @@
             "targetName": "dxx-lib",
             "targetType": "library",
             "targetPath": "bin"
+        },{
+            "name" : "tool",
+            "targetName": "dxx-tool",
+            "targetType": "executable",
+            "targetPath": "bin",
+            "preRunCommands" : [
+              "dub run --root=tool --config=shi_sha -- build"
+            ],
+            "mainSourceFile": "source/dxx/main.d",
+            "versions" : [ "DXX_App"]
         }
     ]
 }

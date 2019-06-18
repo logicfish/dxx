@@ -43,10 +43,10 @@ version(DXX_Bootstrap) {
   }
 
   template CWD() {
-    alias CWD=()=>runtimeConstants.curDir;
+    alias CWD=()=>RTConstants.curDir;
   }
   template APPDIR() {
-    alias APPDIR=()=>runtimeConstants.appDir;
+    alias APPDIR=()=>RTConstants.appDir;
   }
   template APPS() {
     alias APPS=()=>___("build.apps");
@@ -78,6 +78,13 @@ version(DXX_Bootstrap) {
 
   template NODEPS() {
     alias NODEPS=()=>__("build.nodeps");
+  }
+
+  template EXEPATH() {
+    alias EXEPATH = runtimeConstants.appFileName;
+  }
+  template EXEDIR() {
+    alias EXEDIR = runtimeConstants.appDir;
   }
 
   void load(T : DocumentContainer!X, X...)(T container) {

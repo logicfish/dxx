@@ -27,12 +27,14 @@ private import std.typecons;
 
 private import aermicioi.aedi;
 
+import hunt.cache;
+
 private import dxx.util;
 private import dxx.app;
 
+private import dxx.app.component;
 private import dxx.app.resource;
 private import dxx.app.document;
-private import dxx.app.component;
 private import dxx.app.workbench;
 private import dxx.app.extension;
 
@@ -50,6 +52,8 @@ interface PlatformComponents {
     public WorkflowRunner getWorkflowRunner();
     public PluginLoader getPluginLoader();
     public ExtensionsManager getExtensionsManager();
+    public UCache getLocalCache();
+    public CacheManger getCacheManger();
 }
 
 struct PlatformJobEvent {
@@ -69,6 +73,7 @@ class DXXPlatform : SyncNotificationSource
         //DocumentResourceAdaptor
     {
         static WorkflowRunner workflowRunner;
+        UCache localCache;
 
         Resource resolveURI(string uri,ResourceSet owner) {
             return null;
@@ -97,7 +102,12 @@ class DXXPlatform : SyncNotificationSource
             }
             return workflowRunner;
         }
-
+        UCache getLocalCache() {
+          if(localCache is null) {
+            localCache = UCache.CreateUCache;
+          }
+          return localCache;
+        }
     }
     static ThreadLocal _local;
 
@@ -132,9 +142,11 @@ class DXXPlatform : SyncNotificationSource
     } */
 
     ExtensionsManager extensionsManager;
+    CacheManger cacheManger;
 
     private this() {
         extensionsManager = new ExtensionsManager;
+        cacheManger = new CacheManger;
     }
 
     _PluginLoader[string] plugins;
@@ -167,6 +179,9 @@ class DXXPlatform : SyncNotificationSource
       job.execute;
     }
 
+    static void clearLocalCache() {
+      destroy(getLocals.localCache);
+    }
 }
 
 interface PlatformJob : Job {
@@ -178,11 +193,11 @@ abstract class PlatformJobBase : JobBase,PlatformJob {
     shared(Workbench) workbench;
 
      this(Workbench w = resolveInjector!(Workbench)("app.workbench")) shared {
-        super();
+        //super();
         workbench = cast(shared(Workbench))w;
     }
     this() shared {
-        super();
+        //super();
     }
 
     override
@@ -258,6 +273,14 @@ class PlatformRuntime(Param...) :
     @component
     public WorkflowRunner getWorkflowRunner() {
         return DXXPlatform.getLocals.getWorkflowRunner;
+    }
+    @component
+    override CacheManger getCacheManger() {
+        return DXXPlatform.getInstance.cacheManger;
+    }
+    @component
+    override UCache getLocalCache() {
+        return DXXPlatform.getLocals.getLocalCache;
     }
 
     void registerPlatformDependencies(InjectionContainer injector) {

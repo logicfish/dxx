@@ -1,0 +1,22 @@
+{
+	"name": "sdlexample",
+	"authors": [
+		"Mark"
+	],
+	"description": "DXX sdl example",
+	"copyright": "Copyright © 2018, Mark",
+	"license": "MIT",
+	"stringImportPaths" : [ "resources" ],
+	"targetPath": "bin",
+	"targetType": "executable",
+	"targetName": "dxx-sdl",
+  "mainSourceFile": "source/dxx/example/sdl/app.d",
+	"dependencies" : {
+		"dxx" : { "path" : "../.." },
+		"dxx:app" : "*",
+    "dxx:sdl" : "*"
+	},
+	"subConfigurations": {
+			"dxx:app": "dxx-exec"
+	}
+}

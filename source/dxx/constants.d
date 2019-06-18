@@ -21,13 +21,13 @@ SOFTWARE.
 **/
 module dxx.constants;
 
+private import core.runtime;
+private import core.cpuid;
+
 private import std.compiler;
 private import std.file;
 private import std.path;
-private import std.string : split;
-
-private import core.runtime;
-private import core.cpuid;
+private import std.string : split,indexOf;
 private import std.array : appender,join;
 
 private import semver;
@@ -132,6 +132,8 @@ struct RTConstants {
     const(string) appBaseName;
     const(string) argString;
     const(string)[] args;
+    const(string)[] argsApp;
+    const(string)[] argsAppPassthrough;
 
     shared static this() {
         runtimeConstants.appFileName = thisExePath;
@@ -139,6 +141,19 @@ struct RTConstants {
         runtimeConstants.curDir = getcwd;
         runtimeConstants.argString = Runtime.args.join(" ");
         runtimeConstants.args = Runtime.args.dup;
+        if(runtimeConstants.argString.indexOf("--")!=-1) {
+          //auto argSplit = runtimeConstants.args.split("--");
+          //runtimeConstants.argsApp = argSplit[0];
+          //runtimeConstants.argsAppPassthrough = runtimeConstants.argString.
+          auto i = runtimeConstants.argString.indexOf("--");
+          auto a = runtimeConstants.argString[0..i];
+          auto b = runtimeConstants.argString[i..$];
+          runtimeConstants.argsApp = a.split(" ");
+          runtimeConstants.argsAppPassthrough = b.split(" ");
+        } else {
+          runtimeConstants.argsApp = runtimeConstants.args;
+          runtimeConstants.argsAppPassthrough = [];
+        }
 
         version(Windows) {
             version(DXX_Module) {

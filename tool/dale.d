@@ -282,7 +282,17 @@ void uninstall() {
 @(TASK)
 void run() {
     deps(&build);
-    exec("dub",["run","--root=.","--arch="~ARCH,"--","init"]);
+    //exec("dub",["run","--root=.","--arch="~ARCH,"--","init"]);
+    exec("dub", [
+        "run","--root=.","--arch="~ARCH,
+	"--nodeps=true", "--force=false",
+        "--config=dxx-tool-console"
+    ]);
+//    exec("dub",
+//      buildDubArgs!"run"(".") ~
+//      [ "--" ] ~
+//      runtimeConstants.argsAppPassthrough);
+    //exec("");
 }
 
 //@(TASK)

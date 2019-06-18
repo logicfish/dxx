@@ -46,8 +46,8 @@ class InitTool : ToolBase {
 
     	injector.getArgument(ToolConfig.args.define).values.each!((string a) {
     			string[] keyValue = a.split("=");
-	    		if(keyValue.length == 2) job.setProperty(keyValue[0],keyValue[1]);
-		    	else job.setProperty(keyValue[0],"true");
+	    		//if(keyValue.length == 2) job.setProperty(keyValue[0],keyValue[1]);
+		    	//else job.setProperty(keyValue[0],"true");
 			    //MsgLog.trace("defn ",keyValue.joiner("="));
     	});
 

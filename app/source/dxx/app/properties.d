@@ -41,6 +41,8 @@ module dxx.app.properties;
 private import std.variant;
 private import std.algorithm;
 
+private import hunt.cache;
+
 private import dxx.util;
 
 class Properties {
@@ -48,6 +50,14 @@ class Properties {
 
     nothrow
     static T lookup(T)(string k) {
+        try {
+          UCache c = resolve!UCache;
+          if(c !is null) {
+            Nullable!T a = c.get_ex!T(k);
+            if(!a.isnull) return cast(T)a;
+          }
+        } catch(Exception e) {
+        }
         try {
           auto v = LocalConfig.get(k);
           if(v != null) return v.get!T;
@@ -73,6 +83,14 @@ class Properties {
     nothrow
     static T lookup(T,k : string)() {
       return lookup!T(k);
+    }
+
+    nothrow
+    static T assign(T)(T t, string k) {
+      try {
+        resolve!UCache.put!T(k);
+      } catch(Exception e) {
+      }
     }
 
     nothrow

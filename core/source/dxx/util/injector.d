@@ -38,8 +38,6 @@ SOFTWARE.
  **/
 module dxx.util.injector;
 
-//private import std.algorithm : each;
-//private import std.variant;
 private import std.experimental.logger;
 private import std.stdio;
 private import std.process : environment;
@@ -50,7 +48,6 @@ private import aermicioi.aedi_property_reader;
 
 private import dxx.constants;
 private import dxx.util.ini;
-//private import dxx.util.storage;
 private import dxx.util.config;
 
 alias component = aermicioi.aedi.component;
@@ -111,7 +108,6 @@ abstract class InjectionContainer {
     }
     abstract void scanPrototype(PrototypeContainer);
     abstract void configureSingleton(SingletonContainer);
-    //abstract void configureGlobals(AggregateContainer _container);
 
     this(AggregateContainer _c) {
         synchronized(InjectionContainer.classinfo) {
@@ -131,19 +127,13 @@ abstract class InjectionContainer {
     }
 
     void register(T...)(const(string) arg) {
-        //with(_container.configure("prototype")) {
-            _container.configure("prototype").register!T(arg);
-        //}
+        _container.configure("prototype").register!T(arg);
     }
     void register(T...)() {
-        //with(_container.configure("prototype")) {
-            _container.configure("prototype").register!T();
-        //}
+        _container.configure("prototype").register!T();
     }
     void register(T)(ref T t,const(string) arg) {
-        //with(_container.configure("singleton")) {
-            _container.configure("singleton").register!T(t,arg);
-        //}
+        _container.configure("singleton").register!T(t,arg);
     }
 
     T getParam(T)(string k) {
@@ -197,7 +187,7 @@ final class LocalInjector(C...) : InjectionContainer {
             env,
             //json("./dxx-dev.json"),
             json("./resources/dxx-dev.json"),
-            json(RTConstants.constants.appDir ~ "/../resources/dxx-dev.json"),
+            json(RTConstants.constants.appDir ~ "/../../resources/dxx-dev.json"),
             //json("./dxx.json"),
             //json("./resource/dxx.json"),
             //json(RTConstants.constants.appDir ~ "/../dxx.json")
@@ -239,8 +229,6 @@ final class LocalInjector(C...) : InjectionContainer {
                               static if(isTuple!fieldType) {
                                 _reg!(fieldName ~ ".",fieldType)();
                               } else {
-                                //register!fieldType;
-                                //setParam!fieldType(fieldName);
                                 register!fieldType(fieldName);
                               }
                             }
@@ -271,7 +259,6 @@ final class LocalInjector(C...) : InjectionContainer {
                 // Scan properties from the .ini file.
                 // Make them all strings.
                 iterateValuesF!(DXXConfig.keys)( (string fqn,string k,string v) {
-                    //properties[k]=v;
                     register!string(k);
                 } );
             }

@@ -2,6 +2,8 @@ private import dl;
 
 private import dxx.packageVersion;
 private import dxx.devconst;
+private import dxx.constants;
+
 private import ctini.ctini;
 
 //private import scriptlike;
@@ -64,8 +66,9 @@ void examples() {
 @(TASK)
 void tool() {
     deps(&build);
+    auto toolExec = runtimeConstants.appDir ~ "/../../../tool/";
     exec("dub",
-        buildDubArgs!"build"("tool") ~ ["--config=dxx-tool-console"]
+        buildDubArgs!"build"(toolExec) ~ ["--config=dxx-tool-console"]
     );
     /* exec("dub", ["build",
       "--root=tool",
