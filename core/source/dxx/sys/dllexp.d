@@ -1,8 +1,4 @@
-
-<<<<<<< HEAD
-=======
 module dxx.sys.dllexp;
->>>>>>> 65c0b4c4eac96de6b9ade90a0fa42a4c4faf79b8
 version(unittest) {
 } else {
     version(DXX_Module) {
