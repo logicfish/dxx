@@ -29,6 +29,7 @@ private import dxx.app;
 private import dxx.example.plugin.exampleplugin;
 
 import dxx.sys.loader;
+public import dxx.sys.dllexp;
 
 //mixin moduleMain;
 
