@@ -1,5 +1,4 @@
 
-module dllexp;
 version(unittest) {
 } else {
     version(DXX_Module) {

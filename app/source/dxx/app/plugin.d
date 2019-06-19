@@ -51,6 +51,13 @@ struct PluginDescriptor {
 }
 
 struct PluginContext {
+  // These parts filled in by the kernel
+    void* delegate(string id) shared kernelGetProperty;
+    void delegate(string id,void*) shared kernelSetProperty;
+    void* delegate(string id) shared platformCreateInstance;
+    void delegate(void*) shared platformDestroyInstance;
+
+  // These parts filled in by the plugin
     PluginDescriptor* desc;
     void* delegate(string id) shared pluginCreateInstance;
     void delegate(void*) shared pluginDestroyInstance;
@@ -58,6 +65,7 @@ struct PluginContext {
 
 class PluginLoader {
     PluginContext ctx;
+    PluginDescriptor _desc;
     Loader loader;
     alias loader this;
 
@@ -75,6 +83,7 @@ class PluginLoader {
       }
       loader = Loader.loadModule(path,&ctx);
       enforce(loader);
+      _desc = *ctx.desc;
     }
     void load(string name,string path) {
         auto p = pluginFileName(name,path);
@@ -82,7 +91,8 @@ class PluginLoader {
     }
     inout ref
     auto desc() {
-        return ctx.desc;
+        //return ctx.desc;
+        return _desc;
     }
     inout ref
     auto pluginContext() {
