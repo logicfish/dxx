@@ -30,7 +30,7 @@ private import dxx.constants;
 private import dxx.util.notify;
 private import dxx.util.log;
 
-
+public import dxx.sys.dllexp;
 
 struct ModuleData
 {
