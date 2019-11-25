@@ -45,7 +45,18 @@ alias BasicParam = Tuple!(
         uint,"age",
         Tuple!(
         //  PluginDef[string],"plugins"
-          PluginDef, "plugin"
+          //PluginDef, "plugin"
+          Tuple!(
+            string,"pluginDirs"
+          ),"config",
+          Tuple!(
+            string,"name"
+          ),"workspace",
+          Tuple!(
+            string,"name",
+            string,"path",
+            string,"pluginVersion"
+          ),"plugin",
         ),"dxx"
 );
 
@@ -66,6 +77,20 @@ class BasicComponents : RuntimeComponents!BasicParam {
 
 mixin registerComponent!(PlatformRuntime!BasicParam);
 
+auto loadPlugin(PluginDef def) {
+  auto paths = getInjectorProperty!string(CFG.keys.pluginDirs);
+  foreach(path;paths.split(':')) {
+    if(PluginLoader.pluginFileName(def.name,path).exists) {
+      MsgLog.info("Load: "~def.name);
+      auto l = resolveInjector!PluginLoader();
+      assert(l);
+      l.load(def.name,path);
+      return l;
+    }
+  }
+  return null;
+
+}
 
 int main(string[] args) {
     //scope(exit)terminateInjector;
@@ -78,11 +103,12 @@ int main(string[] args) {
 //    MsgLog.info("name = " ~ getInjectorProperty!string("name"));
 //    MsgLog.info("age = " ~ (getInjectorProperty!uint("age")).to!string);
     //string n =  getInjectorProperty!string("name");
-    string n =  Properties.__("name");
+    //string n =  Properties.__("name");
+    string n = (getInjectorProperty!string("name"));
     MsgLog.info("name = " ~ n);
     //sharedLog.info("name = " ~ getInjectorProperty!string("name"));
-    auto age = (getInjectorProperty!uint("age"));
-    MsgLog.info("age = " ~ age.to!string);
+    //auto age = (getInjectorProperty!uint("age"));
+    //MsgLog.info("age = " ~ age.to!string);
 
     /*version(Posix) {
         l.load("examples/plugin/bin/libdxx_plugin.so");
@@ -91,8 +117,7 @@ int main(string[] args) {
     } else {
         // ...
     }*/
-    auto paths = getInjectorProperty!string(CFG.keys.pluginDirs);
-    MsgLog.info(CFG.keys.pluginDirs ~ " = " ~ paths);
+    //MsgLog.info(CFG.keys.pluginDirs ~ " = " ~ paths);
     /*auto plugin = "dxx_plugin";
 
     foreach(p;paths.split(',')) {
@@ -105,23 +130,18 @@ int main(string[] args) {
     }*/
 
     //auto plugins = getInjectorProperty!(PluginDef[])("dxx.plugins");
-    auto plugin = getInjectorProperty!(PluginDef)("dxx.plugin");
+    //auto plugin = getInjectorProperty!(PluginDef)("dxx.plugin");
     //auto plugin=Tuple!(string,"name")("dxx_plugin");
-    MsgLog.info("plugin = " ~ plugin.name);
-
+    //MsgLog.info("plugin = " ~ plugin.name);
+    PluginDef def;
+    def.name = getInjectorProperty!(string)("dxx.plugin.name");
+    auto plugin = def.loadPlugin();
     //foreach(plugin;plugins) {
-      foreach(path;paths.split(',')) {
-        if(PluginLoader.pluginFileName(plugin.name,path).exists) {
-          MsgLog.info("Load: "~plugin.name);
-          auto l = resolveInjector!PluginLoader();
-          assert(l);
-          l.load(plugin.name,path);
-          l.update;
-          //scope(exit)destroy(l);
-          destroy(l);
-        }
-      }
     //}
+    assert(plugin);
+    plugin.update;
+    scope(exit)destroy(plugin);
+    //destroy(l);
 
     MsgLog.info("Done.");
     return 0;

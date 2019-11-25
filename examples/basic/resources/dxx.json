@@ -1,8 +1,9 @@
 {
     "name" : "DXX-basic",
+    "age" : 25,
     "dxx" : {
         "config" : {
-            "pluginDirs" : "examples/plugin/bin"
+            "pluginDirs" : "../plugin/bin:examples/plugin/bin"
         },
         "workspace" : {
                 "name" : "Default workspace"

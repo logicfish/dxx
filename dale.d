@@ -8,11 +8,14 @@ private import ctini.ctini;
 
 //private import scriptlike;
 
-private import std.file;
-private import std.stdio;
 private import std.string;
+private import std.array;
 private import std.process;
 private import std.conv;
+private import std.file;
+private import std.stdio;
+
+private import std.experimental.logger;
 
 enum CFG = IniConfig!("dale.ini");
 
@@ -25,8 +28,10 @@ void banner() {
     //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
     writefln("arch=%s build=%s", ARCH,BUILD);
     writefln("debug=%s", DEBUGS.join(","));
-    writefln("nodeps=%s", NODEPS);
-    writefln("force=%s", FORCE);
+    sharedLog.info("nodeps=%s", NODEPS);
+    sharedLog.info("force=%s", FORCE);
+    sharedLog.info("args=%s", APPARG.join(" "));
+    sharedLog.info("args passed=%s", ARGPASS.join(" "));
 }
 
 @(TASK)
@@ -82,26 +87,26 @@ void tool() {
         "--arch="~ARCH,
         "--build="~BUILD
         ]); */
-      //exec("tool/bin/dxx", ["--help"]);
-}
+      //string[] arg = ARGS;
+      chdir(toolExec);
+      if(ARGPASS.length>0) {
+        exec("bin/dxx", ARGPASS);
+      } else {
+        exec("bin/dxx", ["--help"]);
+      }
 
-@(TASK)
-void _dxx() {
-  auto args = buildDubArgs!("run");
-  args ~= [ "--root=/e/workspaces/dxxworkspace/dxx/tool",
-    "--config=dxx-tool-console" ];
-  exec("dub",args);
 }
 
 @(TASK)
 void update() {
     deps(&prebuild);
-//    exec("git", ["pull"]);
+    exec("git", ["pull"]);
+	deps(&upgrade);
 }
 
 @(TASK)
 void upgrade() {
-    deps(&update);
+    deps(&prebuild);
     exec("dub", ["upgrade","--root=."]);
     foreach(p;PROJECTS~APPS) {
         exec("dub", ["upgrade","--root="~p]);
@@ -180,7 +185,9 @@ void info() {
 @(TASK)
 void runexample() {
     deps(&examples);
-    exec("examples/basic/bin/dxx-basic",["--age=10","--name='My Name'"]);
+    import std.file;
+    "examples/basic".chdir;
+    exec("bin/dxx-basic",["--age=10","--name='My Name'"]);
 }
 
 @(TASK)

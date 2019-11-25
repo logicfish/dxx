@@ -4,8 +4,7 @@
         "Mark"
     ],
     "dependencies": {
-        "dxx:app": "*",
-        "vibe-d:web": "~>0.8.6-alpha.2"
+        "dxx:app": { "path" : "../" }
     },
     "targetType": "library",
     "targetPath": "bin",

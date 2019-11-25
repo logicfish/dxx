@@ -10,8 +10,7 @@
     "-ddoxTool": "scod",
     "dependencies" : {
       "ctini": "~>0.2.1",
-      "semver" : "~>0.3.2",
-      "aedi-property-reader": "~>0.2.0"
+      "semver" : "~>0.3.2"
     },
     "subPackages" : [
         "core",
@@ -34,7 +33,7 @@
             "mainSourceFile": "dale.d",
             "dependencies": {
                 "dale": "~>0.0.1",
-                "aedi-property-reader": "~>0.2.0"
+                "aedi": "~>1.0.0"
             },
             "versions" : [ "DXX_Bootstrap" ]
         },{

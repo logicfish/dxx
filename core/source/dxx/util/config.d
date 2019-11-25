@@ -84,8 +84,15 @@ final class LocalConfig {
         properties[DXXConfig.keys.appBaseName] =  RTConstants.constants.appBaseName;
     }
 
+    static Variant[string] readProperties(File* f) {
+      Variant[string] p;
+      return p;
+    }
+
     shared static this() {
-        //sharedLog.info("Config initialising.");
+        debug {
+          sharedLog.info("Config initialising.");
+        }
         //MsgLog.info(DXXConfig.messages.MSG_CONFIG_INIT);
         File f;
         auto configFile = environment.get(DXXConfig.envKeys.configFile,
@@ -94,17 +101,21 @@ final class LocalConfig {
             //sharedLog.info("Loading default config file.");
             //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
-            //properties = readInjectorProperties(&f);
+            properties = readProperties(&f);
         } catch(Exception e) {
-            // Create the default config file.
-            //sharedLog.info("Creating default config file.");
-            //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
-            //auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
-            //of.write(import(DXXConfig.app.configDefaults));
-            //of.flush;
-            //of.close;
-            //f = inputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
-            //properties = readInjectorProperties(&f);
+            if(DXXConfig.app.createDefaultConfig) {
+              // Create the default config file.
+              debug {
+                sharedLog.info("Creating default config file.");
+              }
+              //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
+              auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
+              of.write(import(DXXConfig.app.configDefaults));
+              of.flush;
+              of.close;
+              f = inputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
+              properties = readProperties(&f);
+          }
         }
 
         iterateValuesF!(DXXConfig.vars)( (string fqn,string k,string v) {
@@ -167,24 +178,24 @@ final class LocalConfig {
     }
 
     auto static get(string s) {
-        if(s in properties) return properties[s];
+        if(auto x = s in properties) return *x;
         else return Variant(null);
     }
 
     auto static get(s : string)() {
-        if(s in properties) return properties[s];
+        if(auto x = s in properties) return *x;
         else return Variant(null);
     }
 
     auto static lookup(T)(string s) {
-        if(s in properties) {
+        //if(s in properties) {
           return get(s).get!T;
-        } else return null;
+        //} else return null;
     }
 
     auto static lookup(T,s : string)() {
-        if(s in properties) {
+        //if(s in properties) {
           return get!(s).get!T;
-        } else return null;
+        //} else return null;
     }
 }

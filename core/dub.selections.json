@@ -1,26 +1,22 @@
 {
 	"fileVersion": 1,
 	"versions": {
-		"aedi": "0.5.0",
-		"aedi-property-reader": "0.2.0",
-		"ctini": "0.2.1",
+		"aedi": "1.0.0+commit.12.g1ac64f7",
+		"crypto": "0.2.8",
+		"ctini": "0.2.1+commit.2.g0402b3f",
 		"dale": "0.0.1",
 		"derelict-util": "3.0.0-beta.2",
 		"dxx": {"path":"../"},
-		"dyaml": "0.6.5",
 		"fswatch": "0.5.0",
+		"intel-intrinsics": "1.1.1",
 		"isfreedesktop": "0.1.1",
-		"metad": "0.1.0+commit.1.g6099c41",
+		"metad": "0.1.1+commit.1.g6d74906",
 		"pegged": "0.4.4",
-		"proper-d": "0.0.2",
 		"reloaded": "0.1.5",
-		"sdlang-d": "0.10.5",
 		"semver": "0.3.2",
 		"standardpaths": "0.8.1",
-		"taggedalgebraic": "0.10.13",
-		"tinyendian": "0.1.2",
-		"unit-threaded": "0.7.55",
 		"urld": "2.1.1",
-		"xdgpaths": "0.2.5"
+		"xdgpaths": "0.2.5",
+		"zero-memory": "0.1.3"
 	}
 }

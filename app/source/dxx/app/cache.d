@@ -21,26 +21,39 @@ SOFTWARE.
 **/
 module dxx.app.cache;
 
-private import hunt.cache;
+//private import hunt.cache;
 
 private import dxx.app;
 
-class BasicCache {
-  UCache cache;
 
-  T getProperty(T)(string id) {
-      return cache.get!T(id);
+class BasicCache {
+  // Cache cache;
+
+  CachedValue!T get(T)(string id) {
+      //return cache.get!T(id);
+      return null;
   }
-  void setProperty(T)(T t,string id) {
-      cache.put!T(id,t);
+  void set(T)(T t,string id) {
+      //cache.put!T(id,t);
   }
 
   this() shared {
-    cache = cast(shared(UCache))UCache.CreateUCache();
+    //cache = cast(shared(Cache))CacheFectory.create();
   }
 
   this() {
-    cache = UCache.CreateUCache();
+    //cache = CacheFectory.create();
+  }
+
+  class CachedValue(T) {
+    T t;
+    alias t this;
+    bool isNull() {
+      return t is null;
+    }
+    auto ref origin() {
+      return t;
+    }
   }
 }
 
@@ -52,10 +65,10 @@ struct RedisCache {
 
 }*/
 
-class Cache {
+//class Cache {
   //
-}
+//}
 
 interface CacheProvider {
-  Cache getCache(string id="");
+//  Cache getCache(string id="");
 }

@@ -27,8 +27,9 @@ private import core.cpuid;
 private import std.compiler;
 private import std.file;
 private import std.path;
-private import std.string : split,indexOf;
+private import std.string : split,indexOf,strip;
 private import std.array : appender,join;
+private import std.algorithm.searching : countUntil;
 
 private import semver;
 
@@ -141,15 +142,17 @@ struct RTConstants {
         runtimeConstants.curDir = getcwd;
         runtimeConstants.argString = Runtime.args.join(" ");
         runtimeConstants.args = Runtime.args.dup;
-        if(runtimeConstants.argString.indexOf("--")!=-1) {
+        auto inx = runtimeConstants.args.countUntil("--");
+        if(inx!=-1) {
           //auto argSplit = runtimeConstants.args.split("--");
           //runtimeConstants.argsApp = argSplit[0];
           //runtimeConstants.argsAppPassthrough = runtimeConstants.argString.
-          auto i = runtimeConstants.argString.indexOf("--");
-          auto a = runtimeConstants.argString[0..i];
-          auto b = runtimeConstants.argString[i..$];
-          runtimeConstants.argsApp = a.split(" ");
-          runtimeConstants.argsAppPassthrough = b.split(" ");
+          //auto i = runtimeConstants.argString.indexOf("--");
+          //auto a = runtimeConstants.argString[0..i];
+          //auto b = runtimeConstants.argString[i+2..$].strip;
+
+          runtimeConstants.argsApp = runtimeConstants.args[0..inx];
+          runtimeConstants.argsAppPassthrough = runtimeConstants.args[inx+1..$];
         } else {
           runtimeConstants.argsApp = runtimeConstants.args;
           runtimeConstants.argsAppPassthrough = [];

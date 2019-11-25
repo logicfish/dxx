@@ -27,7 +27,7 @@ private import std.typecons;
 
 private import aermicioi.aedi;
 
-import hunt.cache;
+//import hunt.cache;
 
 private import dxx.util;
 private import dxx.app;
@@ -52,8 +52,7 @@ interface PlatformComponents {
     public WorkflowRunner getWorkflowRunner();
     public PluginLoader getPluginLoader();
     public ExtensionsManager getExtensionsManager();
-    public UCache getLocalCache();
-    public CacheManger getCacheManger();
+    //public Cache getLocalCache();
 }
 
 struct PlatformJobEvent {
@@ -73,7 +72,7 @@ class DXXPlatform : SyncNotificationSource
         //DocumentResourceAdaptor
     {
         static WorkflowRunner workflowRunner;
-        UCache localCache;
+        //Cache localCache;
 
         Resource resolveURI(string uri,ResourceSet owner) {
             return null;
@@ -102,12 +101,12 @@ class DXXPlatform : SyncNotificationSource
             }
             return workflowRunner;
         }
-        UCache getLocalCache() {
+        /*Cache getLocalCache() {
           if(localCache is null) {
-            localCache = UCache.CreateUCache;
+            localCache =  CacheFectory.create();
           }
           return localCache;
-        }
+        }*/
     }
     static ThreadLocal _local;
 
@@ -142,11 +141,9 @@ class DXXPlatform : SyncNotificationSource
     } */
 
     ExtensionsManager extensionsManager;
-    CacheManger cacheManger;
 
     private this() {
         extensionsManager = new ExtensionsManager;
-        cacheManger = new CacheManger;
     }
 
     _PluginLoader[string] plugins;
@@ -180,7 +177,7 @@ class DXXPlatform : SyncNotificationSource
     }
 
     static void clearLocalCache() {
-      destroy(getLocals.localCache);
+      //destroy(getLocals.localCache);
     }
 }
 
@@ -274,14 +271,10 @@ class PlatformRuntime(Param...) :
     public WorkflowRunner getWorkflowRunner() {
         return DXXPlatform.getLocals.getWorkflowRunner;
     }
-    @component
-    override CacheManger getCacheManger() {
-        return DXXPlatform.getInstance.cacheManger;
-    }
-    @component
-    override UCache getLocalCache() {
+    /*@component
+    override Cache getLocalCache() {
         return DXXPlatform.getLocals.getLocalCache;
-    }
+    }*/
 
     void registerPlatformDependencies(InjectionContainer injector) {
         Workspace w = new WorkspaceDefault;
@@ -292,4 +285,13 @@ class PlatformRuntime(Param...) :
         super.registerAppDependencies(injector);
         registerPlatformDependencies(injector);
     }
+    version(unittest) {
+        mixin registerComponent!(PlatformRuntime!BasicParam);
+    }
+}
+unittest {
+  WorkflowRunner runner = resolveInjector!WorkflowRunner;
+  assert(runner !is null);
+  PluginLoader loader = resolveInjector!PluginLoader;
+  assert(loader !is null);
 }

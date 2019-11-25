@@ -285,7 +285,7 @@ void run() {
     //exec("dub",["run","--root=.","--arch="~ARCH,"--","init"]);
     exec("dub", [
         "run","--root=.","--arch="~ARCH,
-	"--nodeps=true", "--force=false",
+    "--nodeps=true", "--force=false",
         "--config=dxx-tool-console"
     ]);
 //    exec("dub",

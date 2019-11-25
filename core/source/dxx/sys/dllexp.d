@@ -1,4 +1,5 @@
 module dxx.sys.dllexp;
+
 version(unittest) {
 } else {
     version(DXX_Module) {
@@ -9,7 +10,6 @@ version(unittest) {
         import dxx.constants;
 
         import dxx.sys.loader;
-	public import dxx.sys.dllexp;
 
         extern(C):
         void load( void* userdata ) {

@@ -42,12 +42,15 @@ RDelim <- "}}"
 };
 */
 enum _GRAMMAR = q{
-MiniTemplateGrammar(LDelim,RDelim):
-Doc <- Line+ :endOfInput
-Line <- :LDelim Inner :RDelim / Text
-Text <- ~((!LDelim) Char )*
-Inner <- ~((!RDelim) Char )*
-Char <- .
+MiniTemplateGrammar:
+  Doc <- Line+ :endOfInput
+  Line <- (Var / Text)
+  Var <- LDelim ^Inner RDelim
+  LDelim <- "{{"
+  RDelim <- "}}"
+  Text <- ~((!LDelim) Char )*
+  Char <- .
+  Inner <- ~((!RDelim) Char )*
 };
 mixin(grammar(_GRAMMAR));
 
@@ -72,8 +75,8 @@ unittest {
     assert(c == "<MyValue>.<MyVal2>");
 }
 
-template miniTemplateParser(alias idParser,string txt,alias LDelim="{{",alias RDelim="}}") {
-    enum miniTemplateParser = MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar!(LDelim,RDelim)(txt)).compileNode();
+template miniTemplateParser(alias idParser,string txt) {
+    enum miniTemplateParser = MiniTemplate!(idParser).MiniTemplateCompiler!(MiniTemplateGrammar(txt)).compileNode();
 }
 
 template miniTemplate(alias idParser,alias txt) {
@@ -118,7 +121,7 @@ template MiniInterpreter(T) {
       nodes["GRAMMAR.RDelim"] = f=>"";
       nodes["GRAMMAR.Text"] = f=>f.matches.join("");
       nodes["GRAMMAR.Inner"] = (f)=>idParser(f.matches.join(""));
-      return Interpreter(nodes,t);
+      return Interpreter!(string,typeof(nodes))(nodes,t);
     }
 }
 
@@ -131,18 +134,22 @@ unittest {
     enum inputText = q{
       {{MyValue}}.{{MyVal2}}
     };
-    auto c = MiniInterpreter(v,MiniTemplateGrammar!("{{","}}")(inputText));
+    auto c = MiniInterpreter(v,MiniTemplateGrammar!(inputText));
     assert(c == "<MyValue>.<MyVal2>");
 }
 
-template miniInterpreter(alias idParser,alias LDelim="{{",alias RDelim="}}") {
-  static string __id(ParseTree t) {
-    return idParser(t.matches.join(""));
+template miniInterpreter(alias idParser) {
+  //static string __id(ParseTree t) {
+  //  return idParser(t.matches.join(""));
+  //}
+  static string __id(string t) {
+    return idParser(t);
   }
   auto miniInterpreter(string txt) {
-    auto data = MiniTemplateGrammar!(LDelim,RDelim)(txt);
+    auto data = MiniTemplateGrammar(txt);
     //auto compiler = MiniInterpreter!(__id).MiniTemplateInterpreter!(data).interp();
-    return MiniInterpreter!(typeof(&__id),data)(&__id);
+    //return MiniInterpreter!(typeof(&__id))(&__id,data);
+    return MiniInterpreter!(typeof(&__id))(&__id,data);
     //return I.MiniTemplateInterperter!(data).interpNode();
     //return compiler();
   }
@@ -171,7 +178,7 @@ unittest {
   auto c = miniInterpreter!(v)(inputText);
   assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
 }
-
+/*
 unittest {
   static string v(string k) {
     pragma(msg,"v = "~ k);
@@ -183,3 +190,4 @@ unittest {
   auto c = miniInterpreter!(v,"{","}")(inputText);
   assert(c == "123[MyValue.a.b.c].[MyVal2.d.e.f]456");
 }
+*/

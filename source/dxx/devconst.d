@@ -21,17 +21,23 @@ SOFTWARE.
 **/
 module dxx.devconst;
 
+private import std.json;
+
 public import dxx.constants;
 
 version(DXX_Bootstrap) {
-  private import aermicioi.aedi;
-  private import aermicioi.aedi_property_reader;
-
-  static Container __c;
+  //private import aermicioi.aedi;
+  private import std.variant;
+  //static Container __c;
+  static Variant[string] __p;
 
   template _(T) {
     auto _(string v) {
-      return __c.locate!T(v);
+      //return __c.locate!T(v);
+      if(auto x = v in __p) {
+        return x.get!T;
+      }
+      return null;
     }
   }
 
@@ -43,10 +49,10 @@ version(DXX_Bootstrap) {
   }
 
   template CWD() {
-    alias CWD=()=>RTConstants.curDir;
+    alias CWD=()=>runtimeConstants.curDir;
   }
   template APPDIR() {
-    alias APPDIR=()=>RTConstants.appDir;
+    alias APPDIR=()=>runtimeConstants.appDir;
   }
   template APPS() {
     alias APPS=()=>___("build.apps");
@@ -81,37 +87,109 @@ version(DXX_Bootstrap) {
   }
 
   template EXEPATH() {
-    alias EXEPATH = runtimeConstants.appFileName;
+    alias EXEPATH =()=>runtimeConstants.appFileName;
   }
   template EXEDIR() {
-    alias EXEDIR = runtimeConstants.appDir;
+    alias EXEDIR = ()=>runtimeConstants.appDir;
+  }
+  template APPARG() {
+    alias APPARG = ()=>runtimeConstants.argsApp;
+  }
+  template ARGPASS() {
+    alias ARGPASS = ()=>cast(string[])runtimeConstants.argsAppPassthrough.dup;
   }
 
-  void load(T : DocumentContainer!X, X...)(T container) {
-  	with (container.configure) { // Create a configuration context for config container
-  		register!string("build.arch"); // Define `protocol` property of type `string`
-  		register!string("build.build");
+  string[] toStringArray(const(JSONValue)[] ar) {
+    string[] res;
+    foreach(v;ar) {
+      res ~= v.str;
+    }
+    return res;
+  }
+  //void load(T : DocumentContainer!X, X...)(T container) {
+  //void load(T)(T container) {
+  void load(const(JSONValue) __j) {
+  	//with (container.configure) { // Create a configuration context for config container
+    import std.string : indexOf;
 
-      register!(string[])("build.debugs");
-      register!(string[])("build.versions");
-      register!(string)("build.config");
-      register!(string[])("build.projects");
-      register!(string[])("build.apps");
-      register!(string)("build.tag");
-      register!(string)("build.force");
-      register!(string)("build.nodeps");
+    void _register(_T)(string name,string fqn="",const(JSONValue) j=__j) {
+        debug {
+          import std.experimental.logger;
+          debug(DXX_Developer) {
+            sharedLog.trace("reg ",fqn," ",name);
+          }
+        }
+        auto inx = name.indexOf('.');
+        if(inx != -1) {
+          string n = name[0..inx];
+          if(const(JSONValue)* x = n in j) {
+            _register!_T(name[inx+1..$],n ~ ".",*x);
+            return;
+          }
+        }
+        if(const (JSONValue)* val = name in j) {
+          name = fqn ~ name;
+          static if(is(_T == int)) {
+            //register!_T(val.integer,name);
+            __p[name] = Variant(val.integer);
+          } else if(is(_T == bool)) {
+            //register!_T(val.boolean,name);
+            __p[name] = Variant(val.boolean);
+          } else if (is(_T == string)) {
+            //register!_T(val.str,name);
+            __p[name] = Variant(val.str);
+          } else if (is(_T == string[])) {
+            string[] vals;
+            vals = toStringArray(val.array);
+            //register!(string[])(vals,name);
+            __p[name] = Variant(vals);
+          }
+        } else {
+          static if(is(_T == int)) {
+            __p[name] = Variant(-1);
+          } else if(is(_T == bool)) {
+            __p[name] = Variant(false);
+          } else if (is(_T == string)) {
+            __p[name] = Variant("");
+          } else if (is(_T == string[])) {
+              string[] x = [];
+            __p[name] = Variant(x);
+          }
+        }
+    }
+    //with(__j) {
+  		_register!string("build.arch"); // Define `protocol` property of type `string`
+  		_register!string("build.build");
 
-      register!string("ut.arch"); // Define `protocol` property of type `string`
-  		register!string("ut.build");
-      register!(string[])("ut.debugs");
-      register!(string[])("ut.versions");
-      register!(string)("ut.config");
-      register!(string[])("ut.projects");
-  	}
+      _register!(string[])("build.debugs");
+      _register!(string[])("build.versions");
+      _register!(string)("build.config");
+      _register!(string[])("build.projects");
+      _register!(string[])("build.apps");
+      _register!(string)("build.tag");
+      _register!(string)("build.force");
+      _register!(string)("build.nodeps");
+
+      _register!string("ut.arch"); // Define `protocol` property of type `string`
+  		_register!string("ut.build");
+      _register!(string[])("ut.debugs");
+      _register!(string[])("ut.versions");
+      _register!(string)("ut.config");
+      _register!(string[])("ut.projects");
+  	//}
+  }
+
+  auto loadJson(string pathOrData) {
+    import std.file : exists, readText;
+    if (pathOrData.exists) {
+      debug(trace) trace("Loading json from ", pathOrData);
+      pathOrData = pathOrData.readText();
+    }
+    return parseJSON(pathOrData);
   }
 
   static this() {
-    auto c = container(
+    /* auto c = container(
       //singleton,
       //prototype,
       argument,
@@ -121,12 +199,18 @@ version(DXX_Bootstrap) {
       json("resources/dale-default.json"),
       //yaml("config.yaml"),
       //sdlang("config.sdlang")
-    );
+    ); */
+    import std.file : exists, readText;
+    auto __j = loadJson("resources/dale.json");
+
+    load(__j);
+
+    /*auto c = container(prototype);
 
 	  foreach (subcontainer; c) {
 		    subcontainer.load;
     }
-    __c = c;
+    __c = c;*/
 
   }
 

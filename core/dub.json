@@ -10,11 +10,12 @@
     "dependencies": {
         "dxx": { "path" : "../" },
         "ctini" : "~>0.2.1",
+        "aedi": "~>1.0.0",
         "urld": "~>2.1.1",
         "standardpaths": "~>0.8.1",
-        "aedi-property-reader": "~>0.2.0",
         "reloaded": "~>0.1.5",
-        "metad" : "~>0.1.0"
+        "metad" : "~>0.1.0",
+        "crypto": "~>0.2.4"
     },
     "subConfigurations": {
         "dxx": "dxx-lib"

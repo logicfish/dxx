@@ -42,15 +42,18 @@ private import std.experimental.logger;
 private import std.stdio;
 private import std.process : environment;
 private import std.typecons;
+private import std.variant;
+private import std.string : indexOf;
+private import std.json;
 
 private import aermicioi.aedi;
-private import aermicioi.aedi_property_reader;
 
 private import dxx.constants;
 private import dxx.util.ini;
 private import dxx.util.config;
 
 alias component = aermicioi.aedi.component;
+alias autowired = aermicioi.aedi.autowired;
 alias localInjector = InjectionContainer.INSTANCE;
 
 static auto resolveInjector(alias T,Arg...)(Arg arg,InjectionContainer i=InjectionContainer.getInstance) {
@@ -136,12 +139,6 @@ abstract class InjectionContainer {
         _container.configure("singleton").register!T(t,arg);
     }
 
-    T getParam(T)(string k) {
-        debug(Injector) {
-            sharedLog.info("getParam ",k);
-        }
-        return _container.locate!T(k);
-    }
     void terminate() {
         debug(Injector) {
             sharedLog.info("terminating");
@@ -154,7 +151,7 @@ abstract class InjectionContainer {
         }
         return _container.instantiate;
     }
-    abstract void load(T : DocumentContainer!X, X...)(T container);
+    //abstract void load(T : DocumentContainer!X, X...)(T container);
 }
 
 
@@ -181,7 +178,7 @@ final class LocalInjector(C...) : InjectionContainer {
         debug(Injector) {
             sharedLog.info("Injector config");
         }
-        version(DXX_Developer) {
+        /*version(DXX_Developer) {
           auto cont = container(
             argument,
             env,
@@ -202,13 +199,100 @@ final class LocalInjector(C...) : InjectionContainer {
             //configFiles
              );
 
-        }
+        }*/
+        /*auto cont = container(
+          prototype
+        );
+        auto __j = loadJson("resources/dxx.json");
+
         foreach (c; cont) {
-            load(c);
+            load(c,__j);
         }
+        return cont;*/
+        auto cont = prototype;
+        auto __j = loadJson("resources/dxx.json");
+        load(cont,__j);
         return cont;
     }
-    void load(T : DocumentContainer!X, X...)(T container) {
+    auto loadJson(string pathOrData) {
+      import std.file : exists, readText;
+      if (pathOrData.exists) {
+        debug(trace) trace("Loading json from ", pathOrData);
+        pathOrData = pathOrData.readText();
+      }
+      return parseJSON(pathOrData);
+    }
+    string[] toStringArray(const(JSONValue)[] ar) {
+      string[] res;
+      foreach(v;ar) {
+        res ~= v.str;
+      }
+      return res;
+    }
+    Variant readValue(const(JSONValue) j,string name) {
+        auto v = LocalConfig.get(name);
+        if(v != null) return v;
+        //return null;
+        // scan env
+        // scan args
+        // scan properties
+        auto inx = name.indexOf('.');
+        if(inx != -1) {
+          string n = name[0..inx];
+          if(const(JSONValue)* x = n in j) {
+            return readValue(*x,name[inx+1..$]);
+          }
+        }
+        if(const (JSONValue)* val = name in j) {
+          debug(Injector) {
+            sharedLog.trace(name," = ",*val);
+          }
+          /*static if(is(_T == int)) {
+            return Variant(val.integer);
+          } else if(is(_T == uint)) {
+            return Variant(val.integer);
+          } else if(is(_T == bool)) {
+            return Variant(val.boolean);
+          } else if (is(_T == immutable(char)[])) {
+            return Variant(val.str);
+          } else if (is(_T == string[])) {
+            string[] vals;
+            vals = toStringArray(val.array);
+            return Variant(vals);
+          }*/
+          switch(val.type) {
+            case(JSONType.integer):
+              return Variant(val.integer);
+            case(JSONType.true_):
+            case(JSONType.false_):
+              return Variant(val.boolean);
+            case(JSONType.string):
+              return Variant(val.str);
+            case(JSONType.array):
+              string[] vals;
+              vals = toStringArray(val.array);
+              return Variant(vals);
+            default:
+              return Variant(null);
+          }
+
+        }
+        /*} else {
+          static if(is(_T == int)) {
+            return Variant(-1);
+          } else if(is(_T == bool)) {
+            return Variant(false);
+          } else if (is(_T == string)) {
+            return Variant("");
+          } else if (is(_T == string[])) {
+            string[] x = [];
+            return Variant(x);
+          }
+        }*/
+        return Variant(null);
+    }
+    //void load(T : DocumentContainer!X, X...)(T container) {
+    void load(T)(T container,const(JSONValue) __j) {
         with (container.configure) {
             static foreach(c;C) {
                 static if(isTuple!c) {
@@ -221,39 +305,25 @@ final class LocalInjector(C...) : InjectionContainer {
                               alias fieldType = typeof(_f);
                               debug(Injector) {
                                   import std.conv;
-                                  //sharedLog.info("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
-                                  pragma(msg,"field");
-                                  pragma(msg,fieldType);
-                                  pragma(msg,fieldName);
+                                  sharedLog.trace("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
+                                  //pragma(msg,fieldType);
+                                  //pragma(msg,fieldName);
                               }
                               static if(isTuple!fieldType) {
                                 _reg!(fieldName ~ ".",fieldType)();
                               } else {
-                                register!fieldType(fieldName);
+                                auto v = readValue(__j,fieldName);
+                                if(v.peek!fieldType !is null) {
+                                  debug(Injector) {
+                                    sharedLog.trace(fieldName," = ",v.get!fieldType);
+                                  }
+                                  register!fieldType(v.get!fieldType,fieldName);
+                                }
                               }
                             }
                           }
                       }
                     }
-
-                    /*static foreach (fieldName ; c.fieldNames) {
-                        {
-                            mixin("alias f = c." ~ fieldName~";");
-                            alias fieldType = typeof(f);
-                            debug(Injector) {
-                                import std.conv;
-                                //sharedLog.info("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
-                                pragma(msg,"field");
-                                pragma(msg,fieldType);
-                                pragma(msg,fieldName);
-                            }
-                            static if(isTuple!fieldType) {
-                              _reg!(fieldType,fieldName);
-                            } else {
-                              register!fieldType(fieldName);
-                            }
-                        }
-                    }*/
                     _reg!("",c)();
                 }
                 // Scan properties from the .ini file.

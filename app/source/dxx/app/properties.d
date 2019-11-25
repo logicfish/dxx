@@ -40,24 +40,25 @@ module dxx.app.properties;
 
 private import std.variant;
 private import std.algorithm;
+private import std.range;
 
-private import hunt.cache;
+//private import hunt.cache;
 
 private import dxx.util;
 
 class Properties {
-    __gshared static Variant[string] property_defaults;
+    //__gshared static Variant[string] property_defaults;
 
     nothrow
-    static T lookup(T)(string k) {
-        try {
-          UCache c = resolve!UCache;
+    static T lookup(T)(string k,T delegate() _t=null) {
+        /*try {
+          Cache c = resolve!Cache;
           if(c !is null) {
-            Nullable!T a = c.get_ex!T(k);
-            if(!a.isnull) return cast(T)a;
+            Nullable!T a = c.get!T(k);
+            if(!a.isNull) return cast(T)a;
           }
         } catch(Exception e) {
-        }
+        }*/
         try {
           auto v = LocalConfig.get(k);
           if(v != null) return v.get!T;
@@ -66,12 +67,16 @@ class Properties {
         try {
           return getInjectorProperty!T(k);
         } catch(Exception e) {
-          if(k in property_defaults) {
+          /*if(k in property_defaults) {
             try {
               return property_defaults[k].get!T;
             } catch(Exception e) {
             }
-          }
+          }*/
+        }
+        try {
+          if(_t !is null) return _t();
+        } catch(Exception e) {
         }
         static if(typeid(T) is typeid(bool)) {
           return false;
@@ -81,16 +86,16 @@ class Properties {
     }
 
     nothrow
-    static T lookup(T,k : string)() {
-      return lookup!T(k);
+    static T lookup(T,k : string)(T delegate() _t=null) {
+      return lookup!T(k,_t);
     }
 
     nothrow
-    static T assign(T)(T t, string k) {
-      try {
-        resolve!UCache.put!T(k);
+    static void assign(T)(string k,T t) {
+      /*try {
+        resolve!Cache.set(k,t);
       } catch(Exception e) {
-      }
+      }*/
     }
 
     nothrow
@@ -104,11 +109,14 @@ class Properties {
 
     nothrow static
     auto idParser(string k) {
-      return lookup!string(k);
+      return lookup!string(k,()=>k);
     }
     nothrow static
     auto expand(string v) {
-      //return miniInterpreter!(idParser)(v);
+      try {
+        return miniInterpreter!(idParser)(v).join;
+      } catch(Exception e) {
+      }
       return v;
     }
     /*template expand(alias F) {
@@ -137,7 +145,7 @@ class Properties {
       return expand(_!string(v));
     }
     static auto ___(string v) {
-      return _!(string[])(v).map!(x=>expand(x));
+      return _!(string[])(v).map!(x=>expand(x)).array;
     }
 
 }

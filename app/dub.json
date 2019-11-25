@@ -10,9 +10,9 @@
     "dependencies": {
       "dxx" : { "path" : "../" },
       "dxx:core": "*",
-      "aedi": "~>0.5.0",
-      "hunt-cache": "~>0.5.0",
-      "vayne" : "~>0.0.45"
+      "aedi": "~>1.0.0",
+      "vayne" : "~>0.0.45",
+      "libasync": "~>0.8.4"
     },
     "dependencies-posix" : {
       "backtrace-d" : "~>0.1.2"

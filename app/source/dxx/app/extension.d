@@ -23,7 +23,7 @@ module dxx.app.extension;
 
 private import std.algorithm;
 
-private import hunt.cache;
+//private import hunt.cache;
 
 private import dxx.util;
 
@@ -85,16 +85,16 @@ class ExtensionsManager : SyncNotificationSource {
       }
     };
 
-    UCache xpCache;
-    UCache xCache;
+    //Cache xpCache;
+    //Cache xCache;
     void enumerateExtensions(alias T)(string xp) {
         //extensions.filter!(a => a.desc.extensionPoint == xp).each!(a => T(a));
     }
     void enumerateExtensionPoints(alias T)(string xp) {
     }
     this() {
-        xpCache = UCache.CreateUCache();
-        xCache = UCache.CreateUCache();
+        //xpCache = CacheFectory.create();
+        //xCache = CacheFectory.create();
     }
     void sendExtensionEvent(ExtensionEvent.Type type,string pluginId,ExtensionDesc* x) {
       auto e = new _Event(type,pluginId,x);

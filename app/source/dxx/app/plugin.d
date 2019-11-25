@@ -24,12 +24,16 @@ module dxx.app.plugin;
 private import std.experimental.logger;
 private import std.exception;
 
+//private import hunt.cache;
+
 private import dxx.util;
 private import dxx.sys.loader;
 
 private import dxx.app.component;
 private import dxx.app.extension;
 private import dxx.app.platform;
+private import dxx.app.properties;
+private import dxx.app.services;
 
 struct PluginDependency {
     string id;
@@ -50,10 +54,36 @@ struct PluginDescriptor {
     ExtensionDesc[]* extensions;
 }
 
+interface PlatformDelegates {
+  string platformGetString(string id) shared;
+  string[] platformGetStrings(string id) shared;
+  void platformSetString(string id,string value) shared;
+  void platformSetStrings(string id,string[] value) shared;
+}
+
+interface PluginDelegates {
+
+}
+
 struct PluginContext {
   // These parts filled in by the kernel
-    void* delegate(string id) shared kernelGetProperty;
-    void delegate(string id,void*) shared kernelSetProperty;
+    string delegate(string id) shared platformGetString;
+    string[] delegate(string id) shared platformGetStrings;
+    void delegate(string id,string value) shared platformSetString;
+    void delegate(string id,string[] value) shared platformSetStrings;
+
+    void delegate (string[] typeId,void delegate (ServiceNotification),string[string]) shared platformAddServiceListener;
+    void delegate ( void delegate (ServiceNotification) ) shared platformRemoveServiceListener;
+
+    ServiceRegistration delegate(string[] typeId,void*) shared registerService;
+    void delegate(ServiceRegistration reg) shared unregisterService;
+    //void delegate(ServiceRegistration reg) shared platformUpdateRegistration;
+
+    ServiceReference delegate (string typeId) lookupServiceReference;
+    ServiceReference[] delegate (string typeId) lookupServiceReferences;
+    void* delegate(ServiceReference) lookupService;
+    void delegate(ServiceReference) releaseServiceReference;
+
     void* delegate(string id) shared platformCreateInstance;
     void delegate(void*) shared platformDestroyInstance;
 
@@ -81,9 +111,19 @@ class PluginLoader {
       debug(Plugin) {
           MsgLog.info("PluginLoader load "  ~ path);
       }
+      enforce(loader is null);
       loader = Loader.loadModule(path,&ctx);
       enforce(loader);
-      _desc = *ctx.desc;
+      _desc = *pluginContext.desc;
+      pluginContext.desc = &_desc;
+      auto pl = cast(shared(PluginLoader))this;
+      pluginContext.platformCreateInstance = &pl.createInstance;
+      pluginContext.platformDestroyInstance = &pl.destroyInstance;
+      pluginContext.platformGetString = &pl.getString;
+      pluginContext.platformGetStrings = &pl.getStrings;
+      pluginContext.platformSetString = &pl.setString;
+      pluginContext.platformSetStrings = &pl.setStrings;
+//      pluginContext.platformSetProperty = &pl.setProperty;
     }
     void load(string name,string path) {
         auto p = pluginFileName(name,path);
@@ -91,12 +131,69 @@ class PluginLoader {
     }
     inout ref
     auto desc() {
-        //return ctx.desc;
         return _desc;
     }
     inout ref
     auto pluginContext() {
         return ctx;
+    }
+    shared void* createInstance(string id) {
+        auto a = TypeInfo_Class.find(id).create;
+        // TODO use the injector lookup...
+        return cast(void*)a;
+    }
+    void destroyInstance(void* t) shared {
+        destroy(t);
+    }
+    string getString(string id) shared {
+      return Properties.__("plugins." ~ pluginId ~ "." ~ id);
+    }
+    string[] getStrings(string id) shared {
+      return Properties.___("plugins." ~ pluginId ~ "." ~ id);
+    }
+    void setString(string id,string value) shared {
+      Properties.assign!string("plugins." ~ pluginId ~ "." ~ id,value);
+    }
+    void setStrings(string id,string[] value) shared {
+      Properties.assign!(string[])("plugins." ~ pluginId ~ "." ~ id,value);
+    }
+    /* ServiceRegistration registerService(string[] typeId,void* svc) shared {
+      enforce(typeId.length > 0);
+      foreach(t;typeId) {
+        shared(Registration) reg = new shared(Registration)(pluginId);
+        reg.typeId = t;
+        reg.service = cast(shared(void*))svc;
+        getRegistry.put!(shared(Registration))(reg.fullyQualifiedIdentifier,reg);
+      }
+    }
+    void unregisterService(ServiceRegistration reg) shared {
+      //getRegistry.remove(pluginId ~ "." ~ reg.id);
+      auto r = cast(shared(Registration*))reg._handle;
+      if(r !is null) {
+        getRegistry.remove(r.fullyQualifiedIdentifier);
+      }
+    }
+    ServiceReference lookupServiceReference(string typeId) shared {
+      auto r = getRegistry.get_ex!Registration(typeId);
+      if(!r.isnull) {
+        return r.createRef;
+      }
+    }
+    void* lookupService(ServiceReference reference) shared {
+    }
+    static auto getRegistry() {
+      auto manger = Properties.resolve!CacheManger;
+      static UCache registry;
+      if(registry is null) {
+        registry = manger.getCache("serviceRegistry");
+        if(registry is null) {
+          registry = manger.createCache("serviceRegistry");
+        }
+      }
+      return registry;
+    } */
+    auto pluginId() shared {
+      return (cast(shared(PluginDescriptor))_desc).id;
     }
 }
 
@@ -211,7 +308,7 @@ abstract class PluginDefault : Plugin {
         }
         shared void* createInstance(string id) {
             auto a = TypeInfo_Class.find(id).create;
-            // TODO use injector
+            // TODO use the injector lookup...
             return cast(void*)a;
         }
         shared void destroyInstance(void* t) {
