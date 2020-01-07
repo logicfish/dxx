@@ -24,7 +24,7 @@
 		"libasync": "0.8.4",
 		"libmemcached": "1.1.2",
 		"memutils": "0.4.13",
-		"metad": "0.1.1+commit.1.g6d74906",
+		"metad": "0.2.0",
 		"pegged": "0.4.4",
 		"proper-d": "0.0.2",
 		"reloaded": "0.1.5",

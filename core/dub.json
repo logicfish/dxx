@@ -1,32 +1,37 @@
 {
-    "name": "core",
-    "authors": [
-        "Mark"
-    ],
-    "description": "DXX Core Library",
-    "copyright": "Copyright © 2018, Mark",
-    "license": "MIT",
-    "stringImportPaths" : [ "resources" ],
-    "-ddoxFilterArgs" : [
-      "properd",
-      "aermicioi",
-      "ctini",
-      "pegged",
-      "dyaml"
-    ],
-    "dependencies": {
-        "dxx": { "path" : "../" },
-        "ctini" : "~>0.2.1",
-        "aedi": "~>1.0.0",
-        "urld": "~>2.1.1",
-        "standardpaths": "~>0.8.1",
-        "reloaded": "~>0.1.5",
-        "metad" : "~>0.2.0",
-        "crypto": "~>0.2.4"
-    },
-    "subConfigurations": {
-        "dxx": "dxx-lib"
-    },
-    "targetPath": "bin",
-    "targetType": "library"
+	"-ddoxFilterArgs": [
+		"properd",
+		"aermicioi",
+		"ctini",
+		"pegged",
+		"dyaml"
+	],
+	"authors": [
+		"Mark"
+	],
+	"copyright": "Copyright © 2018, Mark",
+	"dependencies": {
+		"aedi": "~>1.0.0",
+		"crypto": "~>0.2.4",
+		"ctini": "~>0.2.1",
+		"dxx": {
+			"path": "../",
+			"version": ">=0.0.0"
+		},
+		"metad": "~>0.2.0",
+		"reloaded": "~>0.1.5",
+		"standardpaths": "~>0.8.1",
+		"urld": "~>2.1.1"
+	},
+	"description": "DXX Core Library",
+	"license": "MIT",
+	"name": "core",
+	"stringImportPaths": [
+		"resources"
+	],
+	"subConfigurations": {
+		"dxx": "dxx-lib"
+	},
+	"targetPath": "bin",
+	"targetType": "library"
 }

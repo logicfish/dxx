@@ -22,11 +22,14 @@
 		"libmemcached": "1.1.2",
 		"memutils": "0.4.13",
 		"metad": "0.2.0",
+		"navm": "0.1.3",
 		"pegged": "0.4.4",
+		"qscript": "0.6.11",
 		"reloaded": "0.1.5",
 		"semver": "0.3.2",
 		"standardpaths": "0.8.1",
 		"urld": "2.1.1",
+		"utils": "0.3.5",
 		"vayne": "0.0.46",
 		"xdgpaths": "0.2.5"
 	}

@@ -29,6 +29,7 @@ private import hunt.cache;
 private import witchcraft;
 
 private import dxx.util;
+private import dxx.app.plugin;
 
 struct ExtensionPointDesc {
     string id;
