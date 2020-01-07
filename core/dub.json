@@ -21,7 +21,7 @@
         "urld": "~>2.1.1",
         "standardpaths": "~>0.8.1",
         "reloaded": "~>0.1.5",
-        "metad" : "~>0.1.0",
+        "metad" : "~>0.2.0",
         "crypto": "~>0.2.4"
     },
     "subConfigurations": {

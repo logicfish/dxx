@@ -4,10 +4,17 @@
         "Mark"
     ],
     "description": "D language utility library and modular application framework",
-    "copyright": "Copyright © 2018, Mark Fisher",
+    "copyright": "Copyright © 2019, Mark Fisher",
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "-ddoxTool": "scod",
+    "-ddoxFilterArgs" : [
+      "properd",
+      "aermicioi",
+      "ctini",
+      "pegged",
+      "dyaml"
+    ],
     "dependencies" : {
       "ctini": "~>0.2.1",
       "semver" : "~>0.3.2"
