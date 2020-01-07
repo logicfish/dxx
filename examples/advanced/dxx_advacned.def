@@ -1,0 +1,8 @@
+LIBRARY advanced-plugin
+
+EXPORTS
+    init
+    uninit
+    load
+    unload
+    update

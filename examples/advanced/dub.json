@@ -1,0 +1,23 @@
+{
+    "name": "advanced-plugin",
+    "authors": [
+        "Mark"
+    ],
+    "dependencies": {
+	     "dxx:app" : { "path" : "../.."}
+    },
+    "subConfigurations": {
+        "dxx:app": "dxx-plugin"
+    },
+    "debugs" : [ "Plugin","Loader","Module" ],
+    "description": "DXX example module",
+    "copyright": "Copyright © 2018, Mark",
+    "license": "MIT",
+    "targetType": "dynamicLibrary",
+    "versions" : ["DXX_Plugin","DXX_Module"],
+    "targetPath": "bin",
+    "stringImportPaths" : [ "resources" ],
+    "sourceFiles-windows": [
+        "dxx_advanced.def"
+    ]
+}

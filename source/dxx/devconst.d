@@ -102,6 +102,12 @@ version(DXX_Bootstrap) {
   string[] toStringArray(const(JSONValue)[] ar) {
     string[] res;
     foreach(v;ar) {
+      debug {
+        import std.experimental.logger;
+        debug(DXX_Developer) {
+          sharedLog.trace("array ",v);
+        }
+      }
       res ~= v.str;
     }
     return res;

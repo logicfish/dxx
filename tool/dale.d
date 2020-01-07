@@ -156,10 +156,14 @@ void generate() {
                     //      (v,e.stripExt);
                     version(Windows) {
                       e = e.buildNormalizedPath.replace("\\","/");
+                      //o = o.buildNormalizedPath.replace("\\","/");
                     } else {
                       e = e.buildNormalizedPath;
+                      //o = o.buildNormalizedPath;
                     }
-                    templates[e]=e.stripExtension;
+                    string o = e.chompPrefix(v~"/").stripExtension;
+                    //templates[e]=e.stripExtension;
+                    templates[e]=o;
                     MsgLog.trace("Template "~_id~ " " ~v~" "~e);
                   }
                 }
@@ -178,13 +182,14 @@ void generate() {
 @(TASK)
 void test() {
     deps(&prebuild);
-    exec("dub", ["test","--arch="~ARCH,"--build="~BUILD,"--nodeps="~NODEPS]);
+    //exec("dub", ["test","--arch="~ARCH,"--build="~BUILD,"--nodeps="~NODEPS]);
     //string[] param;
     //param ~= "test";
     //foreach(p;PROJECTS) {
         //exec("dub", ["test","--arch="~ARCH,"--root="~p]);
         //exec("dub",["test","--arch="~ARCH,"--root="~p,"--build="~BUILD]);
     //}
+    exec("dub",buildDubArgs!("test")~["--config="~CONFIG]);
 }
 
 void forcetest() {
@@ -198,13 +203,7 @@ void forcetest() {
 @(TASK)
 void build() {
     deps(&prebuild);
-    //deps(&test);
-    exec("dub", [
-        "build","--arch="~ARCH,"--build="~BUILD,"--config="~CONFIG,"--nodeps="~NODEPS,"--force="~FORCE
-    ]);
-    //foreach(a;APPS) {
-    //   exec("dub", ["build","--root="~a,"--arch="~ARCH,"--build="~BUILD]);
-    //}
+    exec("dub",buildDubArgs!("build")~["--config="~CONFIG]);
 }
 
 @(TASK)
@@ -285,7 +284,7 @@ void run() {
     //exec("dub",["run","--root=.","--arch="~ARCH,"--","init"]);
     exec("dub", [
         "run","--root=.","--arch="~ARCH,
-    "--nodeps=true", "--force=false",
+        "--nodeps=true", "--force=false",
         "--config=dxx-tool-console"
     ]);
 //    exec("dub",

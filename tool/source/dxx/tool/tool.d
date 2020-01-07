@@ -52,10 +52,14 @@ alias ToolsParam = Tuple!(
   Tuple!(
     string,"projectType",
     string[],"dependencies"
-  ), "project"
+  ), "project",
+  Tuple!(
+    Tuple!(
+      string[],"type",
+      string[],"define"
+    ), "args"
+  ), "dxx"
 );
-
-static assert (isTuple!ToolsParam);
 
 interface ToolsModuleInterface {
   public ArgParser getArgParser();
@@ -63,14 +67,14 @@ interface ToolsModuleInterface {
 
 @component
 class ToolsModule : PlatformRuntime!(
-  ToolsParam
+  ToolsParam,ToolsModule
 ),ToolsModuleInterface {
     static void registerTool(alias Cmd : string,T : Tool)(InjectionContainer injector) {
         injector.register!T("tool.cmd."~Cmd);
     }
     override void registerPlatformDependencies(InjectionContainer injector) {
         debug {
-            sharedLog.info("ToolsModule registerPlatformDependencies()");
+            sharedLog.trace("ToolsModule registerPlatformDependencies()");
         }
         super.registerPlatformDependencies(injector);
         registerTool!("init",InitTool)(injector);
@@ -85,12 +89,15 @@ class ToolsModule : PlatformRuntime!(
         //LangTool.registerArguments(injector);
         //CfgTool.registerArguments(injector);
     }
-    mixin registerComponent!ToolsModule;
 
     @component
     override ArgParser getArgParser() {
+        debug {
+          sharedLog.trace("Get Args Parser");
+        }
         return new ArgParser;
     }
+    mixin registerComponent!ToolsModule;
 };
 
 
@@ -121,7 +128,7 @@ version (DXX_Developer) {
       }
 
       string cmd = args[1];
-      MsgLog.info("cmd = "~cmd);
+      MsgLog.info("Command: ",cmd);
 
       //auto loader = new PluginLoader("examples/plugin/bin/dxx_example-plugin.dll");
       //loader.update;

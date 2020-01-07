@@ -4,7 +4,7 @@
         "Mark"
     ],
     "description": "DXX Tools",
-    "copyright": "Copyright © 2018, Mark",
+    "copyright": "Copyright © 2018, Mark Fisher",
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
     "dependencies": {
@@ -15,6 +15,7 @@
     "subConfigurations": {
         "dxx": "dxx-lib"
     },
+    "-ddoxTool": "scod",
     "-ddoxFilterArgs" : [
       "properd",
       "aermicioi",
@@ -34,6 +35,7 @@
           "excludedSourceFiles" : [
             "source/dxx/tool/gui.d",
             "source/dxx/tool/tool.d",
+            "source/dxx/tools/*",
             "source/gen/dxxtool/autogen.d"
           ],
           "dependencies": {

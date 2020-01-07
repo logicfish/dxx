@@ -1,7 +1,15 @@
 module gen.dxxtool.autogen;
 
+private import std.path : dirName;
+private import std.file : mkdirRecurse;
+
 private import dxx.util.minitemplt;
+private import dxx.util.log;
 private import dxx.app.properties;
+private import dxx.app.vaynetmplt;
+private import dxx.app.resource;
+private import dxx.app.resource.resource;
+private import dxx.app.resource.project;
 
 enum _autogenerator = [
   "runtime","generator","shellTarget","libraryTarget","autogen","appmodel",
@@ -11,155 +19,267 @@ alias _lookup=Properties.__;
 
 string _expand(alias x)() {
   // Expand identifiers in single braces, in the output filename, at runtime
-  return miniInterpreter!(_lookup,"{","}")(x);
+  //return miniInterpreter!(_lookup,"{","}")(x);
+  return miniInterpreter!(_lookup)(x);
+  //return x;
 }
 
 
 
 // Generator runtime
 
-auto gen_runtime(T...)(T vars) {
+mixin template gen_runtime(Vars...) {
+  auto gen_runtime() {
     
-    renderVayneToFile!("resources/templates/model/runtime/{app.genSourceDir}/{app.ID}build.d.vayne",vars)(_expand!"resources/templates/model/runtime/{app.genSourceDir}/{app.ID}build.d");
+    /* {{app.genSourceDir}}/{{app.ID}}build.d */
+    MsgLog.info("gen: {{app.genSourceDir}}/{{app.ID}}build.d");
+    dirName("{{app.genSourceDir}}/{{app.ID}}build.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/runtime/{{app.genSourceDir}}/{{app.ID}}build.d.vayne",Vars)(_expand!"{{app.genSourceDir}}/{{app.ID}}build.d");
     
-    renderVayneToFile!("resources/templates/model/runtime/{app.genSourceDir}/{app.ID}base.d.vayne",vars)(_expand!"resources/templates/model/runtime/{app.genSourceDir}/{app.ID}base.d");
+    /* {{app.genSourceDir}}/{{app.ID}}base.d */
+    MsgLog.info("gen: {{app.genSourceDir}}/{{app.ID}}base.d");
+    dirName("{{app.genSourceDir}}/{{app.ID}}base.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/runtime/{{app.genSourceDir}}/{{app.ID}}base.d.vayne",Vars)(_expand!"{{app.genSourceDir}}/{{app.ID}}base.d");
     
-    renderVayneToFile!("resources/templates/model/runtime/{app.sourceDir}/{app.ID}mod.d.vayne",vars)(_expand!"resources/templates/model/runtime/{app.sourceDir}/{app.ID}mod.d");
+    /* {{app.sourceDir}}/{{app.ID}}mod.d */
+    MsgLog.info("gen: {{app.sourceDir}}/{{app.ID}}mod.d");
+    dirName("{{app.sourceDir}}/{{app.ID}}mod.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/runtime/{{app.sourceDir}}/{{app.ID}}mod.d.vayne",Vars)(_expand!"{{app.sourceDir}}/{{app.ID}}mod.d");
     
+  }
 }
-
 
 
 
 // Generator generator
 
-auto gen_generator(T...)(T vars) {
+mixin template gen_generator(Vars...) {
+  auto gen_generator() {
     
-    renderVayneToFile!("resources/templates/model/generator/{app.workflowDir}/autogen.wf.vayne",vars)(_expand!"resources/templates/model/generator/{app.workflowDir}/autogen.wf");
+    /* {{app.genSourceDir}}/{{app.generatorModuleName}}.d */
+    MsgLog.info("gen: {{app.genSourceDir}}/{{app.generatorModuleName}}.d");
+    dirName("{{app.genSourceDir}}/{{app.generatorModuleName}}.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/generator/{{app.genSourceDir}}/{{app.generatorModuleName}}.d.vayne",Vars)(_expand!"{{app.genSourceDir}}/{{app.generatorModuleName}}.d");
     
-    renderVayneToFile!("resources/templates/model/generator/{app.genSourceDir}/{app.generatorModuleName}.d.vayne",vars)(_expand!"resources/templates/model/generator/{app.genSourceDir}/{app.generatorModuleName}.d");
+    /* {{app.workflowDir}}/autogen.wf */
+    MsgLog.info("gen: {{app.workflowDir}}/autogen.wf");
+    dirName("{{app.workflowDir}}/autogen.wf").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/generator/{{app.workflowDir}}/autogen.wf.vayne",Vars)(_expand!"{{app.workflowDir}}/autogen.wf");
     
+  }
 }
-
 
 
 
 // Generator shellTarget
 
-auto gen_shellTarget(T...)(T vars) {
+mixin template gen_shellTarget(Vars...) {
+  auto gen_shellTarget() {
     
-    renderVayneToFile!("resources/templates/targets/shell/source/__app.packageDir__/__app.ID.d.vayne",vars)(_expand!"resources/templates/targets/shell/source/__app.packageDir__/__app.ID.d");
+    /* dub.json */
+    MsgLog.info("gen: dub.json");
+    dirName("dub.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/shell/dub.json.vayne",Vars)(_expand!"dub.json");
     
-    renderVayneToFile!("resources/templates/targets/shell/dub.json.vayne",vars)(_expand!"resources/templates/targets/shell/dub.json");
+    /* source/{app.packageDir}/{app.ID}.d */
+    MsgLog.info("gen: source/{app.packageDir}/{app.ID}.d");
+    dirName("source/{app.packageDir}/{app.ID}.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/shell/source/{app.packageDir}/{app.ID}.d.vayne",Vars)(_expand!"source/{app.packageDir}/{app.ID}.d");
     
+  }
 }
-
 
 
 
 // Generator libraryTarget
 
-auto gen_libraryTarget(T...)(T vars) {
+mixin template gen_libraryTarget(Vars...) {
+  auto gen_libraryTarget() {
     
-    renderVayneToFile!("resources/templates/targets/library/dub.json.vayne",vars)(_expand!"resources/templates/targets/library/dub.json");
+    /* {app.resourceDir}/{app.ID}-dev.ini */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}-dev.ini");
+    dirName("{app.resourceDir}/{app.ID}-dev.ini").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{app.ID}-dev.ini.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}-dev.ini");
     
-    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{{app.ID}}-enGB.ini.vayne",vars)(_expand!"resources/templates/targets/library/{app.resourceDir}/{{app.ID}}-enGB.ini");
+    /* dale.d */
+    MsgLog.info("gen: dale.d");
+    dirName("dale.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/dale.d.vayne",Vars)(_expand!"dale.d");
     
-    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{{app.ID}}.ini.vayne",vars)(_expand!"resources/templates/targets/library/{app.resourceDir}/{{app.ID}}.ini");
+    /* {app.resourceDir}/{app.ID}.ini */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}.ini");
+    dirName("{app.resourceDir}/{app.ID}.ini").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{app.ID}.ini.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}.ini");
     
-    renderVayneToFile!("resources/templates/targets/library/dale.d.vayne",vars)(_expand!"resources/templates/targets/library/dale.d");
+    /* {app.resourceDir}/{app.ID}.json */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}.json");
+    dirName("{app.resourceDir}/{app.ID}.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{app.ID}.json.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}.json");
     
+    /* dub.json */
+    MsgLog.info("gen: dub.json");
+    dirName("dub.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/dub.json.vayne",Vars)(_expand!"dub.json");
+    
+    /* {app.resourceDir}/{app.ID}-dev.json */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}-dev.json");
+    dirName("{app.resourceDir}/{app.ID}-dev.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{app.ID}-dev.json.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}-dev.json");
+    
+    /* {app.resourceDir}/{app.ID}-enGB.ini */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}-enGB.ini");
+    dirName("{app.resourceDir}/{app.ID}-enGB.ini").mkdirRecurse;
+    renderVayneToFile!("resources/templates/targets/library/{app.resourceDir}/{app.ID}-enGB.ini.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}-enGB.ini");
+    
+  }
 }
-
 
 
 
 // Generator autogen
 
-auto gen_autogen(T...)(T vars) {
+mixin template gen_autogen(Vars...) {
+  auto gen_autogen() {
     
-    renderVayneToFile!("resources/templates/dxx/autogen/autogen.d.vayne",vars)(_expand!"resources/templates/dxx/autogen/autogen.d");
+    /* autogen.d */
+    MsgLog.info("gen: autogen.d");
+    dirName("autogen.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/dxx/autogen/autogen.d.vayne",Vars)(_expand!"autogen.d");
     
+  }
 }
-
 
 
 
 // Generator appmodel
 
-auto gen_appmodel(T...)(T vars) {
+mixin template gen_appmodel(Vars...) {
+  auto gen_appmodel() {
     
-    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/dxx-dev.json.vayne",vars)(_expand!"resources/templates/model/application/{app.resourceDir}/dxx-dev.json");
+    /* {app.resourceDir}/{app.ID}.json */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}.json");
+    dirName("{app.resourceDir}/{app.ID}.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/{app.ID}.json.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}.json");
     
-    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/{app.ID}-enGB.ini.vayne",vars)(_expand!"resources/templates/model/application/{app.resourceDir}/{app.ID}-enGB.ini");
+    /* {app.sourceDir}/{app.ID}/app.d */
+    MsgLog.info("gen: {app.sourceDir}/{app.ID}/app.d");
+    dirName("{app.sourceDir}/{app.ID}/app.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/{app.sourceDir}/{app.ID}/app.d.vayne",Vars)(_expand!"{app.sourceDir}/{app.ID}/app.d");
     
-    renderVayneToFile!("resources/templates/model/application/.gitignore.vayne",vars)(_expand!"resources/templates/model/application/.gitignore");
+    /* {app.resourceDir}/dxx-dev.json */
+    MsgLog.info("gen: {app.resourceDir}/dxx-dev.json");
+    dirName("{app.resourceDir}/dxx-dev.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/dxx-dev.json.vayne",Vars)(_expand!"{app.resourceDir}/dxx-dev.json");
     
-    renderVayneToFile!("resources/templates/model/application/dub.json.vayne",vars)(_expand!"resources/templates/model/application/dub.json");
+    /* {app.resourceDir}/{app.ID}-enGB.ini */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}-enGB.ini");
+    dirName("{app.resourceDir}/{app.ID}-enGB.ini").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/{app.ID}-enGB.ini.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}-enGB.ini");
     
-    renderVayneToFile!("resources/templates/model/application/dale.d.vayne",vars)(_expand!"resources/templates/model/application/dale.d");
+    /* .gitignore */
+    MsgLog.info("gen: .gitignore");
+    dirName(".gitignore").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/.gitignore.vayne",Vars)(_expand!".gitignore");
     
-    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/dxx.json.vayne",vars)(_expand!"resources/templates/model/application/{app.resourceDir}/dxx.json");
+    /* dub.json */
+    MsgLog.info("gen: dub.json");
+    dirName("dub.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/dub.json.vayne",Vars)(_expand!"dub.json");
     
-    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/{app.ID}.ini.vayne",vars)(_expand!"resources/templates/model/application/{app.resourceDir}/{app.ID}.ini");
+    /* dale.d */
+    MsgLog.info("gen: dale.d");
+    dirName("dale.d").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/dale.d.vayne",Vars)(_expand!"dale.d");
     
+    /* {app.resourceDir}/dxx.json */
+    MsgLog.info("gen: {app.resourceDir}/dxx.json");
+    dirName("{app.resourceDir}/dxx.json").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/dxx.json.vayne",Vars)(_expand!"{app.resourceDir}/dxx.json");
+    
+    /* {app.resourceDir}/{app.ID}.ini */
+    MsgLog.info("gen: {app.resourceDir}/{app.ID}.ini");
+    dirName("{app.resourceDir}/{app.ID}.ini").mkdirRecurse;
+    renderVayneToFile!("resources/templates/model/application/{app.resourceDir}/{app.ID}.ini.vayne",Vars)(_expand!"{app.resourceDir}/{app.ID}.ini");
+    
+  }
 }
 
 
 
-
-auto _dxxtool_autogen(alias _id,alias vars)() {
+mixin template _dxxtool_autogen(alias _id,Vars...) {
+  auto _dxxtool_autogen() {
   
+    /* runtime */
     static if (_id == "runtime") {
-      gen_runtime(vars);
+      mixin gen_runtime!vars;
     }
   
+    /* generator */
     static if (_id == "generator") {
-      gen_generator(vars);
+      mixin gen_generator!vars;
     }
   
+    /* shellTarget */
     static if (_id == "shellTarget") {
-      gen_shellTarget(vars);
+      mixin gen_shellTarget!vars;
     }
   
+    /* libraryTarget */
     static if (_id == "libraryTarget") {
-      gen_libraryTarget(vars);
+      mixin gen_libraryTarget!vars;
     }
   
+    /* autogen */
     static if (_id == "autogen") {
-      gen_autogen(vars);
+      mixin gen_autogen!vars;
     }
   
+    /* appmodel */
     static if (_id == "appmodel") {
-      gen_appmodel(vars);
+      mixin gen_appmodel!vars;
     }
   
+  }
 }
 
-auto dxxtool_autogen(T...)(string _id,T vars) {
-  
-    if (_id == "runtime") {
-      gen_runtime!(T)(vars);
-    }
-  
-    if (_id == "generator") {
-      gen_generator!(T)(vars);
-    }
-  
-    if (_id == "shellTarget") {
-      gen_shellTarget!(T)(vars);
-    }
-  
-    if (_id == "libraryTarget") {
-      gen_libraryTarget!(T)(vars);
-    }
-  
-    if (_id == "autogen") {
-      gen_autogen!(T)(vars);
-    }
-  
-    if (_id == "appmodel") {
-      gen_appmodel!(T)(vars);
-    }
-  
+template dxxtool_autogen(Vars...) {
+  auto dxxtool_autogen(string _id) {
+    
+      /* runtime */
+      if (_id == "runtime") {
+        MsgLog.info("gen: runtime");
+        mixin gen_runtime!Vars;
+      }
+    
+      /* generator */
+      if (_id == "generator") {
+        MsgLog.info("gen: generator");
+        mixin gen_generator!Vars;
+      }
+    
+      /* shellTarget */
+      if (_id == "shellTarget") {
+        MsgLog.info("gen: shellTarget");
+        mixin gen_shellTarget!Vars;
+      }
+    
+      /* libraryTarget */
+      if (_id == "libraryTarget") {
+        MsgLog.info("gen: libraryTarget");
+        mixin gen_libraryTarget!Vars;
+      }
+    
+      /* autogen */
+      if (_id == "autogen") {
+        MsgLog.info("gen: autogen");
+        mixin gen_autogen!Vars;
+      }
+    
+      /* appmodel */
+      if (_id == "appmodel") {
+        MsgLog.info("gen: appmodel");
+        mixin gen_appmodel!Vars;
+      }
+    
+  }
 }

@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -76,6 +77,7 @@ abstract class ToolBase : WorkflowElement, Tool {
     }
 
 	  int runTool(WorkflowJob job);
+
     ArgParser registerDefaultArgs(WorkflowJob job) {
 		    auto parser = injector.resolve!ArgParser;
         Argument defArg = new Argument().shortFlag('D').longFlag("def").requireParam();

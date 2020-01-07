@@ -7,7 +7,6 @@
     "force" : "false",
     "nodeps" : "false",
     "projects" : [ "core", "app", "services" ],
-    "tag":"v0.4.3",
     "apps" : [
       "examples/plugin",
       "examples/basic",
