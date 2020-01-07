@@ -25,9 +25,9 @@ private import ctini.ctini;
 
 
 // Compile-time config
-enum DaleConfig = DXXConfig ~ IniConfig!("{{vars.appid}}-dale.ini");
+enum DaleConfig = DXXConfig ~ IniConfig!("{{app.ID}}-dale.ini");
 
-alias {{vars.appname}}DevParam = Tuple!(
+alias {{app.appName}}DevParam = Tuple!(
   Tuple!(
     //string[],"projects",
     //string[],"apps",
@@ -44,16 +44,16 @@ alias {{vars.appname}}DevParam = Tuple!(
 );
 
 @component
-class {{vars.appname}}DevModule : PlatformRuntime!({{vars.appname}}DevParam) {
+class {{app.ID}}DevModule : PlatformRuntime!({{app.ID}}DevParam) {
   mixin __Text!(DaleConfig.build.lang);
-  mixin registerComponent!({{vars.appname}}DevModule);
+  mixin registerComponent!({{app.ID}}DevModule);
 }
 
 immutable VERSION = packageVersion;
 
 @(TASK)
 void banner() {
-    MsgLog.info("{{vars.appname}} ", VERSION);
+    MsgLog.info("{{app.appName}} ", VERSION);
     writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
     //MsgLog.info("arch=%s build=%s", ARCH,BUILD);
     writefln("debug=%s", DEBUGS.join(","));

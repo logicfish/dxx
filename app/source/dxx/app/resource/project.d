@@ -23,8 +23,48 @@ module dxx.app.resource.project;
 
 import dxx.app.resource.file;
 
-interface Project : FolderResource {
+interface ProjectType {
+  @property pure @safe @nogc nothrow
+  inout(string) typeName() inout;
+  abstract string[] buildCommand();
+  abstract string[] execCommand();
 }
 
+abstract class ProjectTypeBase : ProjectType {
+  string _typeName;
+  @property pure @safe @nogc nothrow override
+  inout(string) typeName() inout {
+    return _typeName;
+  }
+  string[] buildCommand() {
+    return [];
+  }
+  string[] execCommand() {
+    return [];
+  }
+}
 
+class DefaultProjectType : ProjectTypeBase {
 
+}
+
+class ProjectBase : FolderResourceBase,Project {
+  ProjectDesc _desc;
+  ProjectType _type;
+
+  @property pure @safe @nogc nothrow
+  inout(ProjectDesc) desc() inout {
+    return _desc;
+  }
+
+  @property pure @safe @nogc nothrow
+  inout(ProjectType) type() inout {
+    return _type;
+  }
+
+  this(string uri,FolderResource parent,ProjectType _type = new DefaultProjectType) {
+      super(uri,parent);
+      this._type = _type;
+  }
+
+}

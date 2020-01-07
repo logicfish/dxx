@@ -58,9 +58,10 @@ class WorkspaceDefault : Workspace {
         return getNativePath(p.uri);
     }
     Project getProject(string name) {
+        if(auto x = name in projects) return *x;
         return null;
     }
     Project[] getProjects() {
-        return null;
+        return projects.values;
     }
 }

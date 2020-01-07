@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -28,6 +29,10 @@ private import core.thread;
 private import dxx.util;
 private import dxx.app;
 
+/++
+Represents a task to run once in a single thread.
+Notifications are sent when the job state changes.
+++/
 interface Job : NotificationSource {
     enum Status {
         NOT_STARTED,
@@ -56,6 +61,10 @@ interface Job : NotificationSource {
 
 }
 
+/++
+A simple default class for clients to use.
+The method `process` should be overriden.
+++/
 abstract class JobBase : SyncNotificationSource, Job {
     Status _status = Status.NOT_STARTED;
     shared(Exception) _thrownException;
@@ -88,7 +97,7 @@ abstract class JobBase : SyncNotificationSource, Job {
             process;
             status = Status.TERMINATED;
         } catch(Exception e) {
-            MsgLog.warning("Exception: " ~ e.message);
+            MsgLog.error(e.file,":",e.line,"-",e.message);
             _thrownException = cast(shared(Exception))e;
             status = Status.THROWN_EXCEPTION;
             version(Posix) {
@@ -98,9 +107,8 @@ abstract class JobBase : SyncNotificationSource, Job {
                 printPrettyTrace(stderr);
               } catch(Throwable t) {
               }
-            }
-            version(Windows) {
-                MsgLog.trace(e.info);
+            } else {
+              MsgLog.info("[Exception]",e.info);
             }
         } finally {
             terminate;

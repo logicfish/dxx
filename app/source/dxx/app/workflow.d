@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -45,11 +46,11 @@ interface Workflow {
     ref inout (WorkflowElement[])
     workflowElements() inout;
 
-    @property nothrow
+    @property nothrow pure @safe @nogc
     ref inout(string[])
     args() inout;
 
-    @property nothrow
+    @property nothrow pure @safe @nogc
     ref inout(Variant[string])
     param() inout;
 }
@@ -59,12 +60,12 @@ abstract class WorkflowBase : Workflow {
     string[] _args;
     Variant[string] _param;
 
-    @property
+    @property nothrow pure @safe @nogc
     ref inout (WorkflowElement[])
     workflowElements() inout {
         return _workflowElements;
     }
-    @property
+    @property nothrow pure @safe @nogc
     ref inout (string[])
     args() inout {
         return _args;
@@ -73,7 +74,7 @@ abstract class WorkflowBase : Workflow {
         _workflowElements = elements;
         _args = args;
     }
-    @property
+    @property nothrow pure @safe @nogc
     ref inout (Variant[string])
     param() inout {
         return _param;
@@ -96,12 +97,12 @@ final class WorkflowJob : PlatformJobBase {
         this._runner = cast(shared(WorkflowRunner))r;
     }
 
-    @property nothrow
+    @property nothrow pure @safe @nogc
     inout(Workflow) workflow() inout {
         return _workflow;
     }
 
-    @property nothrow
+    @property nothrow pure @safe @nogc
     inout(WorkflowRunner) workflowRunner() inout {
         return _runner;
     }

@@ -1,20 +1,4 @@
 /**
-Static methods to lookup application properties at
-runtime. Firstly, the methods queries the LocalConfig.
-If the key is not found, then the method consults the
-local injector. If the key is still not found, then a
-static variant map comprising default values is consulted.
-If the key is still not found, the methods return null.
-
-The lookup methods are nothrow.
-
-The __gshared property_defaults array is not synchronized and
-should be initialised once by the application.
-
-The expand method takes a string and replaces
-occurences of "{{fullyQualifiedIdentifier}}"
-with the value obtained by looking up the id.
-
 Copyright: Copyright 2018 Mark Fisher
 
 License:
@@ -46,8 +30,21 @@ private import std.range;
 
 private import dxx.util;
 
+/++
+Static methods to lookup application properties at
+runtime. Firstly, the methods queries the LocalConfig.
+If the key is not found, then the method consults the
+local injector. If the key is still not found, then a
+static variant map comprising default values is consulted.
+If the key is still not found, the methods return null.
+
+The lookup methods are nothrow.
+
+The expand method takes a string and replaces
+occurences of "{{fullyQualifiedIdentifier}}"
+with the value obtained by looking up the id.
+++/
 class Properties {
-    //__gshared static Variant[string] property_defaults;
 
     nothrow
     static T lookup(T)(string k,T delegate() _t=null) {
@@ -114,7 +111,7 @@ class Properties {
     nothrow static
     auto expand(string v) {
       try {
-        return miniInterpreter!(idParser)(v).join;
+        return miniInterpreter!(idParser)(v);
       } catch(Exception e) {
       }
       return v;
@@ -136,16 +133,25 @@ class Properties {
     static T opIndex(T)(string s) {
       return _!T(s);
     }
-    // helpers
+    /++
+    Shorthand - lookup a key with value type T.
+    ++/
     static auto _(T)(string v) {
       return Properties.lookup!T(v);
     }
-
+    /++
+    Shorthand - lookup a key with value type string.
+    ++/
     static auto __(string v) {
-      return expand(_!string(v));
+      //return expand(_!string(v));
+      return _!string(v);
     }
+    /++
+    Shorthand - lookup a key with value type string[].
+    ++/
     static auto ___(string v) {
-      return _!(string[])(v).map!(x=>expand(x)).array;
+      //return _!(string[])(v).map!(x=>expand(x)).array;
+      return _!(string[])(v);
     }
 
 }

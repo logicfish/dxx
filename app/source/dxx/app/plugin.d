@@ -1,6 +1,14 @@
-/**
-Copyright 2018 Mark Fisher
+/++
+This module managed dynamic loading of shared libraries as Plugins.
 
+The plugin uses the runtime information from the framework to enforce
+version consistency.
+
++/
+/**
+Copyright: 2018 Mark Fisher
+
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -54,17 +62,13 @@ struct PluginDescriptor {
     ExtensionDesc[]* extensions;
 }
 
-interface PlatformDelegates {
-  string platformGetString(string id) shared;
-  string[] platformGetStrings(string id) shared;
-  void platformSetString(string id,string value) shared;
-  void platformSetStrings(string id,string[] value) shared;
-}
+/++
+This struct is passed as the user data and passed to the exported methods
+in the shared library, as defined by the `reloaded` framework.
 
-interface PluginDelegates {
-
-}
-
+Most of the fields are initilised by the host platform; several however
+are initialised by the plugin platform.
+++/
 struct PluginContext {
   // These parts filled in by the kernel
     string delegate(string id) shared platformGetString;
@@ -87,12 +91,14 @@ struct PluginContext {
     void* delegate(string id) shared platformCreateInstance;
     void delegate(void*) shared platformDestroyInstance;
 
-  // These parts filled in by the plugin
-    PluginDescriptor* desc;
-    void* delegate(string id) shared pluginCreateInstance;
-    void delegate(void*) shared pluginDestroyInstance;
+    PluginDescriptor* desc;   /// This part filled in by the plugin.
+    void* delegate(string id) shared pluginCreateInstance; /// ditto
+    void delegate(void*) shared pluginDestroyInstance; /// ditto
 }
 
+/++
+Manages a single plugin (dynamic shared library).
+++/
 class PluginLoader {
     PluginContext ctx;
     PluginDescriptor _desc;
@@ -200,19 +206,29 @@ class PluginLoader {
 class PluginRuntime(PluginType : Plugin,Param...) : PlatformRuntime!(Param) {
     void registerPluginComponents(InjectionContainer injector) {
         debug(Plugin) {
-            import std.experimental.logger;
             sharedLog.info("registerPluginComponents()");
         }
         new PluginDefault.ModuleListener().register;
         injector.register!(Plugin,PluginType);
+        registerExtensionPoints();
+        registerExtensions();
     }
     override void registerAppDependencies(InjectionContainer injector) {
         debug(Plugin) {
-            import std.experimental.logger;
-            sharedLog.info("registerAppDependencies()");
+            sharedLog.trace("registerAppDependencies()");
         }
         super.registerAppDependencies(injector);
         registerPluginComponents(injector);
+    }
+    void registerExtensionPoints() {
+      debug(Plugin) {
+          sharedLog.trace("registerExtensionPoints()");
+      }
+    }
+    void registerExtensions() {
+      debug(Plugin) {
+          sharedLog.trace("registerExtensions()");
+      }
     }
 }
 

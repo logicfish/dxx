@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -32,7 +33,6 @@ version(DXX_Developer) {
   template APPDIR() {
     alias APPDIR=()=>runtimeConstants.appDir;
   }
-
   template ARCH() {
     alias ARCH=()=>Properties.__("build.arch");
   }
@@ -41,6 +41,9 @@ version(DXX_Developer) {
   }
   template DEBUGS() {
     alias DEBUGS=()=>Properties.___("build.debugs");
+  }
+  template VERSIONS() {
+    alias VERSIONS=()=>Properties.___("build.versions");
   }
   template CONFIG() {
     alias CONFIG=()=>Properties.__("build.config");
@@ -62,7 +65,12 @@ version(DXX_Developer) {
       "--root="~root,
       "--nodeps="~NODEPS
     ];
+    foreach(dbg;DEBUGS) {
+        args ~= [ "--debug="~dbg ];
+    }
+    foreach(vers;VERSIONS) {
+        args ~= [ "--version="~vers ];
+    }
     return args;
   }
-
 }

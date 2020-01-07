@@ -7,12 +7,20 @@
     "copyright": "Copyright © 2018, Mark",
     "license": "MIT",
     "stringImportPaths" : [ "resources" ],
+    "-ddoxFilterArgs" : [
+      "aermicioi",
+      "ctini",
+      "pegged",
+      "dyaml"
+    ],
     "dependencies": {
       "dxx" : { "path" : "../" },
       "dxx:core": "*",
       "aedi": "~>1.0.0",
-      "vayne" : "~>0.0.45",
-      "libasync": "~>0.8.4"
+      "vayne" : "~>0.0.46",
+      "libasync": "~>0.8.4",
+      "hunt-cache": "~>0.6.2",
+      "hunt-reflection": "~>0.2.1"
     },
     "dependencies-posix" : {
       "backtrace-d" : "~>0.1.2"

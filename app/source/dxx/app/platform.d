@@ -24,6 +24,7 @@ module dxx.app.platform;
 
 private import std.exception;
 private import std.typecons;
+private import std.variant;
 
 private import aermicioi.aedi;
 
@@ -37,12 +38,16 @@ private import dxx.app.resource;
 private import dxx.app.document;
 private import dxx.app.workbench;
 private import dxx.app.extension;
+private import dxx.app.resource.impl.wsmanager;
 
 
 //interface DocumentResourceAdaptor {
     //DocumentType getDocType(FileResource);
 //}
 
+/++
+Methods exposed by the platform, accessible via the injector.
+++/
 interface PlatformComponents {
     URIResolver getURIResolver();
     ResourceValidator getResourceValidator();
@@ -62,7 +67,11 @@ struct PlatformJobEvent {
   Status status;
   shared(PlatformJob) job;
 }
-
+/++
+This represents the state of the framework for an application.
+The platform handles the resource workspace, loading of plugins and is
+also a job manager.
+++/
 class DXXPlatform : SyncNotificationSource
 {
     static class ThreadLocal :
@@ -143,7 +152,7 @@ class DXXPlatform : SyncNotificationSource
     ExtensionsManager extensionsManager;
 
     private this() {
-        extensionsManager = new ExtensionsManager;
+        extensionsManager = new _ExtensionsManager;
     }
 
     _PluginLoader[string] plugins;
@@ -181,6 +190,9 @@ class DXXPlatform : SyncNotificationSource
     }
 }
 
+/++
+Job that sends events to the DXXPlatform listeners.
+++/
 interface PlatformJob : Job {
     T getProperty(T)(string id);
     void setProperty(T)(T t,string id);
@@ -188,6 +200,7 @@ interface PlatformJob : Job {
 
 abstract class PlatformJobBase : JobBase,PlatformJob {
     shared(Workbench) workbench;
+    Variant[string] _props;
 
      this(Workbench w = resolveInjector!(Workbench)("app.workbench")) shared {
         //super();
@@ -215,6 +228,14 @@ abstract class PlatformJobBase : JobBase,PlatformJob {
     abstract
     void processPlatformJob() shared;
 
+    //override
+    T getProperty(T)(string id) {
+        return _props[id].get!T;
+    }
+    //override
+    void setProperty(T)(T t,string id) {
+      _props[id] = Variant(t);
+    }
 }
 
 struct PluginDef {
@@ -232,6 +253,15 @@ alias DXXParam = Tuple!(
   PlatformParam,"dxx"
 );
 
+/++
+Default runtime module that exposes components for use by the injector.
+
+
+So, for example, to access a PluginLoader:
+`
+    PluginLoader loader = resolveInjector!PluginLoader;
+`
+++/
 @component
 class PlatformRuntime(Param...) :
             RuntimeComponents!(Param,PlatformParam),
@@ -277,8 +307,9 @@ class PlatformRuntime(Param...) :
     }*/
 
     void registerPlatformDependencies(InjectionContainer injector) {
-        Workspace w = new WorkspaceDefault;
-        injector.register!(Workspace)(w,"app.workspace");
+      WorkspaceManager w = new WorkspaceManager;
+      Workspace ws = w.workspace;
+      injector.register!(Workspace)(ws,"app.workspace");
     }
 
     override void registerAppDependencies(InjectionContainer injector) {
@@ -286,7 +317,11 @@ class PlatformRuntime(Param...) :
         registerPlatformDependencies(injector);
     }
     version(unittest) {
-        mixin registerComponent!(PlatformRuntime!BasicParam);
+        alias UTParam = Tuple!(
+           string,"name",
+           uing,"age"
+          );
+        mixin registerComponent!(PlatformRuntime!UTParam);
     }
 }
 unittest {

@@ -1,0 +1,20 @@
+module dxt.example;
+
+import dxx.dxt;
+
+function myFunc(a : Integer,b,c) {
+  var myVar;
+  myVar = a + b * c;
+  return myVar;
+}
+
+class MyClass {
+  function go() {
+    writeln("go!");
+  }
+}
+
+function myFnc2(extension c : MyClass) {
+  // same as "with(c)"
+  go();
+}

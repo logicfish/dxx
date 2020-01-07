@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -25,8 +26,8 @@ private import aermicioi.aedi;
 
 private import core.runtime;
 
-private import std.experimental.logger;
 private import std.exception;
+private import std.experimental.logger;
 
 private import dxx.util.injector;
 private import dxx.util.config;
@@ -38,11 +39,9 @@ interface Components {
 
 mixin template registerComponent(T : RuntimeComponents!Param,Param...) {
     shared static this() {
-        import std.conv;
-        import std.experimental.logger;
-        import dxx.util.injector;
-
-        debug(Component) { sharedLog.info("RuntimeComponents register "~typeid(T).to!string); }
+        debug(Component) {
+          sharedLog.info("RuntimeComponents register ",typeid(T));
+        }
         auto t = new T;
     }
 }
@@ -54,18 +53,17 @@ mixin template registerComponents(Param...) {
 
 @component
 class RuntimeComponents(Param...) : Components {
-//    static ArgParser argParser;
 
     static __gshared InjectionContainer _injector;
     static bool instantiated = false;
 
     this(this T)() {
-        debug(Component) {
-            import std.conv;
-            sharedLog.info("RuntimeComponents "~typeid(T).to!string);
-        }
         synchronized(InjectionContainer.classinfo) {
             if(!instantiated) {
+                debug(Component) {
+                  import std.experimental.logger;
+                  sharedLog.trace("RuntimeComponents ",typeid(T));
+                }
                 if(_injector is null) {
                     _injector = newInjector!(T,Param);
                     registerAppDependencies(_injector);

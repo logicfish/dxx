@@ -20,13 +20,13 @@
     "targetPath": "bin",
     "stringImportPaths" : [ "resources" ],
     "subConfigurations": {
-        "dxx": "dxx-lib"
+        "dxx": "dxx-lib",
         {{* name,subconf;app.appSubConfigurations}}
           "{{name}}" : "{{subconf}}",
         {{/}}
     },
     "preGenerateCommands": [
-        "dub fetch gen-package-version && dub run gen-package-version --build=release --arch=x86_64 -- dxx.tools --root=$PACKAGE_DIR --src=source",
+        "dub fetch gen-package-version && dub run gen-package-version --build=release --arch=x86_64 -- {{app.appName}} --root=$PACKAGE_DIR --src=source",
         {{* cmd;app.preGenerateCommands}}
           {{cmd}},
         {{/}}

@@ -1,3 +1,25 @@
+/**
+Copyright: 2018 Mark Fisher
+
+License:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+**/
 private import dl;
 
 private import dxx.packageVersion;
@@ -72,9 +94,17 @@ void examples() {
 void tool() {
     deps(&build);
     auto toolExec = runtimeConstants.appDir ~ "/../../../tool/";
-    exec("dub",
+    /*exec("dub",
         buildDubArgs!"build"(toolExec) ~ ["--config=dxx-tool-console"]
+    );*/
+    chdir(toolExec);
+    /*exec("dub",
+        buildDubArgs!"build"() ~ ["--config=dxx-tool-console"]
+    );*/
+    exec("dub",
+        buildDubArgs!"run"() ~ ["--config=shi_sha","--"] ~ ARGPASS
     );
+
     /* exec("dub", ["build",
       "--root=tool",
       "--arch="~ARCH,
@@ -88,7 +118,6 @@ void tool() {
         "--build="~BUILD
         ]); */
       //string[] arg = ARGS;
-      chdir(toolExec);
       if(ARGPASS.length>0) {
         exec("bin/dxx", ARGPASS);
       } else {
@@ -107,11 +136,18 @@ void update() {
 @(TASK)
 void upgrade() {
     deps(&prebuild);
-    exec("dub", ["upgrade","--root=."]);
+    //exec("dub", ["upgrade","--root=."]);
+    exec("dub",
+        buildDubArgs!"upgrade"(".")
+    );
+
     foreach(p;PROJECTS~APPS) {
-        exec("dub", ["upgrade","--root="~p]);
+        //exec("dub", ["upgrade","--root="~p]);
+        exec("dub",
+            buildDubArgs!"upgrade"(p)
+        );
     }
-    exec("dub", ["upgrade","--root=tool"]);
+    //exec("dub", ["upgrade","--root=tool"]);
 }
 
 @(TASK)
@@ -123,7 +159,10 @@ void boot() {
 @(TASK)
 void clean() {
   foreach(p;PROJECTS~APPS) {
-      exec("dub", ["clean","--root="~p]);
+      //exec("dub", ["clean","--root="~p]);
+      exec("dub",
+          buildDubArgs!"clean"(p)
+      );
   }
   //exec("dub", ["clean","--root=."]);
 }
@@ -139,13 +178,13 @@ void doc() {
     execStatus("dub", ["build","-b=ddox","--root=.","--arch="~ARCH]);
     execStatus("dub", ["run","ddox","--arch="~ARCH,"--",
         "filter","./docs.json",
-        "--ex","aermicioi",
-        "--ex","ctini",
-        "--ex","pegged",
-        "--ex","properd"
+        "--ex=aermicioi",
+        "--ex=ctini",
+        "--ex=pegged",
+        "--ex=properd"
       ]);
       execStatus("dub", ["run","ddox","--arch="~ARCH,"--",
-        "generate-html","./docs.json","doc"
+        "generate-html","./docs.json","docs"
       ]);
 }
 

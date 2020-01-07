@@ -32,6 +32,20 @@ private import dxx.app.resource.workspace;
 private import dxx.app.job;
 private import dxx.app.platform;
 
+/++
+The Workbench provides a framework for synchronizing job access to
+platform resources.
+
+Only one single workbench job can run over a particular
+workbench. The `waitLock` method blocks until the previous job has
+terminated.  The `lock` method throws an exception if the previous job
+has not terminated.
+
+The idea is that we don't have to worry about serializing access to the
+underlying resources (for example, the Workspace). We can create
+instances of WorkbenchJob and execute these in a thread pool - the
+workbench ensures that no conflicts occur.
++/
 interface Workbench {
     static Workbench getCurrent() {
         return resolveInjector!Workbench("app.workbench");
@@ -40,6 +54,7 @@ interface Workbench {
     void lock(shared(WorkbenchJob)) shared;
     void unlock(shared(WorkbenchJob)) shared;
     void waitLock(shared(WorkbenchJob)) shared;
+    bool isLocked() shared;
 }
 
 final class WorkbenchDefault :
@@ -66,6 +81,10 @@ final class WorkbenchDefault :
       }
       lock(j);
     }
+    shared
+    bool isLocked() {
+      return (currentJob is null);
+    }
 }
 
 class WorkbenchJob : PlatformJobBase {
@@ -87,6 +106,7 @@ class WorkbenchJob : PlatformJobBase {
 class WorkbenchJobDefault : WorkbenchJob {
   Job job;
   shared this(shared(Job) j) {
+    enforce(cast(WorkbenchJob)j is null);
     this.job = j;
   }
   override shared

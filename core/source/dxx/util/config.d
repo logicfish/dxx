@@ -78,7 +78,9 @@ final class LocalConfig {
         properties[DXXConfig.keys.currentDir] = RTConstants.constants.curDir;
         properties[DXXConfig.keys.appDir] = RTConstants.constants.appDir;
         //properties[DXXConfig.keys.applicationName] =
-        properties[DXXConfig.keys.commandLine] =  RTConstants.constants.argString;
+        properties[DXXConfig.keys.commandLine] = RTConstants.constants.argString;
+        properties[DXXConfig.keys.appCommandLine] = RTConstants.constants.argsApp;
+        properties[DXXConfig.keys.commandLinePassthrough] = RTConstants.constants.argsAppPassthrough;
         properties[DXXConfig.keys.appName] =  RTConstants.constants.appBaseName;
         properties[DXXConfig.keys.appFileName] =  RTConstants.constants.appFileName;
         properties[DXXConfig.keys.appBaseName] =  RTConstants.constants.appBaseName;
@@ -99,16 +101,13 @@ final class LocalConfig {
                 DXXConfig.app.configFile);
         try {
             //sharedLog.info("Loading default config file.");
-            //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
+            sharedLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
             properties = readProperties(&f);
         } catch(Exception e) {
             if(DXXConfig.app.createDefaultConfig) {
               // Create the default config file.
-              debug {
-                sharedLog.info("Creating default config file.");
-              }
-              //MsgLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
+              sharedLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
               auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
               of.write(import(DXXConfig.app.configDefaults));
               of.flush;

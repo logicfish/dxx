@@ -1,7 +1,8 @@
 {
   "build" : {
     "arch" : "x86_64",
-    "debugs" : [ "Module","Loader","Plugin","Injector"],
+    "debugs" : [ "Module","Loader","Plugin","Injector","Component"],
+    "versions" : [],
     "config" : "dxx-tool-console",
     "buildType" : "debug",
     "force" : "false",

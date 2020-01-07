@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -115,7 +116,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[dev]");
                 }
             }
-            sendLogNotification(LogNotification(LogLevel.trace,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            string n;
+            static foreach (a; args) {
+              n ~= a.to!string;
+            }
+            sendLogNotification(LogNotification(LogLevel.trace,line,file,funcName,prettyFuncName,moduleName,n));
             logger.trace!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception e) {
             //debug { // nothrow
@@ -141,7 +146,12 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[dev]");
                 }
             }
-            sendLogNotification(LogNotification(LogLevel.warning,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            string _args;
+            foreach(a;args) {
+              _args ~= a.to!string;
+            }
+            //sendLogNotification(LogNotification(LogLevel.warning,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            sendLogNotification(LogNotification(LogLevel.warning,line,file,funcName,prettyFuncName,moduleName,_args));
             logger.warning!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
         }
@@ -163,7 +173,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[dev]");
                 }
             }
-            sendLogNotification(LogNotification(LogLevel.error,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            string _args;
+            foreach(a;args) {
+              _args ~= a.to!string;
+            }
+            sendLogNotification(LogNotification(LogLevel.error,line,file,funcName,prettyFuncName,moduleName,_args));
             logger.error!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
         }
@@ -210,7 +224,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[dev]");
                 }
             }
-            sendLogNotification(LogNotification(LogLevel.fatal,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            string _args;
+            foreach(a;args) {
+              _args ~= a.to!string;
+            }
+            sendLogNotification(LogNotification(LogLevel.fatal,line,file,funcName,prettyFuncName,moduleName,_args));
             logger.fatal!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
         }
@@ -231,7 +249,11 @@ final class MsgLog : SyncNotificationSource,NotificationListener {
                     logger.trace("[dev]");
                 }
             }
-            sendLogNotification(LogNotification(LogLevel.critical,line,file,funcName,prettyFuncName,moduleName,args.to!string));
+            string _args;
+            foreach(a;args) {
+              _args ~= a.to!string;
+            }
+            sendLogNotification(LogNotification(LogLevel.critical,line,file,funcName,prettyFuncName,moduleName,_args));
             logger.critical!(line,file,funcName,prettyFuncName,moduleName,A)(args);
         } catch (Exception) {
         }

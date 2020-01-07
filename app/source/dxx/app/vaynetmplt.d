@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -25,7 +26,8 @@ private import std.conv;
 private import std.functional;
 private import std.stdio;
 private import std.array;
-static import std.file;
+private import std.file;
+private import std.string;
 
 private import vayne.compiler;
 private import vayne.lib;
@@ -46,8 +48,10 @@ void renderVayne(OutputStreamT, string FileName, Vars...)(OutputStreamT o__, str
 	alias VayneVM = VM!();
 	VayneVM vm;
 
-	auto compiled = unserialize(cast(ubyte[])std.file.read("resources/" ~ FileName ~ ".vayne"));
-
+	//auto compiled = unserialize(cast(ubyte[])std.file.read("resources/" ~ FileName ~ ".vayne"));
+	enum txt = import(FileName.chompPrefix("resources/"));
+	auto compiled = unserialize(cast(ubyte[])txt);
+	
 	Value[] constants;
 	constants.reserve(compiled.constants.length);
 
@@ -90,7 +94,7 @@ void renderVayne(OutputStreamT, string FileName, Vars...)(OutputStreamT o__, str
 	}
 
 	static errorHandler(VayneVM.Error error) {
-		MsgLog.info("%s(%s) template error: %s", error.source, error.line, error.msg);
+		MsgLog.warning(error.source, "(", error.line,") template error: ", error.msg);
 	}
 
 	globals["__translate"] = Value(&translate);

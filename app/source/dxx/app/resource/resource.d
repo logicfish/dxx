@@ -21,6 +21,8 @@ SOFTWARE.
 **/
 module dxx.app.resource.resource;
 
+private import dxx.app.resource;
+
 interface URIResolver {
     /++
     Resolve a URI in space or in the filesystem.
@@ -51,17 +53,51 @@ interface ResouceMetaDataProvider {
 interface Resource {
     ResourceSet owner();
     Resource parent();
+    Project parentProject();
+    Workspace parentWorkspace();
     Resource[] children();
     const(string) uri();
     bool isFolder();
-    //byte[] contents();
-    //int putContents(byte[]);
 }
 
 interface FileResource : Resource {
+  //byte[] contents();
+  //int putContents(byte[]);
 }
 
 interface FolderResource : FileResource {
+}
+
+struct AppDesc {
+  string ID = "__ID__";
+  string appName = "__APP_NAME__";
+  string moduleName = "__MODULE_NAME__";
+  string baseDir = "__BASE_DIR__";
+  string sourceDir = "source";
+  string resourceDir = "resource";
+  string genSouceDir = "source/gen";
+  string organizationName = "__ORGANIZATION_NAME__";
+}
+
+struct BuildDesc {
+  string arch = "__ARCH__";
+  string config = "__CONFIG__";
+  string buildType = "__BUILD_TYPE__";
+  string[] debugs = [];
+  string[] versions = [];
+}
+
+struct ProjectDesc {
+  AppDesc app;
+  BuildDesc build;
+}
+
+
+interface Project : FolderResource {
+  @property pure @safe @nogc nothrow
+  inout(ProjectDesc) desc() inout;
+  @property pure @safe @nogc nothrow
+  inout(ProjectType) type() inout;
 }
 
 final class ResourceSet {
@@ -81,5 +117,3 @@ final class ResourceSet {
         return uriMap.values;
     }
 }
-
-

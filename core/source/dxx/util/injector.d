@@ -47,6 +47,7 @@ private import std.string : indexOf;
 private import std.json;
 
 private import aermicioi.aedi;
+//private import aermicioi.aedi_property_reader;
 
 private import dxx.constants;
 private import dxx.util.ini;
@@ -54,7 +55,7 @@ private import dxx.util.config;
 
 alias component = aermicioi.aedi.component;
 alias autowired = aermicioi.aedi.autowired;
-alias localInjector = InjectionContainer.INSTANCE;
+alias localInjector = InjectionContainer.getInstance;
 
 static auto resolveInjector(alias T,Arg...)(Arg arg,InjectionContainer i=InjectionContainer.getInstance) {
     return i.resolve!T(arg);
@@ -140,10 +141,18 @@ abstract class InjectionContainer {
     }
 
     void terminate() {
-        debug(Injector) {
-            sharedLog.info("terminating");
-        }
-        _container.terminate();
+      synchronized(InjectionContainer.classinfo) {
+          if(instantiated) {
+            debug(Injector) {
+              sharedLog.info("terminating");
+            }
+            _container.terminate();
+          }
+          if(INSTANCE is this) {
+            INSTANCE = null;
+            instantiated = false;
+          }
+      }
     }
     auto instantiate() {
         debug(Injector) {
@@ -166,6 +175,7 @@ final class LocalInjector(C...) : InjectionContainer {
                 debug(Injector) {
                     pragma(msg,"scanning prototype: ");
                     pragma(msg,c);
+                    sharedLog.info("Scanning prototype ",typeid(c));
                 }
                 p.scan!c;
             }
@@ -209,9 +219,21 @@ final class LocalInjector(C...) : InjectionContainer {
             load(c,__j);
         }
         return cont;*/
-        auto cont = prototype;
-        auto __j = loadJson("resources/dxx.json");
-        load(cont,__j);
+        auto cont = values;
+        version(DXX_Developer) {
+          //auto __j = loadJson("resources/dxx-dev.json");
+          load(cont,loadJson("resources/dxx-dev.json"));
+        } else version(Unittest) {
+          //auto __j = loadJson("resources/dxx-ut.json");
+          load(cont,loadJson("resources/dxx-ut.json"));
+        } else {
+          //auto __j = loadJson("resources/dxx.json");
+          load(cont,loadJson("resources/dxx.json"));
+          load(cont,loadJson("dxx.json"));
+        }
+        // parse the environment
+        // parse the command line
+        load(cont,cast(string[])runtimeConstants.argsApp.dup);
         return cont;
     }
     auto loadJson(string pathOrData) {
@@ -220,11 +242,18 @@ final class LocalInjector(C...) : InjectionContainer {
         debug(trace) trace("Loading json from ", pathOrData);
         pathOrData = pathOrData.readText();
       }
-      return parseJSON(pathOrData);
+      try {
+        return parseJSON(pathOrData);
+      } catch(Exception e) {
+        return parseJSON("{}");
+      }
     }
     string[] toStringArray(const(JSONValue)[] ar) {
       string[] res;
       foreach(v;ar) {
+        debug(Injector) {
+            sharedLog.trace("array ",v);
+        }
         res ~= v.str;
       }
       return res;
@@ -293,7 +322,13 @@ final class LocalInjector(C...) : InjectionContainer {
     }
     //void load(T : DocumentContainer!X, X...)(T container) {
     void load(T)(T container,const(JSONValue) __j) {
-        with (container.configure) {
+      load(container,x=>readValue(__j,x));
+    }
+    void load(T)(T container,string[] cmd) {
+      //load(container,x=>readValue(__j,x));
+    }
+    void load(T)(T container,Variant delegate (string) getVal) {
+            with (container.configure) {
             static foreach(c;C) {
                 static if(isTuple!c) {
                     template _reg(alias n,alias T) {
@@ -306,13 +341,12 @@ final class LocalInjector(C...) : InjectionContainer {
                               debug(Injector) {
                                   import std.conv;
                                   sharedLog.trace("field: " ~ typeid(fieldType).to!string ~ " " ~ fieldName);
-                                  //pragma(msg,fieldType);
-                                  //pragma(msg,fieldName);
                               }
                               static if(isTuple!fieldType) {
                                 _reg!(fieldName ~ ".",fieldType)();
                               } else {
-                                auto v = readValue(__j,fieldName);
+                                //auto v = readValue(__j,fieldName);
+                                auto v = getVal(fieldName);
                                 if(v.peek!fieldType !is null) {
                                   debug(Injector) {
                                     sharedLog.trace(fieldName," = ",v.get!fieldType);
@@ -350,6 +384,7 @@ unittest {
     debug {
         sharedLog.info("Starting component unittest.");
     }
+    terminateInjector;
     auto injector = newInjector!MyModule;
     assert(injector !is null);
     auto my = injector.resolve!MyClass;
@@ -365,6 +400,7 @@ unittest {
     debug {
         sharedLog.info("Starting injector tuple parameters unittest.");
     }
+    terminateInjector;
     auto injector = newInjector!param;
     assert(injector !is null);
     auto name = injector.resolve!string("name");
@@ -381,6 +417,7 @@ unittest {
     debug {
         sharedLog.info("Starting injector struct parameters unittest.");
     }
+    terminateInjector;
     auto injector = newInjector!param;
     assert(injector !is null);
     auto name = injector.resolve!string("param.name");

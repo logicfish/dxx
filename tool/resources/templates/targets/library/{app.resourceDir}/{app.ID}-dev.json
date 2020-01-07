@@ -1,0 +1,20 @@
+{
+  "build" : {
+    "arch" : "{{build.arch}}",
+    "debugs" : [  {{* dbg;build.debugs}}
+        "{{dbg}}",
+        {{/}} ],
+    "config" : "{{build.config}}",
+    "buildType" : "{{build.config}}",
+    "force" : "{{build.force}}",
+    "nodeps" : "{{build.nodeps}}",
+    {{build.extraOptions}}
+  },
+  "ut" : {
+    "debugs" : [  {{* dbg;ut.debugs}}
+        "{{dbg}}",
+        {{/}} ],
+
+  },
+  {{app.extraDevOptions}}
+}

@@ -1,6 +1,7 @@
 /**
-Copyright 2018 Mark Fisher
+Copyright: 2018 Mark Fisher
 
+License:
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -19,10 +20,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-
 module dxx.app.resource.file;
 
-public import dxx.app.resource;
+public import dxx.util;
+public import dxx.app;
 
 struct FileResourceDesc {
     string uri;
@@ -30,13 +31,22 @@ struct FileResourceDesc {
     void* contents;
 }
 
+abstract class ResourceBase : SyncNotificationSource, Resource {
 
-class FileResourceBase : FileResource {
+}
+
+abstract class FileOrFolderResourceBase : ResourceBase, Resource {
     string _uri;
-    FolderResourceBase _parent;
+    FolderResource _parent;
+    Project _parentProject;
     Resource[] _children;
     //void* _contents;
-        
+    Workspace _parentWorkspace;
+
+    Project parentProject() {
+      return _parentProject;
+    }
+
     ResourceSet owner() {
         return owner;
     }
@@ -50,29 +60,45 @@ class FileResourceBase : FileResource {
     override Resource[] children() {
         return _children;
     }
-    
+
     @property
     override const(string) uri() {
         return _uri;
     }
-    @property
+
+    this(string uri,FolderResource parent) {
+      this._uri = uri;
+      this._parent = parent;
+      if(parent !is null) {
+        this._parentWorkspace = parent.parentWorkspace;
+      } else {
+        this._parentWorkspace = DXXPlatform.getDefaultWorkspace;
+      }
+    }
+
+    Workspace parentWorkspace() {
+      return _parentWorkspace;
+    }
+}
+
+class FileResourceBase : FileOrFolderResourceBase,FileResource {
+    this(string uri,FolderResource parent) {
+        super(uri,parent);
+    }
     override bool isFolder() {
         return false;
     }
-    
+    //override void* contents() {
+    //    return null;
+    //}
     //@property
     //override void* contents() {
     //    return _contents;
     //}
 
-    this(string uri,FolderResource parent) {
-    }
 }
 
-class FolderResourceBase : FileResourceBase,FolderResource {
-    //override void* contents() {
-    //    return null;
-    //}
+class FolderResourceBase : FileOrFolderResourceBase,FolderResource {
     this(string uri,FolderResource parent) {
         super(uri,parent);
     }
@@ -80,4 +106,3 @@ class FolderResourceBase : FileResourceBase,FolderResource {
         return true;
     }
 }
-
