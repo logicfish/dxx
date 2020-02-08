@@ -1,5 +1,6 @@
-module dxx.sys.dllexp;
+//module dxx.sys.dllexp;
 
+module dxx.sys.dllexp;
 version(unittest) {
 } else {
     version(DXX_Module) {

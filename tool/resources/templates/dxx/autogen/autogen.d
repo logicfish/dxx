@@ -46,7 +46,8 @@ mixin template _{{vars.appid}}_autogen(alias _id,Vars...) {
   {{* id,gen; vars.generators}}
     /* {{id}} */
     static if (_id == "{{id}}") {
-      mixin gen_{{id}}!vars();
+      mixin gen_{{id}}!vars;
+      return gen_{{id}}();
     }
   {{/}}
   }
@@ -58,7 +59,8 @@ template {{vars.appid}}_autogen(Vars...) {
       /* {{id}} */
       if (_id == "{{id}}") {
         MsgLog.info("gen: {{id}}");
-        mixin gen_{{id}}!Vars();
+        mixin gen_{{id}}!Vars;
+        return gen_{{id}}();
       }
     {{/}}
   }

@@ -4,8 +4,9 @@
     "debugs" : [ "Module","Loader","Plugin" ],
     "versions" : [],
     "build" : "debug",
-    "force" : "false",
-    "nodeps" : "false",
+    "force" : true,
+    "nodeps" : false,
+    "parallel" : true,
     "projects" : [ "core", "app", "services" ],
     "apps" : [
       "examples/plugin",

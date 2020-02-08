@@ -84,6 +84,11 @@ final class LocalConfig {
         properties[DXXConfig.keys.appName] =  RTConstants.constants.appBaseName;
         properties[DXXConfig.keys.appFileName] =  RTConstants.constants.appFileName;
         properties[DXXConfig.keys.appBaseName] =  RTConstants.constants.appBaseName;
+        
+        properties[DXXConfig.keys.processID] =  RTConstants.constants.processID;
+        // how to make a static per-thread key.
+        //properties[DXXConfig.keys.threadID] =  RTConstants.constants.appThreadID;
+        
     }
 
     static Variant[string] readProperties(File* f) {
@@ -100,13 +105,11 @@ final class LocalConfig {
         auto configFile = environment.get(DXXConfig.envKeys.configFile,
                 DXXConfig.app.configFile);
         try {
-            //sharedLog.info("Loading default config file.");
             sharedLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_DEFAULT)(configFile));
             f = inputConfigFile!(DXXConfig.app)(configFile);
             properties = readProperties(&f);
         } catch(Exception e) {
             if(DXXConfig.app.createDefaultConfig) {
-              // Create the default config file.
               sharedLog.info(MsgText!(DXXConfig.messages.MSG_CONFIG_INIT_DEFAULT));
               auto of = outputConfigFile!(DXXConfig.app)(DXXConfig.app.configFile);
               of.write(import(DXXConfig.app.configDefaults));

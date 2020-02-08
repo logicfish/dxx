@@ -28,8 +28,6 @@ private import dxx.constants;
 
 private import ctini.ctini;
 
-//private import scriptlike;
-
 private import std.string;
 private import std.array;
 private import std.process;
@@ -46,14 +44,12 @@ immutable VERSION = packageVersion;
 
 @(TASK)
 void banner() {
-    writefln("dxx %s", VERSION);
-    //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
-    writefln("arch=%s build=%s", ARCH,BUILD);
-    writefln("debug=%s", DEBUGS.join(","));
-    sharedLog.info("nodeps=%s", NODEPS);
-    sharedLog.info("force=%s", FORCE);
-    sharedLog.info("args=%s", APPARG.join(" "));
-    sharedLog.info("args passed=%s", ARGPASS.join(" "));
+    sharedLog.info("dxx ", VERSION);
+    sharedLog.info("nodeps=", NODEPS.to!string);
+    sharedLog.info("force=", FORCE.to!string);
+    sharedLog.info("parallel=", PARALLEL.to!string);
+    sharedLog.info("args=", APPARG.join(" "));
+    sharedLog.info("args passed=", ARGPASS.join(" "));
 }
 
 @(TASK)
@@ -94,30 +90,12 @@ void examples() {
 void tool() {
     deps(&build);
     auto toolExec = runtimeConstants.appDir ~ "/../../../tool/";
-    /*exec("dub",
-        buildDubArgs!"build"(toolExec) ~ ["--config=dxx-tool-console"]
-    );*/
     chdir(toolExec);
-    /*exec("dub",
-        buildDubArgs!"build"() ~ ["--config=dxx-tool-console"]
-    );*/
+
     exec("dub",
         buildDubArgs!"run"() ~ ["--config=shi_sha","--"] ~ ARGPASS
     );
 
-    /* exec("dub", ["build",
-      "--root=tool",
-      "--arch="~ARCH,
-      "--build="~BUILD,
-      "--config=dxx-tool-console"
-      ]); */
-      /* exec("dub", ["run",
-        "dale",
-        "--root=tool",
-        "--arch="~ARCH,
-        "--build="~BUILD
-        ]); */
-      //string[] arg = ARGS;
       if(ARGPASS.length>0) {
         exec("bin/dxx", ARGPASS);
       } else {
@@ -136,18 +114,17 @@ void update() {
 @(TASK)
 void upgrade() {
     deps(&prebuild);
-    //exec("dub", ["upgrade","--root=."]);
+    
     exec("dub",
         buildDubArgs!"upgrade"(".")
     );
 
     foreach(p;PROJECTS~APPS) {
-        //exec("dub", ["upgrade","--root="~p]);
         exec("dub",
             buildDubArgs!"upgrade"(p)
         );
     }
-    //exec("dub", ["upgrade","--root=tool"]);
+    
 }
 
 @(TASK)
@@ -159,7 +136,6 @@ void boot() {
 @(TASK)
 void clean() {
   foreach(p;PROJECTS~APPS) {
-      //exec("dub", ["clean","--root="~p]);
       exec("dub",
           buildDubArgs!"clean"(p)
       );
@@ -247,7 +223,7 @@ void tag() {
   exec("git",["tag","-m",tag,"-a",tag]);
   exec("git",["push","--tags"]);
 }
-
+/*
 //@(TASK)
 void bump() {
   exec("git tag -m '<tag>'");
@@ -262,8 +238,8 @@ void bumpminor() {
 void bumpmajor() {
   exec("git tag -m '<tag>'");
 }
+*/
 
-//@(TASK)
 void main(string[] args) {
     phony([&clean]);
     mixin(yyyup!("args", "build"));

@@ -37,7 +37,11 @@ version(DXX_Bootstrap) {
       if(auto x = v in __p) {
         return x.get!T;
       }
-      return null;
+      static if (is(T == bool)) {
+        return false;
+      } else {
+        return null;
+      }
     }
   }
 
@@ -79,11 +83,15 @@ version(DXX_Bootstrap) {
   }
 
   template FORCE() {
-    alias FORCE=()=>__("build.force");
+    alias FORCE=()=>_!bool("build.force");
+  }
+
+  template PARALLEL() {
+    alias PARALLEL=()=>_!bool("build.parallel");
   }
 
   template NODEPS() {
-    alias NODEPS=()=>__("build.nodeps");
+    alias NODEPS=()=>_!bool("build.nodeps");
   }
 
   template EXEPATH() {
@@ -97,6 +105,9 @@ version(DXX_Bootstrap) {
   }
   template ARGPASS() {
     alias ARGPASS = ()=>cast(string[])runtimeConstants.argsAppPassthrough.dup;
+  }
+  template PID() {
+  	alias PID = ()=>runtimeConstants.appPid;
   }
 
   string[] toStringArray(const(JSONValue)[] ar) {
@@ -173,8 +184,9 @@ version(DXX_Bootstrap) {
       _register!(string[])("build.projects");
       _register!(string[])("build.apps");
       _register!(string)("build.tag");
-      _register!(string)("build.force");
-      _register!(string)("build.nodeps");
+      _register!(bool)("build.force");
+      _register!(bool)("build.parallel");
+      _register!(bool)("build.nodeps");
 
       _register!string("ut.arch"); // Define `protocol` property of type `string`
   		_register!string("ut.build");
@@ -227,12 +239,14 @@ version(DXX_Bootstrap) {
       "--root="~root
     ];
     static if ("build" == cmd || "run" == cmd || "test" == cmd) {
+      import std.conv : to;
       args ~= [
         "--arch="~ARCH,
         "--build="~BUILD,
         //"--config="~CONFIG,
-        "--force="~FORCE,
-        "--nodeps="~NODEPS
+        "--force="~FORCE.to!string,
+        "--nodeps="~NODEPS.to!string,
+        "--parallel="~PARALLEL.to!string
       ];
       foreach(dbg;DEBUGS) {
           args ~= [ "--debug="~dbg ];

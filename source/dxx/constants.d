@@ -23,6 +23,7 @@ module dxx.constants;
 
 private import core.runtime;
 private import core.cpuid;
+private import core.thread : ThreadID;
 
 private import std.compiler;
 private import std.file;
@@ -30,6 +31,7 @@ private import std.path;
 private import std.string : split,indexOf,strip;
 private import std.array : appender,join;
 private import std.algorithm.searching : countUntil;
+private import std.process : thisProcessID,thisThreadID;
 
 private import semver;
 
@@ -61,6 +63,9 @@ class Constants {
     alias cpuCores = core.cpuid.coresPerCPU;
     alias cpuThreads = core.cpuid.threadsPerCPU;
     //alias cpuID = core.cpuid.getCpuFeatures.vendorID;
+    
+    alias processID = thisProcessID;
+    alias threadID = thisThreadID;
 
     version (OSX) { enum hostOperatingSystem = "OSX"; }
     else version(MacOS) { enum hostOperatingSystem = "MacOS"; }
@@ -97,8 +102,22 @@ class Constants {
 
     version(DXX_Module) {
         enum dxxModule = true;
+        version(Windows) {
+        	import core.sys.windows.windows;
+        	template exePath() {
+		        auto exePath() {
+			        char[512] szModule;
+					GetModuleFileNameA(null, szModule.ptr, szModule.length);
+		        	return szModule.dup;
+		        }
+				alias exePath = szModule;
+        	} 
+        } else {
+	        alias exePath = thisExePath;        	
+        }
     } else {
         enum dxxModule = false;
+        alias exePath = thisExePath;
     }
 
     //template libSemVer() {
@@ -135,6 +154,8 @@ struct RTConstants {
     const(string)[] args;
     const(string)[] argsApp;
     const(string)[] argsAppPassthrough;
+    const(int) processID;
+    const(ThreadID) threadID; 
 
     shared static this() {
         runtimeConstants.appFileName = thisExePath;
@@ -167,7 +188,12 @@ struct RTConstants {
         } else {
             runtimeConstants.appBaseName = baseName(runtimeConstants.appFileName);
         }
+        runtimeConstants.processID = thisProcessID;
     }
+    
+    static this() {
+        runtimeConstants.threadID = thisThreadID;
+   	}
 
     // the following variables may be filled in by the application...
 

@@ -31,8 +31,6 @@ private import dxx.constants;
 private import dxx.util.notify;
 private import dxx.util.log;
 
-public import dxx.sys.dllexp;
-
 struct ModuleData
 {
     const(RTConstants)* hostRuntime;
@@ -92,13 +90,10 @@ class Loader {
     void validate() {
         debug(Loader) {
             sharedLog.info("validate " ~ path);
-            //sharedLog.info(moduleData.moduleRuntime.semVer);
-            //sharedLog.info(moduleData.hostRuntime.semVer);
             sharedLog.info(moduleData.hostRuntime.libVersions);
         }
         enforce(moduleData.moduleRuntime);
         enforce(moduleData.moduleRuntime.checkVersion(RTConstants.constants.semVer));
-        //enforce(RTConstants.runtimeConstants.checkVersion(moduleData.moduleRuntime.semVer));
     }
 }
 

@@ -2,6 +2,7 @@
 	"fileVersion": 1,
 	"versions": {
 		"aedi": "1.0.0+commit.12.g1ac64f7",
+		"boilerplate": "1.5.9",
 		"crypto": "0.2.13",
 		"ctini": "0.2.1+commit.2.g0402b3f",
 		"dale": "0.0.1",
@@ -15,6 +16,7 @@
 		"reloaded": "0.1.5",
 		"semver": "0.3.2",
 		"standardpaths": "0.8.1",
+		"unit-threaded": "0.10.7",
 		"urld": "2.1.1",
 		"xdgpaths": "0.2.5"
 	}

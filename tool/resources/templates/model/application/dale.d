@@ -1,5 +1,7 @@
 import dl;
 
+private import ctini.ctini;
+
 private import std.file;
 private import std.stdio;
 private import std.string;
@@ -7,21 +9,15 @@ private import std.process;
 
 private import dxx;
 private import dxx.core;
-
 private import dxx.util;
-
 private import dxx.app;
 private import dxx.app.platform;
 private import dxx.app.devprops;
 //private import dxx.app.properties;
 private import dxx.app.vaynetmplt;
-
 private import dxx.{{vars.appid}}.packageVersion;
-
 private import gen.dxxtool.autogen;
-
 private import dxx.devconst;
-private import ctini.ctini;
 
 
 // Compile-time config
@@ -54,11 +50,11 @@ immutable VERSION = packageVersion;
 @(TASK)
 void banner() {
     MsgLog.info("{{app.appName}} ", VERSION);
-    writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
-    //MsgLog.info("arch=%s build=%s", ARCH,BUILD);
-    writefln("debug=%s", DEBUGS.join(","));
-    writefln("nodeps=%s", NODEPS);
-    writefln("force=%s", FORCE);
+    //writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
+    MsgLog.info("arch:", ARCH," build:",BUILD);
+    //writefln("debug=%s", DEBUGS.join(","));
+    //writefln("nodeps=%s", NODEPS.to!string);
+    //writefln("force=%s", FORCE.to!string);
     //string vDirs = VAYNEDIRS.join(",");
     //writefln("build.vayneDirs=%s", vDirs);
 }

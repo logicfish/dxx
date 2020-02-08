@@ -5,8 +5,9 @@
     "versions" : [],
     "config" : "dxx-tool-console",
     "buildType" : "debug",
-    "force" : "false",
-    "nodeps" : "false"
+    "force" : false,
+    "nodeps" : false,
+    "parallel" : true
   },
   "generate" : {
     "vayneDirs" : [

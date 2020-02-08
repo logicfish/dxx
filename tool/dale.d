@@ -32,8 +32,9 @@ alias ToolsDevParam = Tuple!(
     string,"buildType",
     string,"arch",
     string,"config",
-    string,"force",
-    string,"nodeps"
+    bool,"force",
+    bool,"nodeps",
+    bool,"parallel"
   ), "build",
   Tuple!(
     string[],"vayneDirs"
@@ -62,13 +63,11 @@ template TOOLDIR() {
 @(TASK)
 void banner() {
     MsgLog.info("dxx tool ", VERSION);
-    writefln("arch=%s build=%s config=%s", ARCH,BUILD,CONFIG);
-    //MsgLog.info("arch=%s build=%s", ARCH,BUILD);
-    writefln("debug=%s", DEBUGS.join(","));
-    writefln("nodeps=%s", NODEPS);
-    writefln("force=%s", FORCE);
-    //string vDirs = VAYNEDIRS.join(",");
-    //writefln("build.vayneDirs=%s", vDirs);
+    MsgLog.info("nodeps=", NODEPS.to!string);
+    MsgLog.info("force=", FORCE.to!string);
+    MsgLog.info("parallel=", PARALLEL.to!string);
+    //MsgLog.info("args=", APPARG.join(" "));
+    //MsgLog.info("args passed=", ARGPASS.join(" "));
 }
 
 @(TASK)

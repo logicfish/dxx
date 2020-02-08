@@ -12,6 +12,7 @@
 	"copyright": "Copyright © 2018, Mark",
 	"dependencies": {
 		"aedi": "~>1.0.0",
+		"boilerplate": "~>1.5.9",
 		"crypto": "~>0.2.4",
 		"ctini": "~>0.2.1",
 		"dxx": {

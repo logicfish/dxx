@@ -49,21 +49,26 @@ version(DXX_Developer) {
     alias CONFIG=()=>Properties.__("build.config");
   }
   template FORCE() {
-    alias FORCE=()=>Properties._!string("build.force");
+    alias FORCE=()=>Properties._!bool("build.force");
   }
   template NODEPS() {
-    alias NODEPS=()=>Properties._!string("build.nodeps");
+    alias NODEPS=()=>Properties._!bool("build.nodeps");
+  }
+  template PARALLEL() {
+    alias PARALLEL=()=>Properties._!bool("build.parallel");
   }
   string[] buildDubArgs(string cmd)(string root=".") {
+    import std.conv : to;
     string[] args;
     args ~= [
       cmd,
       "--arch="~ARCH,
       "--build="~BUILD,
       //"--config="~CONFIG,
-      "--force="~FORCE,
+      "--force="~FORCE.to!string,
       "--root="~root,
-      "--nodeps="~NODEPS
+      "--nodeps="~NODEPS.to!string,
+      "--parallel="~PARALLEL.to!string
     ];
     foreach(dbg;DEBUGS) {
         args ~= [ "--debug="~dbg ];
