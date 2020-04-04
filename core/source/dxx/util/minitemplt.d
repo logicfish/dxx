@@ -106,13 +106,16 @@ unittest {
 
 template MiniInterpreter(T) {
     static auto MiniInterpreter(T idParser,ParseTree t) {
-      string delegate(ParseTree)[string] nodes;
-      nodes["MiniTemplateGrammar.LDelim"] = f=>"";
-      nodes["MiniTemplateGrammar.RDelim"] = f=>"";
-      nodes["MiniTemplateGrammar.Text"] = f=>f.matches.join;
+      import std.variant;
+      import std.algorithm;
+      Variant delegate(ParseTree)[string] nodes;
+      nodes["MiniTemplateGrammar.LDelim"] = f=>Variant("");
+      nodes["MiniTemplateGrammar.RDelim"] = f=>Variant("");
+      nodes["MiniTemplateGrammar.Text"] = f=>Variant(f.matches.join);
       //nodes["GRAMMAR.Inner"] = (f)=>idParser(f.matches.join(""));
-      nodes["MiniTemplateGrammar.Inner"] = (f)=>idParser(f.matches.join);
-      return Interpreter!(string,typeof(nodes))(nodes,t).join;
+      nodes["MiniTemplateGrammar.Inner"] = (f)=>Variant(idParser(f.matches.join));
+      //return Interpreter!(string,typeof(nodes))(nodes,t).join;
+      return Interpreter(nodes,t).map!(x=>x.get!string).join;
     }
 }
 

@@ -29,7 +29,7 @@
         "examples/plugin"
     ],
     "preGenerateCommands": [
-        "dub run gen-package-version --arch=x86_64 --build=release --nodeps -- dxx --root=$PACKAGE_DIR --src=source"
+        "dub run gen-package-version -- dxx --root=$PACKAGE_DIR --src=source"
     ],
     "configurations": [
         {
